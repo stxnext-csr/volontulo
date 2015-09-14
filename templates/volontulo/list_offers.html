@@ -16,7 +16,13 @@
         <td>{{ o.title }}</td>
         <td>{{ o.organization.name }}</td>
         <td>{{ o.time_period }}</td>
-        <td><a href="{% url 'show_offer' offer_id=o.id %}">Pomóż</a></td>
+        <td>
+        {% if o.status == 'ACTIVE' %}
+            <a href="{% url 'show_offer' offer_id=o.id %}">Pomóż</a>
+        {% else %}
+            <a href="{% url 'activate_offer' offer_id=o.id %}">Aktywuj</a>
+        {% endif %}
+        </td>
     </tr>
 {% endfor %}
 </table>
