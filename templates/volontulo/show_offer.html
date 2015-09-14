@@ -3,7 +3,10 @@
 {% bootstrap_css %}
 
 <table>
-<tr><th>Organizacja</th><td>{{ offer.organization.id }}</td></tr>
+<tr><th>Tytuł</th><td>{{ offer.title }}</td></tr>
+<tr><th>Miejsce</th><td>{{ offer.location }}</td></tr>
+<tr><th>Czas obowiązywania</th><td>{{ offer.time_period }}</td></tr>
+<tr><th>Organizacja</th><td>{{ offer.organization.name }}</td></tr>
 <tr><th>Opis szczegółowy</th><td>{{ offer.description }}</td></tr>
 <tr><th>Wymogi względem wolontariusza</th><td>{{ offer.requirements }}</td></tr>
 <tr><th>Wymagania zaangażowania czasowego</th><td>{{ offer.time_commitment }}</td></tr>
