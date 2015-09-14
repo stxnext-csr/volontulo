@@ -1,0 +1,24 @@
+{% load bootstrap3 %}
+
+{% bootstrap_css %}
+
+<table>
+    <tr>
+        <th>Miejsce</th>
+        <th>Tytuł</th>
+        <th>Nazwa organizacji</th>
+        <th>Czas obowiązywania</th>
+        <th></th>
+    </tr>
+{% for o in offers %}
+    <tr>
+        <td>{{ o.location }}</td>
+        <td>{{ o.title }}</td>
+        <td>{{ o.organization.name }}</td>
+        <td>{{ o.time_period }}</td>
+        <td><a href="{% url 'show_offer' offer_id=o.id %}">Pomóż</a></td>
+    </tr>
+{% endfor %}
+</table>
+
+{% bootstrap_javascript %}
