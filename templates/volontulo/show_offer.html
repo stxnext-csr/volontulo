@@ -1,7 +1,6 @@
 {% load bootstrap3 %}
 
 {% bootstrap_css %}
-{% bootstrap_javascript %}
 
 <table>
 <tr><th>Organizacja</th><td>{{ offer.organization.id }}</td></tr>
@@ -10,3 +9,5 @@
 <tr><th>Wymagania zaangażowania czasowego</th><td>{{ offer.time_commitment }}</td></tr>
 <tr><th>Korzyści dla wolontariusza</th><td>{{ offer.benefits }}</td></tr>
 </table>
+
+{% bootstrap_javascript %}
