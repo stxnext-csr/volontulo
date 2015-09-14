@@ -4,6 +4,7 @@
 from django.contrib import auth
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
 from django.shortcuts import render
 
 from . import models
@@ -42,7 +43,10 @@ def list_offers(request):
 
 
 def activate_offer(request, offer_id):
-    return HttpResponse('dadasdas')
+    offer = get_object_or_404(models.Offer, id=offer_id)
+    offer.status = 'ACTIVE'
+    offer.save()
+    return redirect('list_offers')
 
 
 def show_offer(request, offer_id):
