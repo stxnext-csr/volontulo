@@ -1,0 +1,7 @@
+codecov
+Django
+pep8
+pylint
+pylint-django
+pytest
+pytest-cov
