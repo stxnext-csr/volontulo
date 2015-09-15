@@ -4,11 +4,6 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User)
-    is_admin = models.BooleanField()
-
-
 class Organization(models.Model):
     name = models.CharField(max_length=150)
 
@@ -23,3 +18,12 @@ class Offer(models.Model):
     title = models.CharField(max_length=150)
     time_period = models.CharField(max_length=150)
     status = models.CharField(max_length=30, default='STAGED')
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    is_organization = models.BooleanField(default=False, blank=True)
+    is_administrator = models.BooleanField(default=False, blank=True)
+
+    def __str__(self):
+        return self.user.email
