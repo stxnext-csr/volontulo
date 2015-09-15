@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from django.contrib.auth.models import User
 from django.db import models
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    is_admin = models.BooleanField()
 
 
 class Organization(models.Model):
@@ -16,3 +22,4 @@ class Offer(models.Model):
     location = models.CharField(max_length=150)
     title = models.CharField(max_length=150)
     time_period = models.CharField(max_length=150)
+    status = models.CharField(max_length=30, default='STAGED')
