@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-
 from django.contrib import auth
+from django.http import Http404
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.template import TemplateDoesNotExist
 
 from . import models
 
@@ -54,3 +55,10 @@ def show_offer(request, offer_id):
     return render(request, "volontulo/show_offer.html", context={
         'offer': offer,
     })
+
+
+def static(request, template_name):
+    try:
+        return render(request, "volontulo/statics/{}.html".format(template_name))
+    except TemplateDoesNotExist:
+        raise Http404
