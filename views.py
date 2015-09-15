@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+u"""
+.. module:: views
+"""
+
 from django.contrib import auth
 from django.http import Http404
 from django.http import HttpResponse
@@ -11,11 +15,16 @@ from django.template import TemplateDoesNotExist
 from . import models
 
 
-def index(request):
+def index(request):  # pylint: disable=unused-argument
+    u"""Main view of app.
+
+    Right now there's not too much.
+    """
     return HttpResponse(u"Welcome in volontulo app.")
 
 
 def login(request):
+    u"""Login view."""
     if request.method == 'GET':
         return render(request, "volontulo/login.html")
     username = request.POST['login']
@@ -26,14 +35,20 @@ def login(request):
 
 
 def logout(request):
+    u"""Logout view."""
     auth.logout(request)
     return HttpResponse(u"it's logout.")
 
 
 def list_offers(request):
+    u"""View, that show list of offers.
+
+    It's used for volunteers to show active ones and for admins to show
+    all of them.
+    """
     if (
-        request.user.is_authenticated() and
-        models.UserProfile.objects.get(user=request.user).is_admin
+            request.user.is_authenticated() and
+            models.UserProfile.objects.get(user=request.user).is_admin
     ):
         offers = models.Offer.objects.all()
     else:
@@ -43,7 +58,8 @@ def list_offers(request):
     })
 
 
-def activate_offer(request, offer_id):
+def activate_offer(request, offer_id):  # pylint: disable=unused-argument
+    u"""View responsible for changing status of offer from STAGED to ACTIVE."""
     offer = get_object_or_404(models.Offer, id=offer_id)
     offer.status = 'ACTIVE'
     offer.save()
@@ -51,6 +67,7 @@ def activate_offer(request, offer_id):
 
 
 def show_offer(request, offer_id):
+    u"""View responsible for showing details of particular offer."""
     offer = get_object_or_404(models.Offer, id=offer_id)
     return render(request, "volontulo/show_offer.html", context={
         'offer': offer,
@@ -58,6 +75,7 @@ def show_offer(request, offer_id):
 
 
 def static_pages(request, template_name):
+    u"""Generic view used for rendering static pages."""
     try:
         return render(
             request,
