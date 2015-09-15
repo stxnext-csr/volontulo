@@ -3,9 +3,10 @@ language: python
 python:
   - "3.4"
 install:
-  - "pip install pep8 pylint Django pylint-django codecov"
+  - "pip install pep8 pylint Django pylint-django pytest pytest-cov codecov"
 script:
   - "pep8 ."
   - "pylint --load-plugins pylint_django volontulo"
+  - "py.test -v --cov . --cov-report term-missing"
 after_success:
   - "codecov"
