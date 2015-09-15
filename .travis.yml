@@ -3,7 +3,9 @@ language: python
 python:
   - "3.4"
 install:
-  - "pip install pep8 pylint Django pylint-django"
+  - "pip install pep8 pylint Django pylint-django codecov"
 script:
   - "pep8 ."
   - "pylint --load-plugins pylint_django volontulo"
+after_success:
+  - "codecov"
