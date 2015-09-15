@@ -3,7 +3,7 @@ language: python
 python:
   - "3.4"
 install:
-  - "pip install pep8 pylint"
+  - "pip install pep8 pylint Django"
 script:
   - "pep8 ."
-  - "cd .. && pylint volontulo"
+  - "pylint volontulo"
