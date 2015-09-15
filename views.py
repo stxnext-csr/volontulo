@@ -5,7 +5,12 @@ u"""
 """
 
 from django.contrib import auth
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 from django.http import Http404
+from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -13,6 +18,8 @@ from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
 from . import models
+from volontulo.forms import UserForm
+from volontulo.forms import ProfileForm
 
 
 def index(request):  # pylint: disable=unused-argument
@@ -30,8 +37,14 @@ def login(request):
     username = request.POST['login']
     password = request.POST['password']
     user = auth.authenticate(username=username, password=password)
-    auth.login(request, user)
-    return HttpResponse(u"it's login.")
+    if user is not None:
+        if user.is_active:
+            auth.login(request, user)
+            return HttpResponse(u"Poprawnie zalogowano")
+        else:
+            return HttpResponse(u"Konto zostało wyłączone!")
+    else:
+        return HttpResponse(u"Nieprawidłowy email lub hasło!")
 
 
 def logout(request):
@@ -83,3 +96,72 @@ def static_pages(request, template_name):
         )
     except TemplateDoesNotExist:
         raise Http404
+
+
+def register(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        profile_form = ProfileForm(request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            try:
+                user = User.objects.get(email=request.POST.get('email'))
+            except User.DoesNotExist:
+                user = None
+            if user:
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    u'Użytkownik o podanym emailu już istnieje'
+                )
+                return HttpResponseRedirect(reverse('register'))
+            else:
+                # save user
+                user = user_form.save(commit=False)
+                user.set_password(request.POST.get('password'))
+                # to prevent username UNIQUE constraint
+                user.username = user.email
+                user.save()
+                # save profile
+                profile = profile_form.save(commit=False)
+                profile.user = user
+                profile.save()
+
+                send_mail(
+                    'Rejestracja na Wolontulo',
+                    'Dziękujemy za rejestrację.',
+                    'support@volontulo.org',
+                    [user.email],
+                    fail_silently=False
+                )
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    u'Rejestracja przebiegła pomyślnie'
+                )
+                return HttpResponseRedirect(reverse('register'))
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                u'Wprowadzono nieprawidłowy email lub hasło'
+            )
+            return HttpResponseRedirect(reverse('register'))
+
+    user_form = UserForm()
+    profile_form = ProfileForm()
+    return render(
+        request,
+        'volontulo/register.html',
+        {
+            'user_form': user_form,
+            'profile_form': profile_form,
+        }
+    )
+
+
+def confirm_register(request, hash):
+    # if user.is_active:
+    #     print("User is valid, active and authenticated")
+    # else:
+    #     print("The password is valid, but the account has been disabled!")
+    return HttpResponse(u"Użytkownik został aktywowany.")

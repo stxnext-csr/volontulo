@@ -1,0 +1,32 @@
+{% load bootstrap3 %}
+{% bootstrap_css %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block page_title %}Volontulo{% endblock %}</title>
+    </head>
+
+    <body>
+        <script>document.body.style += ' js';</script>
+
+        <div class="container">
+            {% if messages %}
+            <div class="row">
+                <ul class="messages">
+                    {% for msg in messages %}
+                    <li class="alert alert-{{msg.level_tag}}" role="alert">
+                        {{msg.message}}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        {% bootstrap_javascript %}
+    </body>
+</html>
