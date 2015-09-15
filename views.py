@@ -10,8 +10,8 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.http import HttpResponseRedirect
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -99,6 +99,7 @@ def static_pages(request, template_name):
 
 
 def register(request):
+    u"""View responsible for registering new users."""
     if request.method == 'POST':
         user_form = UserForm(request.POST)
         profile_form = ProfileForm(request.POST)
@@ -157,11 +158,3 @@ def register(request):
             'profile_form': profile_form,
         }
     )
-
-
-def confirm_register(request, hash):
-    # if user.is_active:
-    #     print("User is valid, active and authenticated")
-    # else:
-    #     print("The password is valid, but the account has been disabled!")
-    return HttpResponse(u"Użytkownik został aktywowany.")
