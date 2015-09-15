@@ -11,5 +11,5 @@ urlpatterns = [
     url('^offers/list$', views.list_offers, name='list_offers'),
     url('^offers/activate/(?P<offer_id>[0-9]+)$', views.activate_offer, name='activate_offer'),
     url('^offers/show/(?P<offer_id>[0-9]+)$', views.show_offer, name='show_offer'),
-    url(r'^static/(?P<template_name>[\w-]+)$', views.static, name='static'),
+    url(r'^page/(?P<template_name>[\w-]+)$', views.static_pages, name='static_page'),
 ]

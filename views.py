@@ -57,8 +57,8 @@ def show_offer(request, offer_id):
     })
 
 
-def static(request, template_name):
+def static_pages(request, template_name):
     try:
-        return render(request, "volontulo/statics/{}.html".format(template_name))
+        return render(request, "volontulo/static_pages/{}.html".format(template_name))
     except TemplateDoesNotExist:
         raise Http404
