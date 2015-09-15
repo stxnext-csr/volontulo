@@ -8,6 +8,11 @@ urlpatterns = [
     url('^$', views.index, name='index'),
     url('^auth/login', views.login, name='login'),
     url('^auth/logout', views.logout, name='logout'),
+    url(
+        r'^page/(?P<template_name>[\w-]+)$',
+        views.static_pages,
+        name='static_page'
+    ),
     url('^offers/list$', views.list_offers, name='list_offers'),
     url(
         '^offers/activate/(?P<offer_id>[0-9]+)$',
