@@ -2,5 +2,8 @@
 language: python
 python:
   - "3.4"
-install: "pip install pep8"
-script: "pep8 ."
+install:
+  - "pip install pep8 pylint Django pylint-django"
+script:
+  - "pep8 ."
+  - "pylint --load-plugins pylint_django volontulo"
