@@ -32,7 +32,7 @@ def index(request):  # pylint: disable=unused-argument
 def login(request):
     u"""Login view."""
     if request.method == 'POST':
-        username = request.POST.get('login')
+        username = request.POST.get('email')
         password = request.POST.get('password')
         user = auth.authenticate(username=username, password=password)
         if user is not None:
