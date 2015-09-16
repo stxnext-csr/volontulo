@@ -30,10 +30,12 @@ class ProfileForm(forms.ModelForm):
 
 
 class CreateOfferForm(forms.ModelForm):
+    u"""Form reposponsible for creating offer by organization."""
 
     class Meta(object):
         model = Offer
         fields = [
+            'organization',
             'description',
             'requirements',
             'time_commitment',

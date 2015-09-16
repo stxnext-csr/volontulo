@@ -200,26 +200,33 @@ def register(request):
         }
     )
 
-@login_required
-def create_offer(request):
-    # if request.user.is_anonymous():
-    #     return redirect('login')
 
+def create_offer(request):
+    u"""View responsible for creating new offer by organization."""
     if request.method == 'POST':
         form = CreateOfferForm(request.POST)
         if form.is_valid():
             offer = form.save()
+            domain = request.build_absolute_uri().replace(
+                request.get_full_path(),
+                ''
+            )
             send_mail(
                 u'Zgłoszenie oferty na Volontulo',
                 u'ID oferty: {0}.'.format(offer.id),
-                'support@volontulo.org',
-                ['filip.gorczynski@gmail.com'], # todo: zmienić na docelowy
-                fail_silently=False
+                'support@volontuloapp.org',
+                ['administrators@volontuloapp.org'],
+                fail_silently=False,
+                html_message=u'ID oferty: <a href="{0}{1}">{2}</a>.'.format(
+                    domain,
+                    reverse('show_offer', args=[offer.id]),
+                    offer.id
+                ),
             )
             messages.add_message(
                 request,
                 messages.INFO,
-                u"Dziękujemy za dodanie oferty. Aby była widoczna musi zostać zaakceptowana przez moderatora."
+                u"Dziękujemy za dodanie oferty."
             )
         else:
             messages.add_message(
@@ -234,11 +241,13 @@ def create_offer(request):
                     'form': form
                 }
             )
+
     form = CreateOfferForm()
     return render(request, 'volontulo/create_offer.html', {'form': form})
 
-@login_required 
+
 def user_profile(request):
+    u"""View to display user profile page."""
     user = get_object_or_404(UserProfile, user__email=request.user)
 
     return render(
