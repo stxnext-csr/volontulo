@@ -1,30 +1,49 @@
-{% load bootstrap3 %}
+{% extends "common/col2.html" %}
 
-{% bootstrap_css %}
+{% block title %}Lista ofert Volontulo{% endblock %}
 
-<table>
-    <tr>
-        <th>Miejsce</th>
-        <th>Tytuł</th>
-        <th>Nazwa organizacji</th>
-        <th>Czas obowiązywania</th>
-        <th></th>
-    </tr>
-{% for o in offers %}
-    <tr>
-        <td>{{ o.location }}</td>
-        <td>{{ o.title }}</td>
-        <td>{{ o.organization.name }}</td>
-        <td>{{ o.time_period }}</td>
-        <td>
-        {% if o.status == 'ACTIVE' %}
-            <a href="{% url 'show_offer' offer_id=o.id %}">Pomóż</a>
-        {% else %}
-            <a href="{% url 'activate_offer' offer_id=o.id %}">Aktywuj</a>
-        {% endif %}
-        </td>
-    </tr>
-{% endfor %}
-</table>
+{% block sidebar %}
+<ul class="list-unstyled">
+    <li><a href="{% url 'show_offer' 1 %}">Oferta 1</a></li>
+    <li><a href="{% url 'show_offer' 2 %}">Oferta 2</a></li>
+    <li><a href="{% url 'show_offer' 3 %}">Oferta 3</a></li>
+    <li><a href="{% url 'show_offer' 4 %}"><strong>Oferta 4</strong></a></li>
+    <li><a href="{% url 'show_offer' 5 %}">Oferta 5</a></li>
+    <li><a href="{% url 'show_offer' 6 %}">Oferta 6</a></li>
+    <li><a href="{% url 'show_offer' 7 %}">Oferta 7</a></li>
+    <li><a href="{% url 'show_offer' 8 %}">Oferta 8</a></li>
+</ul>
+{% endblock %}
 
-{% bootstrap_javascript %}
+{% block content %}
+    {% if not offers %}
+        <h2>Lista ofert</h2>
+        <table class="table table-striped"></table>
+            <tr>
+                <th>Miejsce</th>
+                <th>Tytuł</th>
+                <th>Nazwa organizacji</th>
+                <th>Czas obowiązywania</th>
+                <th></th>
+            </tr>
+        {% for o in offers %}
+            <tr>
+                <td>{{ o.location }}</td>
+                <td>{{ o.title }}</td>
+                <td>{{ o.organization.name }}</td>
+                <td>{{ o.time_period }}</td>
+                <td>
+                {% if o.status == 'ACTIVE' %}
+                    <a href="{% url 'show_offer' offer_id=o.id %}">Pomóż</a>
+                {% else %}
+                    <a href="{% url 'activate_offer' offer_id=o.id %}">Aktywuj</a>
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>Brak ofert spełniających podane kryteria</p>
+    {% endif %}
+
+{% endblock %}

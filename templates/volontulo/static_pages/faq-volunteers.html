@@ -1,17 +1,17 @@
-{% load bootstrap3 %}
+{% extends "common/col1.html" %}
 
-{% bootstrap_css %}
+{% block title %}Często zadawane pytania przez{% endblock %}
 
-<h2>Często zadawane pytania przez <strong>wolontariuszy</strong></h2>
-<div class="media">
-    <div class="media-left">
-        possible 40x40px image
+{% block content %}
+    <h2>Często zadawane pytania przez <strong>wolontariuszy</strong></h2>
+    <div class="media">
+        <div class="media-left">
+            possible 40x40px image
+        </div>
+        <div class="media-body">
+            <h3 class="media-heading"><span class="label label-primary">Pytanie</span><strong>Czy niebo jest niebieskie</strong></h3>
+            <p><span class="label label-info">Odpowiedź</span> Tak, ale Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+            <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+        </div>
     </div>
-    <div class="media-body">
-        <h3 class="media-heading"><span class="label label-primary">Pytanie</span><strong>Czy niebo jest niebieskie</strong></h3>
-        <p><span class="label label-info">Odpowiedź</span> Tak, ale Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
-        <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-    </div>
-</div>
-
-{% bootstrap_javascript %}
+{% endblock %}

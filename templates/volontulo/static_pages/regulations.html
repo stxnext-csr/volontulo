@@ -1,22 +1,23 @@
-{% load bootstrap3 %}
+{% extends "common/col1.html" %}
 
-{% bootstrap_css %}
+{% block title %}Regulamin{% endblock %}
 
-<h2>Regulamin</h2>
-<p class="text-center">§1</p>
-<ol>
-	<li>
-		<p>Myj zęby</p>
-	</li>
-	<li>
-		<p>Śniadanie najważniejszym posiłkiem dnia</p>
-	</li>
-</ol>
-<p class="text-center">§2</p>
-<ol>
-	<li>
-		<p>Miej ręcznik</p>
-	</li>
-</ol>
+{% block content %}
+    <h2>Regulamin</h2>
+    <p class="text-center">§1</p>
+    <ol>
+        <li>
+            <p>Myj zęby</p>
+        </li>
+        <li>
+            <p>Śniadanie najważniejszym posiłkiem dnia</p>
+        </li>
+    </ol>
+    <p class="text-center">§2</p>
+    <ol>
+        <li>
+            <p>Miej ręcznik</p>
+        </li>
+    </ol>
 
-{% bootstrap_javascript %}
+{% endblock %}
