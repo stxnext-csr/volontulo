@@ -1,5 +1,6 @@
 codecov
 Django
+django-bootstrap3
 pep8
 pylint
 pylint-django

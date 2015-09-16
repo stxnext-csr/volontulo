@@ -30,13 +30,14 @@ urlpatterns = [  # pylint: disable=invalid-name
         views.show_offer,
         name='show_offer'
     ),
+
     url(
-        r'^organization/view',
+        r'^organizations/show/(?P<organization_id>[0-9]+)$',
         views.organization_view,
         name='organization_view'
     ),
     url(
-        r'^organization/form',
+        r'^organizations/edit',
         views.organization_form,
         name='organization_form'
     ),
