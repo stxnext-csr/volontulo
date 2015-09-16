@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Strona użytkownika{% endblock %}
+
+{% block content %}
+    <h1>Strona użytkownika</h1>
+
+    {% if user.is_organization %}
+    <h2>Jako organizacja</h2>
+    <p><a href="{% url 'create_offer' %}">Dodaj ofertę</a></p>
+    {% endif %}
+
+    {% if not user.is_organization %}
+    <h2>Jako wolontariusz</h2>
+    <p><a href="{% url 'create_offer' %}">Dodaj ofertę</a></p>
+    <p><a href="{% url 'create_offer' %}">Skontaktuj się z organizacją</a></p>
+    {% endif %}
+
+    <p><a href="{% url 'logout' %}">Wyloguj</a></p>
+{% endblock %}

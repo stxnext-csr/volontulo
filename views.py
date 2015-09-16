@@ -2,6 +2,7 @@
 
 from django.contrib import auth
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -14,13 +15,13 @@ from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
 from . import models
-from volontulo.forms import UserForm
+from volontulo.forms import UserForm, CreateOfferForm
 from volontulo.forms import ProfileForm
+from volontulo.models import UserProfile
 
 
 def index(request):
     return HttpResponse(u"Welcome in volontulo app.")
-
 
 def login(request):
     if request.method == 'GET':
@@ -31,13 +32,14 @@ def login(request):
     if user is not None:
         if user.is_active:
             auth.login(request, user)
-            return HttpResponse(u"Poprawnie zalogowano")
+            return redirect('user_profile')
         else:
             return HttpResponse(u"Konto zostało wyłączone!")
     else:
         return HttpResponse(u"Nieprawidłowy email lub hasło!")
 
 
+@login_required
 def logout(request):
     auth.logout(request)
     return HttpResponse(u"it's logout.")
@@ -109,8 +111,8 @@ def register(request):
                 profile.save()
 
                 send_mail(
-                    'Rejestracja na Wolontulo',
-                    'Dziękujemy za rejestrację.',
+                    u'Rejestracja na Wolontulo',
+                    u'Dziękujemy za rejestrację.',
                     'support@volontulo.org',
                     [user.email],
                     fail_silently=False
@@ -140,10 +142,51 @@ def register(request):
         }
     )
 
+@login_required
+def create_offer(request):
+    # if request.user.is_anonymous():
+    #     return redirect('login')
 
-def confirm_register(request, hash):
-    # if user.is_active:
-    #     print("User is valid, active and authenticated")
-    # else:
-    #     print("The password is valid, but the account has been disabled!")
-    return HttpResponse(u"Użytkownik został aktywowany.")
+    if request.method == 'POST':
+        form = CreateOfferForm(request.POST)
+        if form.is_valid():
+            offer = form.save()
+            send_mail(
+                u'Zgłoszenie oferty na Volontulo',
+                u'ID oferty: {0}.'.format(offer.id),
+                'support@volontulo.org',
+                ['filip.gorczynski@gmail.com'], # todo: zmienić na docelowy
+                fail_silently=False
+            )
+            messages.add_message(
+                request,
+                messages.INFO,
+                u"Dziękujemy za dodanie oferty. Aby była widoczna musi zostać zaakceptowana przez moderatora."
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                u"Formularz zawiera niepoprawnie wypełnione pola"
+            )
+            return render(
+                request,
+                'volontulo/create_offer.html',
+                {
+                    'form': form
+                }
+            )
+    form = CreateOfferForm()
+    return render(request, 'volontulo/create_offer.html', {'form': form})
+
+@login_required 
+def user_profile(request):
+    user = get_object_or_404(UserProfile, user__email=request.user)
+
+    return render(
+        request,
+        'volontulo/user_account.html',
+        {
+            'user': user
+        }
+    )

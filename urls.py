@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^register', views.register, name='register'),
     url(r'^auth/login', views.login, name='login'),
     url(r'^auth/logout', views.logout, name='logout'),
+    url(r'^user/profile', views.user_profile, name='user_profile'),
     url(
         r'^page/(?P<template_name>[\w-]+)$',
         views.static_pages,
@@ -24,5 +25,10 @@ urlpatterns = [
         r'^offers/show/(?P<offer_id>[0-9]+)$',
         views.show_offer,
         name='show_offer'
+    ),
+    url(
+        r'^offers/create$',
+        views.create_offer,
+        name='create_offer'
     ),
 ]

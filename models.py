@@ -7,6 +7,9 @@ from django.db import models
 class Organization(models.Model):
     name = models.CharField(max_length=150)
 
+    def __str__(self):
+        return self.name
+
 
 class Offer(models.Model):
     organization = models.ForeignKey(Organization)
@@ -19,6 +22,8 @@ class Offer(models.Model):
     time_period = models.CharField(max_length=150)
     status = models.CharField(max_length=30, default='STAGED')
 
+    def __str__(self):
+        return self.title
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
