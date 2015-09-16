@@ -129,9 +129,9 @@ def register(request):
                 # 87 - if user check, that he/she's representing organization
                 # we need to create new organization and link it to this user:
                 if profile.is_organization:
-                    o = models.Organization(name=profile.user)
-                    o.save()
-                    profile.organization = o
+                    org = models.Organization(name=profile.user)
+                    org.save()
+                    profile.organization = org
 
                 profile.save()
 
