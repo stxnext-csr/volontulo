@@ -125,11 +125,19 @@ def register(request):
                 # save profile
                 profile = profile_form.save(commit=False)
                 profile.user = user
+
+                # 87 - if user check, that he/she's representing organization
+                # we need to create new organization and link it to this user:
+                if profile.is_organization:
+                    org = models.Organization(name=profile.user)
+                    org.save()
+                    profile.organization = org
+
                 profile.save()
 
                 send_mail(
-                    'Rejestracja na Wolontulo',
-                    'Dziękujemy za rejestrację.',
+                    u'Rejestracja na Volontulo',
+                    u'Dziękujemy za rejestrację.',
                     'support@volontulo.org',
                     [user.email],
                     fail_silently=False
