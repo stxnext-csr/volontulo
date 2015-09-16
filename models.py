@@ -30,6 +30,7 @@ class UserProfile(models.Model):
     u"""Model that handles users' profiles."""
     user = models.OneToOneField(User)
     is_organization = models.BooleanField(default=False, blank=True)
+    organization = models.ForeignKey(Organization, blank=True, null=True)
     is_administrator = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
