@@ -6,6 +6,7 @@ u"""
 
 from django.contrib import auth
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
@@ -17,8 +18,10 @@ from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
 from . import models
+from volontulo.forms import CreateOfferForm
 from volontulo.forms import ProfileForm
 from volontulo.forms import UserForm
+from volontulo.models import UserProfile
 
 
 def index(request):  # pylint: disable=unused-argument
@@ -65,6 +68,7 @@ def login(request):
         )
 
 
+@login_required
 def logout(request):
     u"""Logout view."""
     auth.logout(request)
@@ -187,6 +191,64 @@ def register(request):
         {
             'user_form': user_form,
             'profile_form': profile_form,
+        }
+    )
+
+
+def create_offer(request):
+    u"""View responsible for creating new offer by organization."""
+    if request.method == 'POST':
+        form = CreateOfferForm(request.POST)
+        if form.is_valid():
+            offer = form.save()
+            domain = request.build_absolute_uri().replace(
+                request.get_full_path(),
+                ''
+            )
+            send_mail(
+                u'Zgłoszenie oferty na Volontulo',
+                u'ID oferty: {0}.'.format(offer.id),
+                'support@volontuloapp.org',
+                ['administrators@volontuloapp.org'],
+                fail_silently=False,
+                html_message=u'ID oferty: <a href="{0}{1}">{2}</a>.'.format(
+                    domain,
+                    reverse('show_offer', args=[offer.id]),
+                    offer.id
+                ),
+            )
+            messages.add_message(
+                request,
+                messages.INFO,
+                u"Dziękujemy za dodanie oferty."
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                u"Formularz zawiera niepoprawnie wypełnione pola"
+            )
+            return render(
+                request,
+                'volontulo/create_offer.html',
+                {
+                    'form': form
+                }
+            )
+
+    form = CreateOfferForm()
+    return render(request, 'volontulo/create_offer.html', {'form': form})
+
+
+def user_profile(request):
+    u"""View to display user profile page."""
+    user = get_object_or_404(UserProfile, user__email=request.user)
+
+    return render(
+        request,
+        'volontulo/user_account.html',
+        {
+            'user': user
         }
     )
 
