@@ -1,0 +1,34 @@
+{% extends "common/col2.html" %}
+
+{% block title %}Wyświetlanie organizacji{% endblock %}
+
+{% block content %}
+    <h2>Organizacja</h2>
+    <div class="form-horizontal">
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ organization_form.name.id_for_label }}">Nazwa</label>
+            <div class="col-xs-4">
+                <span>{{ organization.name }}</span>
+            </div>
+            <label class="col-xs-2 control-label" for="{{ organization_form.address.id_for_label }}">Adres</label>
+            <div class="col-xs-4">
+                <span>{{ organization.address }}</span>
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ organization_form.description.id_for_label }}">Opis</label>
+            <div class="col-xs-10">
+                <span>{{ organization.description }}</span>
+            </div>
+        </div>
+    </div>
+
+    <form id="organization_form" class="form-horizontal" method="post" action="{% url 'organization_form' %}" role="form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group form-group-sm">
+            <div class="col-xs-offset-2 col-xs-10">
+                <button type="submit" name="submit" class="btn btn-primary">Edytuj organizację</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

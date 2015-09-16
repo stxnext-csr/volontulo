@@ -11,6 +11,8 @@ from django.db import models
 class Organization(models.Model):
     u"""Model that handles ogranizations/institutions."""
     name = models.CharField(max_length=150)
+    address = models.CharField(max_length=150)
+    description = models.TextField()
 
     def __str__(self):
         return self.name

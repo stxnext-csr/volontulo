@@ -18,26 +18,24 @@ from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
 from . import models
-from volontulo.forms import UserForm, CreateOfferForm
+from volontulo.forms import CreateOfferForm
 from volontulo.forms import ProfileForm
+from volontulo.forms import UserForm
 from volontulo.models import UserProfile
 
 
 def index(request):  # pylint: disable=unused-argument
     u"""Main view of app.
 
-    Right now there's not too much.
+    I will just redirect of list of offers.
     """
-    return render(
-        request,
-        'volontulo/homepage.html'
-    )
+    return redirect('list_offers')
 
 
 def login(request):
     u"""Login view."""
     if request.method == 'POST':
-        username = request.POST.get('login')
+        username = request.POST.get('email')
         password = request.POST.get('password')
         user = auth.authenticate(username=username, password=password)
         if user is not None:
@@ -79,11 +77,7 @@ def logout(request):
         messages.INFO,
         u"Użytkownik został wylogowany!"
     )
-    return render(
-        request,
-        'volontulo/homepage.html',
-        {}
-    )
+    return redirect('index')
 
 
 def list_offers(request):
@@ -256,4 +250,40 @@ def user_profile(request):
         {
             'user': user
         }
+    )
+
+
+def organization_form(request):
+    u"""View responsible for editing organization.
+
+    Edition will only work, if logged user has been registered as organization.
+    """
+    if not (
+            request.user.is_authenticated() and
+            models.UserProfile.objects.get(user=request.user).is_organization
+    ):
+        return redirect('index')
+
+    org = models.UserProfile.objects.get(user=request.user).organization
+    if request.method == 'POST':
+        org.name = request.POST.get('name')
+        org.address = request.POST.get('address')
+        org.description = request.POST.get('description')
+        org.save()
+        return HttpResponseRedirect(reverse('organization_form'))
+
+    return render(
+        request,
+        "volontulo/organization_form.html",
+        {'organization': org},
+    )
+
+
+def organization_view(request, organization_id):
+    u"""View responsible for viewing organization."""
+    org = get_object_or_404(models.Organization, id=organization_id)
+    return render(
+        request,
+        "volontulo/organization_view.html",
+        {'organization': org},
     )
