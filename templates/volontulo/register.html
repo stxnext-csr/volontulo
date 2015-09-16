@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "common/col1.html" %}
 
 {% block title %}Rejestracja w Volontulo{% endblock %}
 
 {% block content %}
-    <h1>Rejestracja w Volontulo</h1>
+    <h2>Rejestracja w Volontulo</h2>
 
     <form id="user_register" method="post" action="{% url 'register' %}" role="form" enctype="multipart/form-data">
         {% csrf_token %}
@@ -21,6 +21,6 @@
             </label>
         </div>
 
-        <button type="submit" name="submit" class="btn">Zarejestruj się</button>
+        <button type="submit" name="submit" class="btn btn-primary">Zarejestruj się</button>
     </form>
 {% endblock %}
