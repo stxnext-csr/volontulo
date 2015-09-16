@@ -158,3 +158,11 @@ def register(request):
             'profile_form': profile_form,
         }
     )
+
+
+def organization_form(request):
+    u"""View responsible for creating and editing organizations."""
+    return render(
+        request,
+        "volontulo/organization_form.html"
+    )
