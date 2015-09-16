@@ -110,6 +110,14 @@ def show_offer(request, offer_id):
     })
 
 
+def offer_form(request):
+    u"""View responsible for creating and editing offer for volunteers."""
+    return render(
+        request,
+        "volontulo/offer_form.html"
+    )
+
+
 def static_pages(request, template_name):
     u"""Generic view used for rendering static pages."""
     try:
