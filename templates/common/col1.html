@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block layout %}
+    {% include "common/header.html" %}
+    {% include "common/messages.html" %}
+
+    <div class="rows">
+        <div class="col-xs-12">
+        {% block content %}
+        {% endblock %}
+        </div>
+    </div>
+
+    {% include "common/footer.html" %}
+{% endblock %}

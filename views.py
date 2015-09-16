@@ -10,7 +10,6 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -27,30 +26,61 @@ def index(request):  # pylint: disable=unused-argument
 
     Right now there's not too much.
     """
-    return HttpResponse(u"Welcome in volontulo app.")
+    return render(
+        request,
+        'volontulo/homepage.html'
+    )
 
 
 def login(request):
     u"""Login view."""
-    if request.method == 'GET':
-        return render(request, "volontulo/login.html")
-    username = request.POST['login']
-    password = request.POST['password']
-    user = auth.authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            auth.login(request, user)
-            return HttpResponse(u"Poprawnie zalogowano")
+    if request.method == 'POST':
+        username = request.POST.get('login')
+        password = request.POST.get('password')
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                auth.login(request, user)
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    u"Poprawnie zalogowano"
+                )
+
+            else:
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    u"Konto zostało wyłączone!"
+                )
         else:
-            return HttpResponse(u"Konto zostało wyłączone!")
+            messages.add_message(
+                request,
+                messages.ERROR,
+                u"Nieprawidłowy email lub hasło!"
+            )
+        return redirect('index')
     else:
-        return HttpResponse(u"Nieprawidłowy email lub hasło!")
+        return render(
+            request,
+            'volontulo/login.html',
+            {}
+        )
 
 
 def logout(request):
     u"""Logout view."""
     auth.logout(request)
-    return HttpResponse(u"it's logout.")
+    messages.add_message(
+        request,
+        messages.INFO,
+        u"Użytkownik został wylogowany!"
+    )
+    return render(
+        request,
+        'volontulo/homepage.html',
+        {}
+    )
 
 
 def list_offers(request):
@@ -61,7 +91,7 @@ def list_offers(request):
     """
     if (
             request.user.is_authenticated() and
-            models.UserProfile.objects.get(user=request.user).is_admin
+            models.UserProfile.objects.get(user=request.user).is_administrator
     ):
         offers = models.Offer.objects.all()
     else:
