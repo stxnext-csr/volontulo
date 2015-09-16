@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 
+u"""
+.. module:: urls
+"""
+
 from django.conf.urls import url
 
 from . import views
 
-urlpatterns = [
+
+urlpatterns = [  # pylint: disable=invalid-name
     url(r'^$', views.index, name='index'),
     url(r'^register', views.register, name='register'),
     url(r'^auth/login', views.login, name='login'),

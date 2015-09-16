@@ -1,0 +1,13 @@
+{% block footer %}
+    <div class="row">
+        <h2>Footer</h2>
+        <div class="col-xs-12">
+            <ul>
+                <li><a href="{% url 'index' %}">Strona główna</a></li>
+                <li><a href="{% url 'register' %}">Rejestracja</a></li>
+                <li><a href="{% url 'login' %}">Logowanie</a></li>
+                <li><a href="{% url 'logout' %}">Wylogowanie</a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

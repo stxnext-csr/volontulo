@@ -1,16 +1,20 @@
-<form method="post" action="">
-{% csrf_token %}
-<table>
-<tr>
-    <td>Email</td>
-    <td><input type="text" name="login"></td>
-</tr>
-<tr>
-    <td>Password</td>
-    <td><input type="password" name="password"</td>
-</tr>
-</table>
+{% extends "common/col1.html" %}
 
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
+{% block title %}Logowanie do Volontulo{% endblock %}
+
+{% block content %}
+    <h2>Logowanie</h2>
+
+    <form method="post" action="{% url 'login' %}" role="form">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ user_form.email.label_tag }}
+            <input type="text" value="" name="email" class="form-control" id="{{ user_form.email.id_for_label }}" />
+        </div>
+        <div class="form-group">
+            {{ user_form.password.label_tag }}
+            <input type="password" value="" name="password" class="form-control" id="{{ user_form.password.id_for_label }}" />
+        </div>
+        <button type="submit" name="submit" class="btn btn-primary">Zaloguj</button>
+    </form>
+{% endblock %}

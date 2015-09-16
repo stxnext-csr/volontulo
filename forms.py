@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+
+u"""
+.. module:: forms
+"""
+
 from django import forms
 from django.contrib.auth.models import User
 
@@ -7,6 +12,7 @@ from volontulo.models import UserProfile
 
 
 class UserForm(forms.ModelForm):
+    u"""Form reposponsible for authorization."""
     password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta(object):
@@ -15,6 +21,7 @@ class UserForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
+    u"""Form used for changing profile of user."""
     is_organization = forms.BooleanField()
 
     class Meta(object):

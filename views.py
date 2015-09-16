@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+u"""
+.. module:: views
+"""
+
 from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -8,7 +12,6 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.http import HttpResponseRedirect
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -20,35 +23,78 @@ from volontulo.forms import ProfileForm
 from volontulo.models import UserProfile
 
 
-def index(request):
-    return HttpResponse(u"Welcome in volontulo app.")
+def index(request):  # pylint: disable=unused-argument
+    u"""Main view of app.
+
+    Right now there's not too much.
+    """
+    return render(
+        request,
+        'volontulo/homepage.html'
+    )
+
 
 def login(request):
-    if request.method == 'GET':
-        return render(request, "volontulo/login.html")
-    username = request.POST['login']
-    password = request.POST['password']
-    user = auth.authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            auth.login(request, user)
-            return redirect('user_profile')
+    u"""Login view."""
+    if request.method == 'POST':
+        username = request.POST.get('login')
+        password = request.POST.get('password')
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                auth.login(request, user)
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    u"Poprawnie zalogowano"
+                )
+
+            else:
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    u"Konto zostało wyłączone!"
+                )
         else:
-            return HttpResponse(u"Konto zostało wyłączone!")
+            messages.add_message(
+                request,
+                messages.ERROR,
+                u"Nieprawidłowy email lub hasło!"
+            )
+        return redirect('index')
     else:
-        return HttpResponse(u"Nieprawidłowy email lub hasło!")
+        return render(
+            request,
+            'volontulo/login.html',
+            {}
+        )
 
 
 @login_required
 def logout(request):
+    u"""Logout view."""
     auth.logout(request)
-    return HttpResponse(u"it's logout.")
+    messages.add_message(
+        request,
+        messages.INFO,
+        u"Użytkownik został wylogowany!"
+    )
+    return render(
+        request,
+        'volontulo/homepage.html',
+        {}
+    )
 
 
 def list_offers(request):
+    u"""View, that show list of offers.
+
+    It's used for volunteers to show active ones and for admins to show
+    all of them.
+    """
     if (
-        request.user.is_authenticated() and
-        models.UserProfile.objects.get(user=request.user).is_admin
+            request.user.is_authenticated() and
+            models.UserProfile.objects.get(user=request.user).is_administrator
     ):
         offers = models.Offer.objects.all()
     else:
@@ -58,7 +104,8 @@ def list_offers(request):
     })
 
 
-def activate_offer(request, offer_id):
+def activate_offer(request, offer_id):  # pylint: disable=unused-argument
+    u"""View responsible for changing status of offer from STAGED to ACTIVE."""
     offer = get_object_or_404(models.Offer, id=offer_id)
     offer.status = 'ACTIVE'
     offer.save()
@@ -66,6 +113,7 @@ def activate_offer(request, offer_id):
 
 
 def show_offer(request, offer_id):
+    u"""View responsible for showing details of particular offer."""
     offer = get_object_or_404(models.Offer, id=offer_id)
     return render(request, "volontulo/show_offer.html", context={
         'offer': offer,
@@ -73,6 +121,7 @@ def show_offer(request, offer_id):
 
 
 def static_pages(request, template_name):
+    u"""Generic view used for rendering static pages."""
     try:
         return render(
             request,
@@ -83,6 +132,7 @@ def static_pages(request, template_name):
 
 
 def register(request):
+    u"""View responsible for registering new users."""
     if request.method == 'POST':
         user_form = UserForm(request.POST)
         profile_form = ProfileForm(request.POST)
@@ -108,10 +158,18 @@ def register(request):
                 # save profile
                 profile = profile_form.save(commit=False)
                 profile.user = user
+
+                # 87 - if user check, that he/she's representing organization
+                # we need to create new organization and link it to this user:
+                if profile.is_organization:
+                    org = models.Organization(name=profile.user)
+                    org.save()
+                    profile.organization = org
+
                 profile.save()
 
                 send_mail(
-                    u'Rejestracja na Wolontulo',
+                    u'Rejestracja na Volontulo',
                     u'Dziękujemy za rejestrację.',
                     'support@volontulo.org',
                     [user.email],
