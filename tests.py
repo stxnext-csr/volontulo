@@ -44,7 +44,7 @@ class OfferTestCase(TestCase):
         u"""Testing offer requirements field"""
         self.assertEqual(self.offer.requirements, u"Dokładny opis wymagań")
 
-    def test__offer_time_commitment_field(self):  # pylint: disable=invalid-name
+    def test__offer_time_commit_field(self):
         u"""Testing offer time commitment field"""
         self.assertEqual(self.offer.time_commitment, u"333 dni w roku")
 
