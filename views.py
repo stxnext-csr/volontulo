@@ -24,12 +24,9 @@ from volontulo.forms import ProfileForm
 def index(request):  # pylint: disable=unused-argument
     u"""Main view of app.
 
-    Right now there's not too much.
+    I will just redirect of list of offers.
     """
-    return render(
-        request,
-        'volontulo/homepage.html'
-    )
+    return redirect('list_offers')
 
 
 def login(request):
@@ -76,11 +73,7 @@ def logout(request):
         messages.INFO,
         u"Użytkownik został wylogowany!"
     )
-    return render(
-        request,
-        'volontulo/homepage.html',
-        {}
-    )
+    return redirect('index')
 
 
 def list_offers(request):
