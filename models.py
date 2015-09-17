@@ -11,6 +11,11 @@ from django.db import models
 class Organization(models.Model):
     u"""Model that handles ogranizations/institutions."""
     name = models.CharField(max_length=150)
+    address = models.CharField(max_length=150)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
 
 
 class Offer(models.Model):
@@ -24,6 +29,9 @@ class Offer(models.Model):
     title = models.CharField(max_length=150)
     time_period = models.CharField(max_length=150)
     status = models.CharField(max_length=30, default='STAGED')
+
+    def __str__(self):
+        return self.title
 
 
 class UserProfile(models.Model):

@@ -14,6 +14,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^register', views.register, name='register'),
     url(r'^auth/login', views.login, name='login'),
     url(r'^auth/logout', views.logout, name='logout'),
+    url(r'^user/profile', views.user_profile, name='user_profile'),
     url(
         r'^page/(?P<template_name>[\w-]+)$',
         views.static_pages,
@@ -36,12 +37,12 @@ urlpatterns = [  # pylint: disable=invalid-name
         name='offer_form'
     ),
     url(
-        r'^organization/view',
+        r'^organizations/view/(?P<organization_id>[0-9]+)$',
         views.organization_view,
         name='organization_view'
     ),
     url(
-        r'^organization/form',
+        r'^organizations/edit',
         views.organization_form,
         name='organization_form'
     ),

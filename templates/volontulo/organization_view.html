@@ -8,17 +8,17 @@
         <div class="form-group form-group-sm">
             <label class="col-xs-2 control-label" for="{{ organization_form.name.id_for_label }}">Nazwa</label>
             <div class="col-xs-4">
-                <span>tutaj nazwa</span>
+                <span>{{ organization.name }}</span>
             </div>
             <label class="col-xs-2 control-label" for="{{ organization_form.address.id_for_label }}">Adres</label>
             <div class="col-xs-4">
-                <span>tutaj adres</span>
+                <span>{{ organization.address }}</span>
             </div>
         </div>
         <div class="form-group form-group-sm">
             <label class="col-xs-2 control-label" for="{{ organization_form.description.id_for_label }}">Opis</label>
             <div class="col-xs-10">
-                <span>Lorem ipsum opis tutaj</span>
+                <span>{{ organization.description }}</span>
             </div>
         </div>
     </div>
