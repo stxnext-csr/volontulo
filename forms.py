@@ -45,3 +45,11 @@ class CreateOfferForm(forms.ModelForm):
             'time_period',
             'status',
         ]
+
+class ContactForm(forms.Form):
+    fullname = forms.CharField(max_length=150)
+    email = forms.CharField(max_length=150)
+    phone_no = forms.CharField(max_length=150)
+
+class VolounteerToOrganizationContactForm(ContactForm):
+    pass
