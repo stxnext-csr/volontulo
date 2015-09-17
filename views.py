@@ -289,7 +289,9 @@ def organization_view(request, organization_id):
         {'organization': org},
     )
 
+
 def offer_apply(request, offer_id):
+    u"""Handling volounteer applying for helping with offer."""
     if request.method == 'POST':
         form = OfferApplyForm(request.POST)
         if form.is_valid():

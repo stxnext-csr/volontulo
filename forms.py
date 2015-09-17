@@ -46,6 +46,7 @@ class CreateOfferForm(forms.ModelForm):
             'status',
         ]
 
+
 class OfferApplyForm(forms.Form):
     u"""Form for applying for join to offer ."""
 
