@@ -19,9 +19,10 @@ from django.template import TemplateDoesNotExist
 
 from . import models
 from volontulo.forms import CreateOfferForm
+from volontulo.forms import OfferApplyForm
 from volontulo.forms import ProfileForm
 from volontulo.forms import UserForm
-from volontulo.models import UserProfile
+from volontulo.models import UserProfile, Offer
 
 
 def index(request):  # pylint: disable=unused-argument
@@ -287,3 +288,84 @@ def organization_view(request, organization_id):
         "volontulo/organization_view.html",
         {'organization': org},
     )
+
+def offer_apply(request, offer_id):
+    if request.method == 'POST':
+        form = OfferApplyForm(request.POST)
+        if form.is_valid():
+            domain = request.build_absolute_uri().replace(
+                request.get_full_path(),
+                ''
+            )
+            offer = Offer.objects.get(pk=offer_id)
+            user = UserProfile.objects.get(
+                organization__id=offer.organization.id
+            )
+            mail_content = u"""
+                Email wolontariusza: {email}
+                Numer telefonu: {phone_no}
+                Imię i nazwisko: {fullname}
+                Uwagi: {comments}
+                ID oferty: {offer_id}
+            """.format(
+                email=request.POST.get('email'),
+                phone_no=request.POST.get('phone_no'),
+                fullname=request.POST.get('fullname'),
+                comments=request.POST.get('comments'),
+                offer_id=offer_id,
+            )
+            html_mail_content = u"""
+                Email wolontariusza: {email}<br />
+                Numer telefonu: {phone_no}<br />
+                Imię i nazwisko: {fullname}<br />
+                Uwagi: {comments}<br />
+                ID oferty: <a href="{offer_url}">{offer_id}</a><br />
+            """.format(
+                email=request.POST.get('email'),
+                phone_no=request.POST.get('phone_no'),
+                fullname=request.POST.get('fullname'),
+                comments=request.POST.get('comments'),
+                offer_url=domain + reverse('show_offer', args=[offer_id]),
+                offer_id=offer_id
+            )
+            send_mail(
+                u'Zgłoszenie chęci pomocy w ofercie',
+                mail_content,
+                'support@volontuloapp.org',
+                [
+                    user.user.email,
+                    request.POST.get('email'),
+                ],
+                fail_silently=False,
+                html_message=html_mail_content,
+            )
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                u'Zgłoszenie chęci uczestnictwa zostało wysłane'
+            )
+            return redirect(reverse('show_offer', args=[offer_id]))
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                u'Formularz zawiera nieprawidłowe dane' + form.errors
+            )
+            return render(
+                request,
+                'volontulo/offer_apply.html',
+                {
+                    'form': form,
+                    'offer_id': offer_id,
+                }
+            )
+    else:
+        form = OfferApplyForm()
+        return render(
+            request,
+            'volontulo/offer_apply.html',
+            {
+                'form': form,
+                'offer_id': offer_id,
+            }
+        )
