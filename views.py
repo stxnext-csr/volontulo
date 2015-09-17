@@ -21,7 +21,8 @@ from . import models
 from volontulo.forms import CreateOfferForm
 from volontulo.forms import ProfileForm
 from volontulo.forms import UserForm
-from volontulo.models import UserProfile, Organization
+from volontulo.models import Organization
+from volontulo.models import UserProfile
 
 
 def index(request):  # pylint: disable=unused-argument
