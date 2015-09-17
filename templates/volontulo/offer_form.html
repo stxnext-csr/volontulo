@@ -3,20 +3,9 @@
 {% block title %}Tworzenie oferty dla wolontariuszy{% endblock %}
 
 {% block content %}
-    <pre>
-    organization = models.ForeignKey(Organization)
-        description = models.TextField()
-        requirements = models.TextField()
-        time_commitment = models.TextField()
-        benefits = models.TextField()
-        location = models.CharField(max_length=150)
-        title = models.CharField(max_length=150)
-        time_period = models.CharField(max_length=150)
-    status = models.CharField(max_length=30, default='STAGED')
-    </pre>
-    <form id="offer_form" class="form-horizontal" method="post" action="{% url 'offer_form' %}" role="form" enctype="multipart/form-data">
+    <form id="offer_form" class="form-horizontal" method="post" action="{% url 'offer_form' organization.id %}" role="form" enctype="multipart/form-data">
         {% csrf_token %}
-        <h2>Tworzenie oferty [nazwa organizaji]{{ offer_form.organization.name }} dla wolontariuszy</h2>
+        <h2>Tworzenie oferty "{{ organization.name }}" dla wolontariuszy</h2>
         <div class="form-group form-group-sm">
             <label class="col-xs-offset-6 col-xs-2 control-label" for="{{ offer_form.status.id_for_label }}">Status</label>
             <div class="col-xs-4">
@@ -71,6 +60,7 @@
 
         <div class="form-group form-group-sm">
             <div class="col-xs-offset-2 col-xs-10">
+                <input type="hidden" value="{{ organization.id }}" name="organization" />
                 <button type="submit" name="submit" class="btn btn-primary">Zapisz ofertę</button>
             </div>
         </div>
