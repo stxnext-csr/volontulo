@@ -287,3 +287,11 @@ def organization_view(request, organization_id):
         "volontulo/organization_view.html",
         {'organization': org},
     )
+
+
+def contact_form(request):
+    u"""View responsible for contact forms."""
+    return render(
+        request,
+        "volontulo/contact_form.html"
+    )
