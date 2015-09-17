@@ -14,19 +14,19 @@
             </div>
         </div>
         <div class="form-group form-group-sm">
-            <label class="col-xs-3 control-label" for="{{ contact_form.name.id_for_label }}">Twój e-mail</label>
+            <label class="col-xs-3 control-label" for="{{ contact_form.email.id_for_label }}">Twój email</label>
             <div class="col-xs-4">
-                <input type="text" value="{{ organization.name }}" name="name" class="form-control" id="{{ contact_form.name.id_for_label }}" />
+                <input type="text" value="{{ organization.email }}" name="email" class="form-control" id="{{ contact_form.name.id_for_label }}" />
             </div>
-            <label class="col-xs-2 control-label" for="{{ contact_form.address.id_for_label }}">Telefon</label>
+            <label class="col-xs-2 control-label" for="{{ contact_form.phone.id_for_label }}">Telefon</label>
             <div class="col-xs-3">
-                <input type="text" value="{{ organization.address }}" name="address" class="form-control" id="{{ contact_form.address.id_for_label }}" />
+                <input type="text" value="{{ organization.phone }}" name="phone" class="form-control" id="{{ contact_form.phone.id_for_label }}" />
             </div>
         </div>
         <div class="form-group form-group-sm">
-            <label class="col-xs-3 control-label" for="{{ contact_form.status.id_for_label }}">Adresat</label>
+            <label class="col-xs-3 control-label" for="{{ contact_form.receiver.id_for_label }}">Adresat</label>
             <div class="col-xs-4">
-                <select name="status" class="form-control" id="{{ contact_form.status.id_for_label }}">
+                <select name="receiver" class="form-control" id="{{ contact_form.receiver.id_for_label }}">
                     <option value="STAGED">Organizator</option>
                     <option value="UNSTAGED">Administrator</option>
                 </select>
