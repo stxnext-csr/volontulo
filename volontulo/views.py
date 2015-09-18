@@ -22,7 +22,9 @@ from volontulo.forms import CreateOfferForm
 from volontulo.forms import OfferApplyForm
 from volontulo.forms import ProfileForm
 from volontulo.forms import UserForm
-from volontulo.models import UserProfile, Offer
+from volontulo.models import Offer
+from volontulo.models import Organization
+from volontulo.models import UserProfile
 
 
 def index(request):  # pylint: disable=unused-argument
@@ -196,8 +198,9 @@ def register(request):
     )
 
 
-def create_offer(request):
-    u"""View responsible for creating new offer by organization."""
+def offer_form(request, organization_id):
+    u"""View responsible for creating and editing offer by organization."""
+    organization = Organization.objects.get(pk=organization_id)
     if request.method == 'POST':
         form = CreateOfferForm(request.POST)
         if form.is_valid():
@@ -220,7 +223,7 @@ def create_offer(request):
             )
             messages.add_message(
                 request,
-                messages.INFO,
+                messages.SUCCESS,
                 u"Dziękujemy za dodanie oferty."
             )
         else:
@@ -231,14 +234,17 @@ def create_offer(request):
             )
             return render(
                 request,
-                'volontulo/create_offer.html',
+                'volontulo/offer_form.html',
                 {
-                    'form': form
+                    'offer_form': form,
+                    'organization': organization,
                 }
             )
-
     form = CreateOfferForm()
-    return render(request, 'volontulo/create_offer.html', {'form': form})
+    return render(request, 'volontulo/offer_form.html', {
+        'offer_form': form,
+        'organization': organization,
+    })
 
 
 def user_profile(request):
@@ -287,6 +293,14 @@ def organization_view(request, organization_id):
         request,
         "volontulo/organization_view.html",
         {'organization': org},
+    )
+
+
+def contact_form(request):
+    u"""View responsible for contact forms."""
+    return render(
+        request,
+        "volontulo/contact_form.html"
     )
 
 
