@@ -16,7 +16,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^auth/logout', views.logout, name='logout'),
     url(r'^user/profile', views.user_profile, name='user_profile'),
     url(
-        r'^page/(?P<template_name>[\w-]+)$',
+        r'^pages/(?P<template_name>[\w-]+)$',
         views.static_pages,
         name='static_page'
     ),
