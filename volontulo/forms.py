@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 
 from volontulo.models import Offer
 from volontulo.models import UserProfile
+from volontulo.utils import get_administrators_emails
 
 
 class UserForm(forms.ModelForm):
@@ -61,10 +62,23 @@ class ContactForm(forms.Form):
 
     email = forms.CharField(max_length=150)
     message = forms.CharField(widget=forms.Textarea())
+    name = forms.CharField(max_length=150)
+    phone_no = forms.CharField(max_length=150)
 
 
 class VolounteerToOrganizationContactForm(ContactForm):
     U"""Contact form specified for volounteers to mail to organization"""
     organization = forms.CharField(widget=forms.HiddenInput())
-    name = forms.CharField(max_length=150)
-    phone_no = forms.CharField(max_length=150)
+
+
+class AdministratorContactForm(ContactForm):
+    U"""Contact form specified for volounteers to mail to organization"""
+    APPLICANTS = (
+        ('VOLUNTEER', u'wolontariusz'),
+        ('ORGANIZATION', u'organizacja'),
+    )
+    ADMINISTRATORS = [
+        (key, value) for key, value in get_administrators_emails().items()
+    ]
+    applicant = forms.Select(choices=APPLICANTS)
+    administrator = forms.Select(choices=ADMINISTRATORS)

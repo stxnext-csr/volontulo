@@ -1,11 +1,11 @@
 {% if messages %}
 <div class="row">
-    <ul class="messages">
+    <div class="messages">
         {% for msg in messages %}
-        <li class="alert alert-{{msg.level_tag}}" role="alert">
+        <div class="alert alert-{{msg.level_tag}}" role="alert">
             {{msg.message}}
-        </li>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
 </div>
 {% endif %}
