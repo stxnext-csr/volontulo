@@ -389,12 +389,10 @@ def contact_form(request):
             send_mail(
                 u'Kontakt z administratorem',
                 mail_content,
-                'support@volontuloapp.org',
                 [
                     admin.email,
                     request.POST.get('email'),
                 ],
-                fail_silently=False,
                 html_message=html_mail_content
             )
             messages.add_message(
