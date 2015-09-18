@@ -21,6 +21,7 @@ setup(
     license='MIT License',
     description='Simple Django app connecting organizations with volonteers.',
     long_description=README,
+    test_suite='runtests.runtests',
     url='http://volontuloapp.org/',
     author='Tomasz Magulski',
     author_email='tomasz.magulski@stxnext.pl',

@@ -57,7 +57,7 @@ docs/_build/
 # PyBuilder
 target/
 
-migrations/*
+volontulo/migrations/*
 
 # PyCharm directory
 .idea/
