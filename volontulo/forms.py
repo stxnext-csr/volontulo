@@ -47,6 +47,15 @@ class CreateOfferForm(forms.ModelForm):
         ]
 
 
+class OfferApplyForm(forms.Form):
+    u"""Form for applying for join to offer ."""
+
+    email = forms.CharField(max_length=80)
+    phone_no = forms.CharField(max_length=80)
+    fullname = forms.CharField(max_length=80)
+    comments = forms.CharField(widget=forms.Textarea, max_length=80)
+
+
 class ContactForm(forms.Form):
     u"""Basic contact form."""
 
