@@ -12,6 +12,8 @@
         <script>document.body.style += ' js';</script>
 
         <div class="container">
+            {% include "common/header.html" %}
+            {% include "common/messages.html" %}
             {% block layout %}
             {% endblock %}
         </div>
