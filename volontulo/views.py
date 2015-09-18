@@ -21,6 +21,7 @@ from . import models
 from volontulo.forms import CreateOfferForm
 from volontulo.forms import OfferApplyForm
 from volontulo.forms import ProfileForm
+from volontulo.forms import VolounteerToOrganizationContactForm
 from volontulo.forms import UserForm
 from volontulo.models import Offer
 from volontulo.models import Organization
@@ -289,10 +290,71 @@ def organization_form(request):
 def organization_view(request, organization_id):
     u"""View responsible for viewing organization."""
     org = get_object_or_404(models.Organization, id=organization_id)
+    if request.method == 'POST':
+        form = VolounteerToOrganizationContactForm(request.POST)
+        if form.is_valid():
+            mail_content = u"""
+            Imię i nazwisko: {name},
+            Email: {email},
+            Telefon: {phone_no},
+            Wiadomość: {message},
+            """.format(
+                name=request.POST.get('name'),
+                email=request.POST.get('email'),
+                phone_no=request.POST.get('phone_no'),
+                message=request.POST.get('message'),
+            )
+            html_mail_content = u"""
+            Imię i nazwisko: {name}<br />
+            Email: {email}<br />
+            Telefon: {phone_no}<br />
+            Wiadomość: {message}<br />
+            """.format(
+                name=request.POST.get('name'),
+                email=request.POST.get('email'),
+                phone_no=request.POST.get('phone_no'),
+                message=request.POST.get('message'),
+            )
+            profile = UserProfile.objects.get(organization_id=organization_id)
+            send_mail(
+                u'Kontakt od wolontariusza',
+                mail_content,
+                'support@volontuloapp.org',
+                [
+                    profile.user.email,
+                    request.POST.get('email'),
+                ],
+                fail_silently=False,
+                html_message=html_mail_content
+            )
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                u"Email został wysłany"
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                u"Proszę poprawić błędy w formularzu: " +
+                "<br />".join(form.errors)
+            )
+            return render(
+                request,
+                "volontulo/organization_view.html",
+                {
+                    'organization': org,
+                    'contact_form': form,
+                },
+            )
+    form = VolounteerToOrganizationContactForm()
     return render(
         request,
         "volontulo/organization_view.html",
-        {'organization': org},
+        {
+            'organization': org,
+            'contact_form': form,
+        },
     )
 
 
