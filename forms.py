@@ -46,10 +46,16 @@ class CreateOfferForm(forms.ModelForm):
             'status',
         ]
 
+
 class ContactForm(forms.Form):
-    fullname = forms.CharField(max_length=150)
+    u"""Basic contact form."""
+
     email = forms.CharField(max_length=150)
-    phone_no = forms.CharField(max_length=150)
+    message = forms.CharField(widget=forms.Textarea())
+
 
 class VolounteerToOrganizationContactForm(ContactForm):
-    pass
+    U"""Contact form specified for volounteers to mail to organization"""
+    organization = forms.CharField(widget=forms.HiddenInput())
+    name = forms.CharField(max_length=150)
+    phone_no = forms.CharField(max_length=150)

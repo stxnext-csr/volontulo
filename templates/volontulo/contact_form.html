@@ -1,41 +1,37 @@
-<h2>Kontakt, który powinien extendować możliwe warianty kontaktów</h2>
+<h2>Formularz kontaktowy</h2>
 
-<form id="contact_form" class="form-horizontal" method="post" action="{% url 'contact_form' %}" role="form" enctype="multipart/form-data">
+<form id="contact_form" class="form-horizontal" method="post" action="{{ request.get_full_path }}" role="form" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-group form-group-sm">
         <label class="col-xs-3 control-label" for="{{ contact_form.name.id_for_label }}">Twoje imię i nazwisko</label>
         <div class="col-xs-9">
-            <input type="text" value="{{ organization.name }}" name="name" class="form-control" id="{{ contact_form.name.id_for_label }}" />
+            <input type="text" value="{{ contact_form.name.value|default:'' }}" name="name" class="form-control" id="{{ contact_form.name.id_for_label }}" />
         </div>
     </div>
     <div class="form-group form-group-sm">
         <label class="col-xs-3 control-label" for="{{ contact_form.email.id_for_label }}">Twój email</label>
         <div class="col-xs-4">
-            <input type="text" value="{{ organization.email }}" name="email" class="form-control" id="{{ contact_form.name.id_for_label }}" />
+            <input type="text" value="{{ contact_form.email.value|default:'' }}" name="email" class="form-control" id="{{ contact_form.email.id_for_label }}" />
         </div>
-        <label class="col-xs-2 control-label" for="{{ contact_form.phone.id_for_label }}">Telefon</label>
+        {% if contact_form.phone_no %}
+        <label class="col-xs-2 control-label" for="{{ contact_form.phone_no.id_for_label }}">Telefon</label>
         <div class="col-xs-3">
-            <input type="text" value="{{ organization.phone }}" name="phone" class="form-control" id="{{ contact_form.phone.id_for_label }}" />
+            <input type="text" value="{{ contact_form.phone_no.value|default:'' }}" name="phone_no" class="form-control" id="{{ contact_form.phone_no.id_for_label }}" />
         </div>
+        {% endif %}
     </div>
     <div class="form-group form-group-sm">
-        <label class="col-xs-3 control-label" for="{{ contact_form.receiver.id_for_label }}">Adresat</label>
-        <div class="col-xs-4">
-            <select name="receiver" class="form-control" id="{{ contact_form.receiver.id_for_label }}">
-                <option value="STAGED">Organizator</option>
-                <option value="UNSTAGED">Administrator</option>
-            </select>
-        </div>
-    </div>
-    <div class="form-group form-group-sm">
-        <label class="col-xs-3 control-label" for="{{ contact_form.description.id_for_label }}">Opis</label>
+        <label class="col-xs-3 control-label" for="{{ contact_form.message.id_for_label }}">Opis</label>
         <div class="col-xs-9">
-            <textarea name="description" class="form-control" rows="3" id="{{ contact_form.description.id_for_label }}">{{ organization.description }}</textarea>
+            <textarea name="message" class="form-control" rows="3" id="{{ contact_form.message.id_for_label }}">{{ contact_form.message.value|default:'' }}</textarea>
         </div>
     </div>
 
     <div class="form-group form-group-sm">
         <div class="col-xs-offset-3 col-xs-9">
+            {% if organization %}
+            <input type="hidden" value="{{ organization.id }}" name="organization" />
+            {% endif %}
             <button type="submit" name="submit" class="btn btn-primary">Wyślij</button>
         </div>
     </div>

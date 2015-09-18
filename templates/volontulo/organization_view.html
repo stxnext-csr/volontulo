@@ -23,12 +23,6 @@
         </div>
     </div>
 
-    {% if not user.is_organization %}
-    <div class="form-horizontal">
-        {% include 'contact_form.html' with contact_form=contact_form  %}
-    </div>
-    {% endif %}
-
     <form id="organization_form" class="form-horizontal" method="post" action="{% url 'organization_form' %}" role="form" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group form-group-sm">
@@ -38,4 +32,10 @@
             </div>
         </div>
     </form>
+
+    {% if not user.is_organization %}
+    <div class="form-horizontal">
+        {% include 'volontulo/contact_form.html' with contact_form=contact_form  %}
+    </div>
+    {% endif %}
 {% endblock %}
