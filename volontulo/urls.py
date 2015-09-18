@@ -6,7 +6,7 @@ u"""
 
 from django.conf.urls import url
 
-from . import views
+from volontulo import views
 
 
 urlpatterns = [  # pylint: disable=invalid-name
