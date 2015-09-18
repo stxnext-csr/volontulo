@@ -8,7 +8,6 @@ from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.http import HttpResponseRedirect
@@ -17,12 +16,12 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
-from . import models
 from volontulo.forms import CreateOfferForm
 from volontulo.forms import OfferApplyForm
 from volontulo.forms import ProfileForm
-from volontulo.forms import VolounteerToOrganizationContactForm
 from volontulo.forms import UserForm
+from volontulo.forms import VolounteerToOrganizationContactForm
+from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import Organization
 from volontulo.models import UserProfile
@@ -93,11 +92,11 @@ def list_offers(request):
     """
     if (
             request.user.is_authenticated() and
-            models.UserProfile.objects.get(user=request.user).is_administrator
+            UserProfile.objects.get(user=request.user).is_administrator
     ):
-        offers = models.Offer.objects.all()
+        offers = Offer.objects.all()
     else:
-        offers = models.Offer.objects.filter(status='ACTIVE')
+        offers = Offer.objects.filter(status='ACTIVE')
     return render(request, "volontulo/list_offers.html", context={
         'offers': offers,
     })
@@ -105,7 +104,7 @@ def list_offers(request):
 
 def activate_offer(request, offer_id):  # pylint: disable=unused-argument
     u"""View responsible for changing status of offer from STAGED to ACTIVE."""
-    offer = get_object_or_404(models.Offer, id=offer_id)
+    offer = get_object_or_404(Offer, id=offer_id)
     offer.status = 'ACTIVE'
     offer.save()
     return redirect('list_offers')
@@ -113,7 +112,7 @@ def activate_offer(request, offer_id):  # pylint: disable=unused-argument
 
 def show_offer(request, offer_id):
     u"""View responsible for showing details of particular offer."""
-    offer = get_object_or_404(models.Offer, id=offer_id)
+    offer = get_object_or_404(Offer, id=offer_id)
     return render(request, "volontulo/show_offer.html", context={
         'offer': offer,
     })
@@ -161,7 +160,7 @@ def register(request):
                 # 87 - if user check, that he/she's representing organization
                 # we need to create new organization and link it to this user:
                 if profile.is_organization:
-                    org = models.Organization(name=profile.user)
+                    org = Organization(name=profile.user)
                     org.save()
                     profile.organization = org
 
@@ -170,9 +169,7 @@ def register(request):
                 send_mail(
                     u'Rejestracja na Volontulo',
                     u'Dziękujemy za rejestrację.',
-                    'support@volontulo.org',
                     [user.email],
-                    fail_silently=False
                 )
                 messages.add_message(
                     request,
@@ -214,10 +211,8 @@ def offer_form(request, organization_id):
             send_mail(
                 u'Zgłoszenie oferty na Volontulo',
                 u'ID oferty: {0}.'.format(offer.id),
-                'support@volontuloapp.org',
                 ['administrators@volontuloapp.org'],
-                fail_silently=False,
-                html_message=u'ID oferty: <a href="{0}{1}">{2}</a>.'.format(
+                u'ID oferty: <a href="{0}{1}">{2}</a>.'.format(
                     domain,
                     reverse('show_offer', args=[offer.id]),
                     offer.id
@@ -269,11 +264,11 @@ def organization_form(request):
     """
     if not (
             request.user.is_authenticated() and
-            models.UserProfile.objects.get(user=request.user).is_organization
+            UserProfile.objects.get(user=request.user).is_organization
     ):
         return redirect('index')
 
-    org = models.UserProfile.objects.get(user=request.user).organization
+    org = UserProfile.objects.get(user=request.user).organization
     if request.method == 'POST':
         org.name = request.POST.get('name')
         org.address = request.POST.get('address')
@@ -290,7 +285,7 @@ def organization_form(request):
 
 def organization_view(request, organization_id):
     u"""View responsible for viewing organization."""
-    org = get_object_or_404(models.Organization, id=organization_id)
+    org = get_object_or_404(Organization, id=organization_id)
     if request.method == 'POST':
         form = VolounteerToOrganizationContactForm(request.POST)
         if form.is_valid():
@@ -320,13 +315,11 @@ def organization_view(request, organization_id):
             send_mail(
                 u'Kontakt od wolontariusza',
                 mail_content,
-                'support@volontuloapp.org',
                 [
                     profile.user.email,
                     request.POST.get('email'),
                 ],
-                fail_silently=False,
-                html_message=html_mail_content
+                html_mail_content
             )
             messages.add_message(
                 request,
@@ -477,13 +470,11 @@ def offer_apply(request, offer_id):
             send_mail(
                 u'Zgłoszenie chęci pomocy w ofercie',
                 mail_content,
-                'support@volontuloapp.org',
                 [
                     user.user.email,
                     request.POST.get('email'),
                 ],
-                fail_silently=False,
-                html_message=html_mail_content,
+                html_mail_content,
             )
             messages.add_message(
                 request,

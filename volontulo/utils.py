@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+
 u"""
 .. module:: utils
 """
 
-# class Utils:
-#     u"""Utils module for volontulo application."""
 from django.contrib.auth.models import User
+
 from volontulo.models import UserProfile
 
 

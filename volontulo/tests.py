@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+
 u"""
 .. module:: tests
 """
 
 from django.test import TestCase
+
 from volontulo.models import Offer
 from volontulo.models import Organization
 
