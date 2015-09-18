@@ -11,6 +11,7 @@ FROM_ADDRESS = 'support@volontuloapp.org'
 
 
 def send_mail(subject, message, recipient_list, html_message=None):
+    u"""Proxy for sending emails."""
     return django_send_mail(
         subject,
         message,
