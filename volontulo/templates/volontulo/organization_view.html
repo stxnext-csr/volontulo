@@ -32,4 +32,10 @@
             </div>
         </div>
     </form>
+
+    {% if not user.is_organization %}
+    <div class="form-horizontal">
+        {% include 'volontulo/contact_form.html' with contact_form=contact_form  %}
+    </div>
+    {% endif %}
 {% endblock %}

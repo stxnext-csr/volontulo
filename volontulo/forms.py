@@ -45,3 +45,26 @@ class CreateOfferForm(forms.ModelForm):
             'time_period',
             'status',
         ]
+
+
+class OfferApplyForm(forms.Form):
+    u"""Form for applying for join to offer ."""
+
+    email = forms.CharField(max_length=80)
+    phone_no = forms.CharField(max_length=80)
+    fullname = forms.CharField(max_length=80)
+    comments = forms.CharField(widget=forms.Textarea, max_length=80)
+
+
+class ContactForm(forms.Form):
+    u"""Basic contact form."""
+
+    email = forms.CharField(max_length=150)
+    message = forms.CharField(widget=forms.Textarea())
+
+
+class VolounteerToOrganizationContactForm(ContactForm):
+    U"""Contact form specified for volounteers to mail to organization"""
+    organization = forms.CharField(widget=forms.HiddenInput())
+    name = forms.CharField(max_length=150)
+    phone_no = forms.CharField(max_length=150)
