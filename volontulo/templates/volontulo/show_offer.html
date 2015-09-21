@@ -29,4 +29,8 @@
         <tr><th>Korzyści dla wolontariusza</th><td>{{ offer.benefits }}</td></tr>
     </table>
 
+{#    {% if user.is_administrator %}#}
+        <a href="{% url 'offer_form' 1 offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
+{#    {% endif %}#}
+
 {% endblock %}
