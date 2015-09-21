@@ -330,43 +330,22 @@ def contact_form(request):
     if request.method == 'POST':
         form = AdministratorContactForm(request.POST)
         if form.is_valid():
-            mail_content = u"""
-            Imię i nazwisko: {name},
-            Email: {email},
-            Numer telefonu: {phone_no},
-            Aplikant: {applicant},
-            Wiadomość: {message}
-            """.format(
-                name=request.POST.get('name'),
-                email=request.POST.get('email'),
-                phone_no=request.POST.get('phone_no'),
-                applicant=request.POST.get('applicant'),
-                message=request.POST.get('message'),
-            )
-            html_mail_content = u"""
-            Imię i nazwisko: {name}<br />,
-            Email: {email}<br />,
-            Numer telefonu: {phone_no}<br />,
-            Aplikant: {applicant}<br />,
-            Wiadomość: {message}<br />
-            """.format(
-                name=request.POST.get('name'),
-                email=request.POST.get('email'),
-                phone_no=request.POST.get('phone_no'),
-                applicant=request.POST.get('applicant'),
-                message=request.POST.get('message'),
-            )
             # get administrators by IDS
             administrator_id = request.POST.get('administrator')
             admin = User.objects.get(pk=administrator_id)
             send_mail(
-                u'Kontakt z administratorem',
-                mail_content,
+                'volunteer_to_admin',
                 [
                     admin.email,
                     request.POST.get('email'),
                 ],
-                html_message=html_mail_content
+                dict(
+                    name=request.POST.get('name'),
+                    email=request.POST.get('email'),
+                    phone_no=request.POST.get('phone_no'),
+                    applicant=request.POST.get('applicant'),
+                    message=request.POST.get('message'),
+                )
             )
             messages.add_message(
                 request,
