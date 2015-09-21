@@ -16,6 +16,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
+from volontulo.forms import AdministratorContactForm
 from volontulo.forms import CreateOfferForm
 from volontulo.forms import OfferApplyForm
 from volontulo.forms import ProfileForm
@@ -326,9 +327,74 @@ def organization_view(request, organization_id):
 
 def contact_form(request):
     u"""View responsible for contact forms."""
+    if request.method == 'POST':
+        form = AdministratorContactForm(request.POST)
+        if form.is_valid():
+            mail_content = u"""
+            Imię i nazwisko: {name},
+            Email: {email},
+            Numer telefonu: {phone_no},
+            Aplikant: {applicant},
+            Wiadomość: {message}
+            """.format(
+                name=request.POST.get('name'),
+                email=request.POST.get('email'),
+                phone_no=request.POST.get('phone_no'),
+                applicant=request.POST.get('applicant'),
+                message=request.POST.get('message'),
+            )
+            html_mail_content = u"""
+            Imię i nazwisko: {name}<br />,
+            Email: {email}<br />,
+            Numer telefonu: {phone_no}<br />,
+            Aplikant: {applicant}<br />,
+            Wiadomość: {message}<br />
+            """.format(
+                name=request.POST.get('name'),
+                email=request.POST.get('email'),
+                phone_no=request.POST.get('phone_no'),
+                applicant=request.POST.get('applicant'),
+                message=request.POST.get('message'),
+            )
+            # get administrators by IDS
+            administrator_id = request.POST.get('administrator')
+            admin = User.objects.get(pk=administrator_id)
+            send_mail(
+                u'Kontakt z administratorem',
+                mail_content,
+                [
+                    admin.email,
+                    request.POST.get('email'),
+                ],
+                html_message=html_mail_content
+            )
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                u'Wiadomość została wysłana do administratora'
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                u'Proszę poprawić błędy w formularzu: ' +
+                '<br />'.join(form.errors)
+            )
+            return render(
+                request,
+                "volontulo/contact.html",
+                {
+                    'contact_form': form,
+                }
+            )
+
+    form = AdministratorContactForm()
     return render(
         request,
-        "volontulo/contact_form.html"
+        "volontulo/contact.html",
+        {
+            'contact_form': form,
+        }
     )
 
 
