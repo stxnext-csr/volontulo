@@ -13,12 +13,21 @@ urlpatterns = [  # pylint: disable=invalid-name
     # homepage:
     url(r'^$', views.index, name='index'),
 
-    # loggged user space:
-    url(r'^me', views.logged_user_profile, name='logged_user_profile'),
-
+    # login and loggged user space:
+    url(r'^login', views.login, name='login'),
+    url(r'^logout', views.logout, name='logout'),
     url(r'^register', views.register, name='register'),
-    url(r'^auth/login', views.login, name='login'),
-    url(r'^auth/logout', views.logout, name='logout'),
+    url(r'^me', views.logged_user_profile, name='logged_user_profile'),
+    # password-reset
+    # me/edit
+    # me/settings
+
+    # users' namesapce:
+    # users
+    # users/filtr
+    # users/slug-id
+    # users/slug-id/contact
+
     url(
         r'^pages/(?P<template_name>[\w-]+)$',
         views.static_pages,
