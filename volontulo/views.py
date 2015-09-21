@@ -274,7 +274,8 @@ def organization_form(request):
     )
 
 
-def organization_view(request, organization_id):
+# pylint: disable=unused-argument
+def organization_view(request, slug, organization_id):
     u"""View responsible for viewing organization."""
     org = get_object_or_404(Organization, id=organization_id)
     if request.method == 'POST':
