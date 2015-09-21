@@ -67,12 +67,12 @@ class ContactForm(forms.Form):
 
 
 class VolounteerToOrganizationContactForm(ContactForm):
-    U"""Contact form specified for volounteers to mail to organization"""
+    U"""Contact form specified for volounteers to mail to organization."""
     organization = forms.CharField(widget=forms.HiddenInput())
 
 
 class AdministratorContactForm(ContactForm):
-    U"""Contact form specified for volounteers to mail to organization"""
+    U"""Contact form specified for anyone to mail to administrator."""
     APPLICANTS = (
         ('VOLUNTEER', u'wolontariusz'),
         ('ORGANIZATION', u'organizacja'),
