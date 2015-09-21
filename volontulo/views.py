@@ -234,13 +234,13 @@ def offer_form(request, organization_id):
     })
 
 
-def user_profile(request):
+def logged_user_profile(request):
     u"""View to display user profile page."""
     user = get_object_or_404(UserProfile, user__email=request.user)
 
     return render(
         request,
-        'volontulo/user_account.html',
+        'users/user_profile.html',
         {
             'user': user
         }
