@@ -1,12 +1,30 @@
 {% block footer %}
+    <h2>Nawigacja</h2>
     <div class="row">
-        <h2>Footer</h2>
-        <div class="col-xs-12">
+        <div class="col-xs-4">
+            <h3>Ogólne</h3>
             <ul>
                 <li><a href="{% url 'index' %}">Strona główna</a></li>
                 <li><a href="{% url 'register' %}">Rejestracja</a></li>
+                <li><a href="{% url 'contact_form' %}">Kontakt z administratorem</a></li>
+            </ul>
+            <ul>
+                <li><a href="{% url 'static_page' 'site-news' %}">Aktualności o stronie</a></li>
+                <li><a href="{% url 'static_page' 'faq-volunteers' %}">FAQ dla organizacji</a></li>
+                <li><a href="{% url 'static_page' 'faq-organizations' %}">FAQ dla organizacji</a></li>
+                <li><a href="{% url 'static_page' 'regulations' %}">Regulamin</a></li>
+            </ul>
+        </div>
+        <div class="col-xs-4">
+            <h3>Organizacje</h3>
+            <ul>
                 <li><a href="{% url 'organization_view' 1 %}">Widok organizacji</a></li>
                 <li><a href="{% url 'organization_form' %}">Edycja organizacji</a></li>
+            </ul>
+        </div>
+        <div class="col-xs-4">
+            <h3>Oferty</h3>
+            <ul>
                 <li><a href="{% url 'offer_apply' 1 %}">Zgłoś chęć współpracy przy ofercie</a></li>
                 <li><a href="{% url 'contact_form' %}">Kontakt z administratorem</a></li>
             </ul>

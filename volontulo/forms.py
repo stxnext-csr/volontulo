@@ -23,7 +23,7 @@ class UserForm(forms.ModelForm):
 
 class ProfileForm(forms.ModelForm):
     u"""Form used for changing profile of user."""
-    is_organization = forms.BooleanField()
+    is_organization = forms.BooleanField(required=False)
 
     class Meta(object):
         model = UserProfile
