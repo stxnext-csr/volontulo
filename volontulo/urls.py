@@ -10,11 +10,15 @@ from volontulo import views
 
 
 urlpatterns = [  # pylint: disable=invalid-name
+    # homepage:
     url(r'^$', views.index, name='index'),
+
+    # loggged user space:
+    url(r'^me', views.logged_user_profile, name='logged_user_profile'),
+
     url(r'^register', views.register, name='register'),
     url(r'^auth/login', views.login, name='login'),
     url(r'^auth/logout', views.logout, name='logout'),
-    url(r'^user/profile', views.user_profile, name='user_profile'),
     url(
         r'^pages/(?P<template_name>[\w-]+)$',
         views.static_pages,

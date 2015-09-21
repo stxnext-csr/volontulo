@@ -168,11 +168,7 @@ def register(request):
 
                 profile.save()
 
-                send_mail(
-                    u'Rejestracja na Volontulo',
-                    u'Dziękujemy za rejestrację.',
-                    [user.email],
-                )
+                send_mail('registration', [user.email])
                 messages.add_message(
                     request,
                     messages.SUCCESS,
@@ -224,19 +220,18 @@ def offer_form(request, organization_id, offer_id=None):
                     u"Oferta została zmieniona."
                 )
             else:
-                domain = request.build_absolute_uri().replace(
-                    request.get_full_path(),
-                    ''
-                )
-                send_mail(
-                    u'Zgłoszenie oferty na Volontulo',
-                    u'ID oferty: {0}.'.format(offer.id),
-                    ['administrators@volontuloapp.org'],
-                    u'ID oferty: <a href="{0}{1}">{2}</a>.'.format(
-                        domain,
-                        reverse('show_offer', args=[offer.id]),
-                        offer.id
+                ctx = {
+                    'domain': request.build_absolute_uri().replace(
+                        request.get_full_path(),
+                        ''
                     ),
+                    'address_sufix': reverse('show_offer', args=[offer.id]),
+                    'offer': offer
+                }
+                send_mail(
+                    'offer_creation',
+                    ['administrators@volontuloapp.org'],
+                    ctx
                 )
                 messages.add_message(
                     request,
@@ -276,13 +271,13 @@ def offer_form(request, organization_id, offer_id=None):
     )
 
 
-def user_profile(request):
+def logged_user_profile(request):
     u"""View to display user profile page."""
     user = get_object_or_404(UserProfile, user__email=request.user)
 
     return render(
         request,
-        'volontulo/user_account.html',
+        'users/user_profile.html',
         {
             'user': user
         }
@@ -321,37 +316,19 @@ def organization_view(request, organization_id):
     if request.method == 'POST':
         form = VolounteerToOrganizationContactForm(request.POST)
         if form.is_valid():
-            mail_content = u"""
-            Imię i nazwisko: {name},
-            Email: {email},
-            Telefon: {phone_no},
-            Wiadomość: {message},
-            """.format(
-                name=request.POST.get('name'),
-                email=request.POST.get('email'),
-                phone_no=request.POST.get('phone_no'),
-                message=request.POST.get('message'),
-            )
-            html_mail_content = u"""
-            Imię i nazwisko: {name}<br />
-            Email: {email}<br />
-            Telefon: {phone_no}<br />
-            Wiadomość: {message}<br />
-            """.format(
-                name=request.POST.get('name'),
-                email=request.POST.get('email'),
-                phone_no=request.POST.get('phone_no'),
-                message=request.POST.get('message'),
-            )
             profile = UserProfile.objects.get(organization_id=organization_id)
             send_mail(
-                u'Kontakt od wolontariusza',
-                mail_content,
+                'volunteer_to_organisation',
                 [
                     profile.user.email,
                     request.POST.get('email'),
                 ],
-                html_mail_content
+                dict(
+                    name=request.POST.get('name'),
+                    email=request.POST.get('email'),
+                    phone_no=request.POST.get('phone_no'),
+                    message=request.POST.get('message'),
+                )
             )
             messages.add_message(
                 request,
@@ -405,41 +382,20 @@ def offer_apply(request, offer_id):
             user = UserProfile.objects.get(
                 organization__id=offer.organization.id
             )
-            mail_content = u"""
-                Email wolontariusza: {email}
-                Numer telefonu: {phone_no}
-                Imię i nazwisko: {fullname}
-                Uwagi: {comments}
-                ID oferty: {offer_id}
-            """.format(
-                email=request.POST.get('email'),
-                phone_no=request.POST.get('phone_no'),
-                fullname=request.POST.get('fullname'),
-                comments=request.POST.get('comments'),
-                offer_id=offer_id,
-            )
-            html_mail_content = u"""
-                Email wolontariusza: {email}<br />
-                Numer telefonu: {phone_no}<br />
-                Imię i nazwisko: {fullname}<br />
-                Uwagi: {comments}<br />
-                ID oferty: <a href="{offer_url}">{offer_id}</a><br />
-            """.format(
-                email=request.POST.get('email'),
-                phone_no=request.POST.get('phone_no'),
-                fullname=request.POST.get('fullname'),
-                comments=request.POST.get('comments'),
-                offer_url=domain + reverse('show_offer', args=[offer_id]),
-                offer_id=offer_id
-            )
             send_mail(
-                u'Zgłoszenie chęci pomocy w ofercie',
-                mail_content,
+                'offer_application',
                 [
                     user.user.email,
                     request.POST.get('email'),
                 ],
-                html_mail_content,
+                dict(
+                    email=request.POST.get('email'),
+                    phone_no=request.POST.get('phone_no'),
+                    fullname=request.POST.get('fullname'),
+                    comments=request.POST.get('comments'),
+                    offer_url=domain + reverse('show_offer', args=[offer_id]),
+                    offer_id=offer_id
+                )
             )
             messages.add_message(
                 request,
