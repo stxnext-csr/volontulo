@@ -3,7 +3,7 @@
 {% block title %}Tworzenie oferty dla wolontariuszy{% endblock %}
 
 {% block content %}
-    <form id="offer_form" class="form-horizontal" method="post" action="{% url 'offer_form' organization.id %}" role="form" enctype="multipart/form-data">
+    <form id="offer_form" class="form-horizontal" method="post" action="{% url 'offer_form' %}" role="form" enctype="multipart/form-data">
         {% csrf_token %}
         <h2>Tworzenie oferty "{{ organization.name }}" dla wolontariuszy</h2>
         <div class="form-group form-group-sm">
