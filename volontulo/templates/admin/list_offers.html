@@ -1,0 +1,37 @@
+{% extends "common/col1.html" %}
+
+{% block title %}Administracja: Lista ofert Volontulo{% endblock %}
+
+{% block content %}
+    {% if offers %}
+        <h2>Lista ofert wymagających moderacji/akceptacji</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>ID</th>
+                <th>Tytuł</th>
+                <th>Organizacja zgłaszająca</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Akcje</th>
+            </tr>
+        {% for offer in offers %}
+            <tr>
+                <td>{{ offer.id }}</td>
+                <td>{{ offer.title }}</td>
+                <td>
+                    <a href="{% url 'organization_view' slug=offer.organization.name|slugify organization_id=offer.organization.id %}" class="btn btn-link">{{ offer.organization.name }}</a>
+                </td>
+                <td class="text-center">
+                    {% include 'common/status.html' with status=offer.status %}
+                </td>
+                <td class="text-center">
+                    <a href="{% url 'offer_form' organization_id=offer.organization.id  offer_id=offer.id  %}" class="btn btn-link">Edycja</a>
+                    <a href="{% url 'show_offer' offer.id  %}" class="btn btn-link">Podgląd</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>Brak ofert spełniających jakiekolwiek kryteria.</p>
+    {% endif %}
+
+{% endblock %}

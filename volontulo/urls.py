@@ -23,7 +23,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     # me/settings
 
     # offers' namesapce:
-    url(r'^offers', views.list_offers, name='list_offers'),
+    url(r'^offers$', views.list_offers, name='list_offers'),
     url(
         r'^offers/activate/(?P<offer_id>[0-9]+)$',
         views.activate_offer,
@@ -36,6 +36,11 @@ urlpatterns = [  # pylint: disable=invalid-name
     ),
     url(
         r'^offers/form/(?P<organization_id>[0-9]+)$',
+        views.offer_form,
+        name='offer_form'
+    ),
+    url(
+        r'^offers/form/(?P<organization_id>[0-9]+)/(?P<offer_id>[0-9]+)$',
         views.offer_form,
         name='offer_form'
     ),

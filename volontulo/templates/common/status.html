@@ -1,0 +1,10 @@
+{% load staticfiles %}
+
+{% if status %}
+    {% if status == 'STAGED' or status == True %}
+    <img src="{% static "volontulo/img/status_tick.svg" %}" alt="Yes" width="16" />
+    {% else %}
+        <img src="{% static "volontulo/img/status_cross.svg" %}" alt="No" width="16" />
+    {% endif %}
+{% endif %}
+<div class="author-licence hidden">Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a>, <a href="http://www.flaticon.com/authors/pavel-kozlov" title="Pavel Kozlov">Pavel Kozlov</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>

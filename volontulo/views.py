@@ -97,6 +97,13 @@ def list_offers(request):
         offers = Offer.objects.all()
     else:
         offers = Offer.objects.filter(status='ACTIVE')
+
+    user = UserProfile.objects.get(user=request.user)
+    if user.is_administrator:
+        return render(request, "admin/list_offers.html", context={
+            'offers': offers,
+        })
+
     return render(request, "volontulo/list_offers.html", context={
         'offers': offers,
     })
@@ -193,7 +200,7 @@ def register(request):
     )
 
 
-def offer_form(request, organization_id):
+def offer_form(request, organization_id, offer_id=None):
     u"""View responsible for creating and editing offer by organization."""
     organization = Organization.objects.get(pk=organization_id)
     if request.method == 'POST':

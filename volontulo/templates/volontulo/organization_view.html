@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <form id="organization_form" class="form-horizontal" method="post" action="{% url 'organization_form' %}" role="form" enctype="multipart/form-data">
+    <form id="organization_form" class="form-horizontal" method="post" action="{% url 'organization_form' slug=organization.name|slugify organization_id=organization.id %}" role="form" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group form-group-sm">
             <div class="col-xs-offset-2 col-xs-10">
