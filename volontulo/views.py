@@ -243,12 +243,14 @@ def offer_form(request, organization_id):
 def logged_user_profile(request):
     u"""View to display user profile page."""
     user = get_object_or_404(UserProfile, user__email=request.user)
+    offers = Offer.objects.filter(volunteers=user.id)
 
     return render(
         request,
         'users/user_profile.html',
         {
-            'user': user
+            'user': user,
+            'offers': offers,
         }
     )
 

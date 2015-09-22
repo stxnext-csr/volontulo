@@ -28,12 +28,12 @@
                 </li>
                 {% else %}
                 <li class="dropdown">
-                    <a class="dropdown-toggle" href="#" aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown">
+                    <a class="dropdown-toggle" href="{% url 'logged_user_profile' %}" aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown">
                         Witaj, {{ user.email }}!
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Action</a></li>
+                        <li><a href="{% url 'logged_user_profile' %}">Moje konto</a></li>
                     </ul>
                 </li>
                 <li>
