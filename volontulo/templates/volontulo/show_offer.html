@@ -3,16 +3,19 @@
 {% block title %}Lista ofert Volontulo{% endblock %}
 
 {% block sidebar %}
-<ul class="list-unstyled">
-    <li><a href="{% url 'show_offer' 1 %}">Oferta 1</a></li>
-    <li><a href="{% url 'show_offer' 2 %}">Oferta 2</a></li>
-    <li><a href="{% url 'show_offer' 3 %}">Oferta 3</a></li>
-    <li><a href="{% url 'show_offer' 4 %}"><strong>Oferta 4</strong></a></li>
-    <li><a href="{% url 'show_offer' 5 %}">Oferta 5</a></li>
-    <li><a href="{% url 'show_offer' 6 %}">Oferta 6</a></li>
-    <li><a href="{% url 'show_offer' 7 %}">Oferta 7</a></li>
-    <li><a href="{% url 'show_offer' 8 %}">Oferta 8</a></li>
-</ul>
+    <ul class="list-unstyled">
+        <li><a href="{% url 'show_offer' 1 %}">Oferta 1</a></li>
+        <li><a href="{% url 'show_offer' 2 %}">Oferta 2</a></li>
+        <li><a href="{% url 'show_offer' 3 %}">Oferta 3</a></li>
+        <li><a href="{% url 'show_offer' 4 %}"><strong>Oferta 4</strong></a></li>
+        <li><a href="{% url 'show_offer' 5 %}">Oferta 5</a></li>
+        <li><a href="{% url 'show_offer' 6 %}">Oferta 6</a></li>
+        <li><a href="{% url 'show_offer' 7 %}">Oferta 7</a></li>
+        <li><a href="{% url 'show_offer' 8 %}">Oferta 8</a></li>
+    </ul>
+    <div>
+        <a href="{% url "offer_apply" 1 %}" class="btn btn-primary btn-lg">Zgłoś się do wolontariatu</a>
+    </div>
 {% endblock %}
 
 
@@ -29,8 +32,12 @@
         <tr><th>Korzyści dla wolontariusza</th><td>{{ offer.benefits }}</td></tr>
     </table>
 
-{#    {% if user.is_administrator %}#}
+    {% if user.is_administrator %}
+        {% include 'volontulo/volunteers.html' with volunteers=volunteers %}
+    {% endif %}
+
+    {% if user.is_administrator %}
         <a href="{% url 'offer_form' 1 offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
-{#    {% endif %}#}
+    {% endif %}
 
 {% endblock %}
