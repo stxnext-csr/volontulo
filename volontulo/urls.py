@@ -30,30 +30,27 @@ urlpatterns = [  # pylint: disable=invalid-name
         name='show_offer'
     ),
     url(
-        r'^offers/create$',
+        r'^offers/form/(?P<organization_id>[0-9]+)$',
         views.offer_form,
         name='offer_form'
     ),
-    # it should be moved to offers/<slug>/<id>/edit:
+    url(
+        r'^offers/form/(?P<organization_id>[0-9]+)/(?P<offer_id>[0-9]+)$',
+        views.offer_form,
+        name='offer_form'
+    ),
     url(
         r'^offers/activate/(?P<offer_id>[0-9]+)$',
         views.activate_offer,
         name='activate_offer'
     ),
-    # It doesn't work right now:
-    # url(
-    #     r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)/edit$',
-    #     views.offer_form,
-    #     name='offer_form'
-    # ),
     url(
         r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)/join$',
         views.offer_apply,
         name='offer_apply'
     ),
     # offers/filter
-    # offers/contact
-
+    # offers/create
 
     # users' namesapce:
     # users

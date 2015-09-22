@@ -11,7 +11,7 @@
     {% for offer in offers %}
         <tr>
             <th>{{ offer.id }}</th>
-            <th><a href="{% url 'show_offer' offer.id %}" class="btn btn-link">{{ offer.title }}</a></th>
+            <th><a href="{% url 'show_offer' offer.title|slugify offer.id %}" class="btn btn-link">{{ offer.title }}</a></th>
             <th>{{ offer.time_commitment }}</th>
             <th>{{ offer.time_period }}</th>
             <th><a href="{% url 'organization_view' slug=offer.organization.name|slugify organization_id=offer.organization.id %}" class="btn btn-link">{{ offer.organization.name }}</a></th>

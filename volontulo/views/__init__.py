@@ -6,6 +6,8 @@ u"""
 
 from django.contrib import auth
 from django.contrib import messages
+from django.contrib.admin.models import ADDITION
+from django.contrib.admin.models import CHANGE
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -26,6 +28,7 @@ from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import Organization
 from volontulo.models import UserProfile
+from volontulo.utils import save_history
 
 
 def index(request):  # pylint: disable=unused-argument
@@ -198,27 +201,50 @@ def register(request):
     )
 
 
-def offer_form(request):
+def offer_form(request, organization_id, offer_id=None):
     u"""View responsible for creating and editing offer by organization."""
-    organization = UserProfile.objects.get(user=request.user).organization
+    organization = Organization.objects.get(pk=organization_id)
+
     if request.method == 'POST':
-        form = CreateOfferForm(request.POST)
+        if offer_id is not None:
+            offer = Offer.objects.get(id=offer_id)
+            form = CreateOfferForm(request.POST, instance=offer)
+        else:
+            form = CreateOfferForm(request.POST)
+
         if form.is_valid():
             offer = form.save()
-            domain = request.build_absolute_uri().replace(
-                request.get_full_path(),
-                ''
-            )
-            send_mail('offer_creation', ['administrators@volontuloapp.org'], {
-                'domain': domain,
-                'address_sufix': reverse('show_offer', args=[offer.id]),
-                'offer': offer
-            })
-            messages.add_message(
+            save_history(
                 request,
-                messages.SUCCESS,
-                u"Dziękujemy za dodanie oferty."
+                offer,
+                action=CHANGE if offer_id else ADDITION
             )
+            if offer_id:
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    u"Oferta została zmieniona."
+                )
+            else:
+                ctx = {
+                    'domain': request.build_absolute_uri().replace(
+                        request.get_full_path(),
+                        ''
+                    ),
+                    'address_sufix': reverse('show_offer', args=[offer.id]),
+                    'offer': offer
+                }
+                send_mail(
+                    'offer_creation',
+                    ['administrators@volontuloapp.org'],
+                    ctx
+                )
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    u"Dziękujemy za dodanie oferty."
+                )
+                return redirect(reverse('show_offer', args=[offer.id]),)
         else:
             messages.add_message(
                 request,
@@ -233,11 +259,22 @@ def offer_form(request):
                     'organization': organization,
                 }
             )
+
     form = CreateOfferForm()
-    return render(request, 'volontulo/offer_form.html', {
+    context = {
         'offer_form': form,
         'organization': organization,
-    })
+    }
+    if offer_id:
+        context['offer'] = Offer.objects.get(pk=offer_id)
+    else:
+        context['offer'] = Offer()
+
+    return render(
+        request,
+        'volontulo/offer_form.html',
+        context
+    )
 
 
 def logged_user_profile(request):
@@ -255,7 +292,8 @@ def logged_user_profile(request):
     )
 
 
-def organization_form(request):
+# pylint: disable=unused-argument
+def organization_form(request, slug, organization_id):
     u"""View responsible for editing organization.
 
     Edition will only work, if logged user has been registered as organization.

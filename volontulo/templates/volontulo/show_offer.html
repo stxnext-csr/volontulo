@@ -14,7 +14,7 @@
         <li><a href="{% url 'show_offer' 'WRK' 8 %}">Oferta 8</a></li>
     </ul>
     <div>
-        <a href="{% url "offer_apply" 1 %}" class="btn btn-primary btn-lg">Zgłoś się do wolontariatu</a>
+        <a href="{% url "offer_apply" offer.title|slugify offer.id %}" class="btn btn-primary btn-lg">Zgłoś się do wolontariatu</a>
     </div>
 {% endblock %}
 
@@ -34,6 +34,10 @@
 
     {% if user.is_administrator %}
         {% include 'volontulo/volunteers.html' with volunteers=volunteers %}
+    {% endif %}
+
+    {% if user.is_administrator %}
+        <a href="{% url 'offer_form' 1 offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
     {% endif %}
 
 {% endblock %}
