@@ -285,6 +285,7 @@ def organization_form(request):
 def organization_view(request, slug, organization_id):
     u"""View responsible for viewing organization."""
     org = get_object_or_404(Organization, id=organization_id)
+    offers = Offer.objects.filter(organization_id=organization_id)
     if request.method == 'POST':
         form = VolounteerToOrganizationContactForm(request.POST)
         if form.is_valid():
@@ -320,6 +321,7 @@ def organization_view(request, slug, organization_id):
                 {
                     'organization': org,
                     'contact_form': form,
+                    'offers': offers,
                 },
             )
     form = VolounteerToOrganizationContactForm()
@@ -329,6 +331,7 @@ def organization_view(request, slug, organization_id):
         {
             'organization': org,
             'contact_form': form,
+            'offers': offers,
         },
     )
 
