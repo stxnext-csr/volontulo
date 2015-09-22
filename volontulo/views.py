@@ -388,7 +388,7 @@ def contact_form(request):
     )
 
 
-def offer_apply(request, offer_id):
+def offer_apply(request, slug, offer_id):
     u"""Handling volounteer applying for helping with offer."""
     if request.method == 'POST':
         form = OfferApplyForm(request.POST)
