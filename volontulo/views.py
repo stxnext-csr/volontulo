@@ -110,7 +110,7 @@ def activate_offer(request, offer_id):  # pylint: disable=unused-argument
     return redirect('list_offers')
 
 
-def show_offer(request, offer_id):
+def show_offer(request, slug, offer_id):  # pylint: disable=unused-argument
     u"""View responsible for showing details of particular offer."""
     offer = get_object_or_404(Offer, id=offer_id)
     context = {
@@ -198,9 +198,9 @@ def register(request):
     )
 
 
-def offer_form(request, organization_id):
+def offer_form(request):
     u"""View responsible for creating and editing offer by organization."""
-    organization = Organization.objects.get(pk=organization_id)
+    organization = UserProfile.objects.get(user=request.user).organization
     if request.method == 'POST':
         form = CreateOfferForm(request.POST)
         if form.is_valid():
