@@ -5,7 +5,7 @@
 {% block content %}
     <h2>Zgłoś chęć uczestnictwa w wolontariacie</h2>
 
-    <form action="{% url 'offer_apply' offer_id %}" method="post" role="form">
+    <form action="{% url 'offer_apply' 'WRK' offer_id %}" method="post" role="form">
         {% csrf_token %}
         {{ form.as_p }}
         <button class="btn btn-primary" type="submit">Zgłoś chęć współpracy</button>
