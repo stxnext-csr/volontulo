@@ -23,19 +23,19 @@
         </div>
     </div>
 
-    <form id="organization_form" class="form-horizontal" method="post" action="{% url 'organization_form' slug=organization.name|slugify organization_id=organization.id %}" role="form" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group form-group-sm">
-            <div class="col-xs-offset-2 col-xs-10">
-                <button type="submit" name="submit" class="btn btn-primary">Edytuj organizację</button>
-                <a href="{% url 'offer_form' organization.id %}" class="btn btn-success">Dodaj ofertę</a>
-            </div>
+    <div class="form-horizontal">
+        <div class="col-xs-offset-2 col-xs-10">
+            <a href="{% url 'organization_form' slug=organization.name|slugify organization_id=organization.id %}" class="btn btn-primary">Edytuj organizację</a>
+            <a href="{% url 'offer_form' organization.id %}" class="btn btn-primary">Dodaj ofertę</a>
         </div>
-    </form>
+    </div>
 
     {% if not user.is_organization %}
     <div class="form-horizontal">
         {% include 'volontulo/contact_form.html' with contact_form=contact_form  %}
     </div>
     {% endif %}
+
+    {% include 'volontulo/organization_offers.html' with offers=offers %}
+
 {% endblock %}
