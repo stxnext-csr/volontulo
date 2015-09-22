@@ -34,9 +34,23 @@ from volontulo.utils import save_history
 def index(request):  # pylint: disable=unused-argument
     u"""Main view of app.
 
-    I will just redirect of list of offers.
+    We will display page with few step CTA links?
     """
-    return redirect('list_offers')
+    if (
+            request.user.is_authenticated() and
+            UserProfile.objects.get(user=request.user).is_administrator
+    ):
+        offers = Offer.objects.all()
+    else:
+        offers = Offer.objects.filter(status='STAGED')
+
+    return render(
+        request,
+        "volontulo/homepage.html",
+        {
+            'offers': offers,
+        }
+    )
 
 
 def login(request):
