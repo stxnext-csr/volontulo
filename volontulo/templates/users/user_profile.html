@@ -1,20 +1,23 @@
-{% extends "base.html" %}
+{% extends "common/col1.html" %}
 
-{% block title %}Strona użytkownika{% endblock %}
+{% block title %}Strona użytkownika {{ user.email }}{% endblock %}
 
 {% block content %}
-    <h1>Strona użytkownika</h1>
+    <h2>Strona użytkownika {{ user.user.email }}</h2>
+    <p><img src="http://placehold.it/150x150" alt="{{ user.user.username }}" /></p>
+    <p><strong>Real User ID:</strong> {{ user.user.id }} - <strong>UserProfile ID:</strong> {{ user.id }}</p>
 
     {% if user.is_organization %}
-    <h2>Jako organizacja</h2>
-    <p><a href="{% url 'create_offer' %}">Dodaj ofertę</a></p>
+        <h2>Jako organizacja chciałbym ...</h2>
+        <p><a href="{% url 'offer_form' organization_id=user.id %}">...dodać ofertę</a></p>
     {% endif %}
 
     {% if not user.is_organization %}
-    <h2>Jako wolontariusz</h2>
-    <p><a href="{% url 'create_offer' %}">Dodaj ofertę</a></p>
-    <p><a href="{% url 'create_offer' %}">Skontaktuj się z organizacją</a></p>
+        <h2>Jako wolontariusz chciałbym ...</h2>
+
+        {% include 'volontulo/my_offers.html' with offers=offers %}
+
     {% endif %}
 
-    <p><a href="{% url 'logout' %}">Wyloguj</a></p>
+    <p><a href="{% url 'logout' %}" class="btn btn-primary">Wyloguj</a></p>
 {% endblock %}
