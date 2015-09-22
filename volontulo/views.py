@@ -113,9 +113,14 @@ def activate_offer(request, offer_id):  # pylint: disable=unused-argument
 def show_offer(request, offer_id):
     u"""View responsible for showing details of particular offer."""
     offer = get_object_or_404(Offer, id=offer_id)
-    return render(request, "volontulo/show_offer.html", context={
+    context = {
         'offer': offer,
-    })
+    }
+    user = UserProfile.objects.filter(user__id=request.user.id)[0]
+    if user.is_administrator:
+        context['user'] = user
+        context['volunteers'] = offer.volunteers.all()
+    return render(request, "volontulo/show_offer.html", context=context)
 
 
 def static_pages(request, template_name):
@@ -391,6 +396,11 @@ def offer_apply(request, offer_id):
             user = UserProfile.objects.get(
                 organization__id=offer.organization.id
             )
+            if request.user.id:
+                volunteer = User.objects.get(pk=request.user.id)
+                offer.volunteers.add(volunteer)
+                offer.save()
+
             send_mail(
                 'offer_application',
                 [
