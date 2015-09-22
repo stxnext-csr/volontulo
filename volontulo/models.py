@@ -21,6 +21,7 @@ class Organization(models.Model):
 class Offer(models.Model):
     u"""Model that hadles offers."""
     organization = models.ForeignKey(Organization)
+    volunteers = models.ManyToManyField(User)
     description = models.TextField()
     requirements = models.TextField()
     time_commitment = models.TextField()
