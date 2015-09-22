@@ -113,7 +113,7 @@ def activate_offer(request, offer_id):  # pylint: disable=unused-argument
     return redirect('list_offers')
 
 
-def show_offer(request, offer_id):
+def show_offer(request, slug, offer_id):  # pylint: disable=unused-argument
     u"""View responsible for showing details of particular offer."""
     offer = get_object_or_404(Offer, id=offer_id)
     context = {
@@ -292,7 +292,7 @@ def logged_user_profile(request):
     )
 
 
-def organization_form(request):
+def organization_form(request, slug, organization_id):
     u"""View responsible for editing organization.
 
     Edition will only work, if logged user has been registered as organization.
@@ -425,7 +425,7 @@ def contact_form(request):
     )
 
 
-def offer_apply(request, offer_id):
+def offer_apply(request, slug, offer_id):
     u"""Handling volounteer applying for helping with offer."""
     if request.method == 'POST':
         form = OfferApplyForm(request.POST)

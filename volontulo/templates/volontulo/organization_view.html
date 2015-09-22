@@ -25,7 +25,7 @@
 
     <div class="form-horizontal">
         <div class="col-xs-offset-2 col-xs-10">
-            <a href="{% url 'organization_form' slug=organization.name|slugify organization_id=organization.id %}" class="btn btn-primary">Edytuj organizację</a>
+            <a href="{% url 'organization_form' organization.name|slugify organization.id %}" class="btn btn-primary">Edytuj organizację</a>
             <a href="{% url 'offer_form' organization.id %}" class="btn btn-primary">Dodaj ofertę</a>
         </div>
     </div>

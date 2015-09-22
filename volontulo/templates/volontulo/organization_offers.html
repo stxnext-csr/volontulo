@@ -16,9 +16,9 @@
             <td>{{ o.time_period }}</td>
             <td>
             {% if o.status == 'STAGED' %}
-                <a href="{% url 'show_offer' offer_id=o.id %}">Pomóż</a>
+                <a href="{% url 'show_offer' o.title|slugify o.id %}">Pomóż</a>
             {% else %}
-                <a href="{% url 'activate_offer' offer_id=o.id %}">Aktywuj</a>
+                <a href="{% url 'activate_offer' o.id %}">Aktywuj</a>
             {% endif %}
             </td>
         </tr>
