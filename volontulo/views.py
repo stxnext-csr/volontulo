@@ -200,6 +200,7 @@ def register(request):
     )
 
 
+# pylint: disable=unused-argument
 def offer_form(request, organization_id, offer_id=None):
     u"""View responsible for creating and editing offer by organization."""
     organization = Organization.objects.get(pk=organization_id)
