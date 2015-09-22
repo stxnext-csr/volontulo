@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 {% block header %}
     {% block social_nav %}
     <div class="row">
@@ -12,7 +14,7 @@
         <div class="col-xs-12">
             <h1 class="navbar-header">
                 <a href="{% url 'index' %}">
-                    <img src="http://placekitten.com/128/75" alt="Placekitten">
+                    <img src="{% static "volontulo/img/volo_logo.svg" %}" alt="Volontulo">
                     Volontulo
                 </a>
             </h1>

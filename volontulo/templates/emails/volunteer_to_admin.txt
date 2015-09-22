@@ -1,0 +1,5 @@
+Imię i nazwisko: {{ name}},
+Email: {{ email }},
+Numer telefonu: {{ phone_no }},
+Aplikant: {{ applicant }},
+Wiadomość: {{ message }}

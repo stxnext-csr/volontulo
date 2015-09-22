@@ -18,6 +18,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
+from volontulo.forms import AdministratorContactForm
 from volontulo.forms import CreateOfferForm
 from volontulo.forms import OfferApplyForm
 from volontulo.forms import ProfileForm
@@ -310,7 +311,8 @@ def organization_form(request):
     )
 
 
-def organization_view(request, organization_id):
+# pylint: disable=unused-argument
+def organization_view(request, slug, organization_id):
     u"""View responsible for viewing organization."""
     org = get_object_or_404(Organization, id=organization_id)
     if request.method == 'POST':
@@ -363,9 +365,53 @@ def organization_view(request, organization_id):
 
 def contact_form(request):
     u"""View responsible for contact forms."""
+    if request.method == 'POST':
+        form = AdministratorContactForm(request.POST)
+        if form.is_valid():
+            # get administrators by IDS
+            administrator_id = request.POST.get('administrator')
+            admin = User.objects.get(pk=administrator_id)
+            send_mail(
+                'volunteer_to_admin',
+                [
+                    admin.email,
+                    request.POST.get('email'),
+                ],
+                dict(
+                    name=request.POST.get('name'),
+                    email=request.POST.get('email'),
+                    phone_no=request.POST.get('phone_no'),
+                    applicant=request.POST.get('applicant'),
+                    message=request.POST.get('message'),
+                )
+            )
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                u'Wiadomość została wysłana do administratora'
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                u'Proszę poprawić błędy w formularzu: ' +
+                '<br />'.join(form.errors)
+            )
+            return render(
+                request,
+                "volontulo/contact.html",
+                {
+                    'contact_form': form,
+                }
+            )
+
+    form = AdministratorContactForm()
     return render(
         request,
-        "volontulo/contact_form.html"
+        "volontulo/contact.html",
+        {
+            'contact_form': form,
+        }
     )
 
 
