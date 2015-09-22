@@ -25,12 +25,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     # offers' namesapce:
     url(r'^offers$', views.list_offers, name='list_offers'),
     url(
-        r'^offers/activate/(?P<offer_id>[0-9]+)$',
-        views.activate_offer,
-        name='activate_offer'
-    ),
-    url(
-        r'^offers/show/(?P<offer_id>[0-9]+)$',
+        r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)$',
         views.show_offer,
         name='show_offer'
     ),
@@ -40,10 +35,22 @@ urlpatterns = [  # pylint: disable=invalid-name
         name='offer_form'
     ),
     url(
-        r'^offers/apply/(?P<offer_id>[0-9]+)$',
+        r'^offers/form/(?P<organization_id>[0-9]+)/(?P<offer_id>[0-9]+)$',
+        views.offer_form,
+        name='offer_form'
+    ),
+    url(
+        r'^offers/activate/(?P<offer_id>[0-9]+)$',
+        views.activate_offer,
+        name='activate_offer'
+    ),
+    url(
+        r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)/join$',
         views.offer_apply,
         name='offer_apply'
     ),
+    # offers/filter
+    # offers/create
 
     # users' namesapce:
     # users
@@ -74,7 +81,7 @@ urlpatterns = [  # pylint: disable=invalid-name
         name='static_page'
     ),
     url(
-        r'^contact',
+        r'^contact$',
         views.contact_form,
         name='contact_form'
     ),

@@ -1,0 +1,29 @@
+{% load staticfiles %}
+
+{% if offers %}
+    <h2>Lista ofert w tej organizacji</h2>
+    <table class="table table-striped">
+        <tr>
+            <th>Miejsce</th>
+            <th>Tytuł</th>
+            <th>Czas obowiązywania</th>
+            <th>Akcje</th>
+        </tr>
+    {% for o in offers %}
+        <tr>
+            <td>{{ o.location }}</td>
+            <td>{{ o.title }}</td>
+            <td>{{ o.time_period }}</td>
+            <td>
+            {% if o.status == 'STAGED' %}
+                <a href="{% url 'show_offer' o.title|slugify o.id %}">Pomóż</a>
+            {% else %}
+                <a href="{% url 'activate_offer' o.id %}">Aktywuj</a>
+            {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+{% else %}
+    <p>Ta organizacja nie ma jeszcze żadnych ofert.</p>
+{% endif %}

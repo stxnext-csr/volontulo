@@ -5,7 +5,7 @@
 {% block content %}
     <h2>Zgłoś chęć uczestnictwa w wolontariacie oferty {{ form.offer_id }}</h2>
 
-    <form class="form-horizontal" action="{% url 'offer_apply' offer_id %}" method="post" role="form">
+    <form class="form-horizontal" action="{% url 'offer_apply' 'WRK' offer_id %}" method="post" role="form">
         {% csrf_token %}
         <div class="form-group form-group-sm">
             <label class="col-xs-2 control-label" for="{{ form.fullname.id_for_label }}">Imię i nazwisko:</label>
