@@ -15,6 +15,7 @@ SUBJECTS = {
     'offer_application': u'Zgłoszenie chęci pomocy w ofercie',
     'offer_creation': u'Zgłoszenie oferty na Volontulo',
     'registration': u'Rejestracja na Volontulo',
+    'volunteer_to_admin': u'Kontakt z administratorem',
     'volunteer_to_organisation': u'Kontakt od wolontariusza',
 }
 
