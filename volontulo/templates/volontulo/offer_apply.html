@@ -1,14 +1,43 @@
-{% extends "common/col1.html" %}
+{% extends "common/col2.html" %}
 
 {% block title %}Dodaj ofertę wolontariatu{% endblock %}
 
 {% block content %}
-    <h2>Zgłoś chęć uczestnictwa w wolontariacie</h2>
+    <h2>Zgłoś chęć uczestnictwa w wolontariacie oferty {{ form.offer_id }}</h2>
 
-    <form action="{% url 'offer_apply' 'WRK' offer_id %}" method="post" role="form">
+    <form class="form-horizontal" action="{% url 'offer_apply' 'WRK' offer_id %}" method="post" role="form">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-primary" type="submit">Zgłoś chęć współpracy</button>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ form.fullname.id_for_label }}">Imię i nazwisko:</label>
+            <div class="col-xs-5">
+               <input type="text" value="{{ form.fullname.value|default:'' }}" name="fullname" class="form-control" id="{{form.fullname.id_for_label }}" />
+            </div>
+            <label class="col-xs-1 control-label" for="{{ form.email.id_for_label }}">Email:</label>
+            <div class="col-xs-4">
+               <input type="text" value="{{ form.email.value|default:'' }}" name="email" class="form-control" id="{{form.email.id_for_label }}" />
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-offset-7 col-xs-1 control-label" for="{{ form.phone_no.id_for_label }}">Telefon:</label>
+            <div class="col-xs-4">
+               <input type="text" value="{{ form.phone_no.value|default:'' }}" name="phone_no" class="form-control" id="{{form.phone_no.id_for_label }}" />
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ form.comments.id_for_label }}">Treść</label>
+            <div class="col-xs-10">
+                <textarea name="comments" class="form-control" rows="3" id="{{ form.comments.id_for_label }}">{{ form.comments.value|default:'' }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-group form-group-sm">
+            <div class="col-xs-offset-2 col-xs-10">
+                {% if organization %}
+                <input type="hidden" value="{{ offer.id }}" name="offer" />
+                {% endif %}
+                <button class="btn btn-primary" type="submit">Zgłoś chęć współpracy</button>
+            </div>
+        </div>
     </form>
 
 {% endblock %}
