@@ -1,0 +1,57 @@
+{% extends "common/col1.html" %}
+
+{% block title %}Volontulo - podejmij pracę jako wolontariusz{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-4 text-center">
+            <div>
+                <img src="http://placehold.it/260x260?text=Załóż+konto" />
+            </div>
+            <p><a href="{% url 'register' %}">Załóż konto</a></p>
+        </div>
+        <div class="col-xs-4 text-center">
+            <div>
+                <img src="http://placehold.it/260x260?text=Wybierz ofertę" />
+            </div>
+            <p><a href="{% url 'list_offers' %}">Wybierz ofertę</a></p>
+        </div>
+        <div class="col-xs-4 text-center">
+            <div>
+                <img src="http://placehold.it/260x260?text=Podziel+się" />
+            </div>
+            <p><a href="#">Podziel się...</a></p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <div>
+                <img src="http://placehold.it/1140x260?text=Albo+jeden+duży+banner" />
+            </div>
+        </div>
+    </div>
+
+    {% if offers %}
+        <h2>Lista ofert</h2>
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th>Tytuł</th>
+                <th>Miejsce</th>
+                <th>Nazwa organizacji</th>
+                <th>Czas obowiązywania</th>
+            </tr>
+        {% for o in offers %}
+            <tr>
+                <td><a href="{% url 'offer_form' o.id %}">{{ o.title }}</a></td>
+                <td>{{ o.location }}</td>
+                <td><a href="{% url 'organization_view' slug=o.organization.name|slugify organization_id=o.organization.id %}">{{ o.organization.name }}</a></td>
+                <td>{{ o.time_period }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>Brak ofert spełniających podane kryteria</p>
+    {% endif %}
+
+{% endblock %}
