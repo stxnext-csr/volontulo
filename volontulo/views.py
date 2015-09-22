@@ -292,6 +292,7 @@ def logged_user_profile(request):
     )
 
 
+# pylint: disable=unused-argument
 def organization_form(request, slug, organization_id):
     u"""View responsible for editing organization.
 
