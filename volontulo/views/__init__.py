@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 u"""
-.. module:: views
+.. module:: __init__
 """
 
 from django.contrib import auth
