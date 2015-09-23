@@ -25,7 +25,7 @@
                 </td>
                 <td class="text-center">
                     <a href="{% url 'offer_form' offer.organization.id offer.id  %}" class="btn btn-link">Edycja</a>
-                    <a href="{% url 'show_offer' offer.organization.name|slugify offer.id  %}" class="btn btn-link">Podgląd</a>
+                    <a href="{% url 'show_offer' offer.title|slugify offer.id  %}" class="btn btn-link">Podgląd</a>
                 </td>
             </tr>
         {% endfor %}
