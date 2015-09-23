@@ -34,7 +34,7 @@ def list_offers(request):
         offers = Offer.objects.all()
     else:
         offers = Offer.objects.filter(status='ACTIVE')
-    return render(request, "volontulo/list_offers.html", context={
+    return render(request, "offers/list_offers.html", context={
         'offers': offers,
     })
 
