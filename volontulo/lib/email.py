@@ -22,6 +22,7 @@ SUBJECTS = {
 }
 
 
+# pylint: disable=unused-argument
 def send_mail(templates_name, recipient_list, context=None, *args, **kwargs):
     u"""Proxy for sending emails."""
 
