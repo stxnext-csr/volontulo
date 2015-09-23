@@ -12,6 +12,10 @@ from django.template.loader import get_template
 from volontulo.utils import get_administrators_emails
 
 FROM_ADDRESS = 'support@volontuloapp.org'
+FAIL_SILENTLY = False
+AUTH_USER = None
+AUTH_PASSWORD = None
+CONNECTION = None
 
 SUBJECTS = {
     'offer_application': u'Zgłoszenie chęci pomocy w ofercie',
@@ -23,13 +27,13 @@ SUBJECTS = {
 
 
 # pylint: disable=unused-argument
-def send_mail(templates_name, recipient_list, context=None, *args, **kwargs):
+def send_mail(templates_name, recipient_list, context=None):
     u"""Proxy for sending emails."""
 
-    fail_silently = kwargs.get('fail_silently', False)
-    auth_user = kwargs.get('auth_user')
-    auth_password = kwargs.get('auth_password')
-    connection = kwargs.get('connection')
+    fail_silently = FAIL_SILENTLY
+    auth_user = AUTH_USER
+    auth_password = AUTH_PASSWORD
+    connection = CONNECTION
 
     context = Context(context or {})
     text_template = get_template('emails/{}.txt'.format(templates_name))
@@ -52,7 +56,6 @@ def send_mail(templates_name, recipient_list, context=None, *args, **kwargs):
         connection=connection,
         headers=headers
     )
-    if html_template:
-        email.attach_alternative(html_template.render(context), 'text/html')
+    email.attach_alternative(html_template.render(context), 'text/html')
 
     return email.send()
