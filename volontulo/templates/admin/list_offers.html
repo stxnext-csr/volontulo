@@ -21,7 +21,6 @@
                     <a href="{% url 'organization_view' offer.organization.name|slugify offer.organization.id %}" class="btn btn-link">{{ offer.organization.name }}</a>
                 </td>
                 <td class="text-center">
-{#                    {% include 'common/status.html' with status=offer.status %}#}
                     {% include 'common/labeled_status.html' with status=offer.status %}
                 </td>
                 <td class="text-center">
