@@ -46,7 +46,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-ROOT_URLCONF = 'volontuloapp_org.urls'
+ROOT_URLCONF = 'volontulo.urls'
 
 TEMPLATES = [
     {
@@ -63,10 +63,6 @@ TEMPLATES = [
         },
     },
 ]
-
-
-WSGI_APPLICATION = 'volontuloapp_org.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
