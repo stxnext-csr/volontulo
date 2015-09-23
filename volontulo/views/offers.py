@@ -96,7 +96,7 @@ def offer_form(request, organization_id, offer_id=None):
                 }
                 send_mail(
                     'offer_creation',
-                    ['administrators@offersapp.org'],
+                    ['administrators@volontuloapp.org'],
                     ctx
                 )
                 messages.add_message(
