@@ -10,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from volontulo.models import UserProfile
 
 
-u"""Offers statuses dictionary with meaningful names."""
+# Offers statuses dictionary with meaningful names.
 OFFERS_STATUSES = {
     'NEW': u"Nowa",
     'ACTIVE': u"Aktywna",
@@ -18,6 +18,7 @@ OFFERS_STATUSES = {
     'SUSPENDED': u"Zawieszona",
     'CLOSED': u"Zamknięta",
 }
+
 
 def get_administrators_emails():
     u"""Get all administrators emails or superuser email
