@@ -8,6 +8,7 @@ from django.conf.urls import url
 
 from volontulo import views
 from volontulo.views import offers as offers_views
+from volontulo.views import organizations as orgs_views
 
 
 urlpatterns = [  # pylint: disable=invalid-name
@@ -65,12 +66,12 @@ urlpatterns = [  # pylint: disable=invalid-name
     # organization/create
     url(
         r'^organizations/(?P<slug>[\w-]+)/(?P<organization_id>[0-9]+)$',
-        views.organization_view,
+        orgs_views.organization_view,
         name='organization_view'
     ),
     url(
         r'^organizations/(?P<slug>[\w-]+)/(?P<organization_id>[0-9]+)/edit$',
-        views.organization_form,
+        orgs_views.organization_form,
         name='organization_form'
     ),
     # organizations/<slug>/<id>/contact
