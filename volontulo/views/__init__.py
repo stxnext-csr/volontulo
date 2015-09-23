@@ -108,7 +108,7 @@ def login(request):
     else:
         return render(
             request,
-            'volontulo/login.html',
+            'users/login.html',
             {}
         )
 
@@ -192,7 +192,7 @@ def register(request):
     profile_form = ProfileForm()
     return render(
         request,
-        'volontulo/register.html',
+        'users/register.html',
         {
             'user_form': user_form,
             'profile_form': profile_form,
