@@ -60,5 +60,7 @@ class TestOffersList(TestCase):
         response = self.client.get('/offers')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offers_list.html')
+        # pylint: disable=no-member
         self.assertIn('offers', response.context)
+        # pylint: disable=no-member
         self.assertEqual(len(response.context['offers']), 1)
