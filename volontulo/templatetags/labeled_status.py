@@ -6,7 +6,7 @@ u"""
 
 from django import template
 
-from volontulo.utils import offer_statuses
+from volontulo.utils import OFFERS_STATUSES
 
 
 register = template.Library()  # pylint: disable=invalid-name
@@ -15,5 +15,4 @@ register = template.Library()  # pylint: disable=invalid-name
 @register.filter(name='human')
 def human(status):
     u"""Get offer status description."""
-    statuses = offer_statuses()
-    return statuses.get(status, status)
+    return OFFERS_STATUSES.get(status, status)

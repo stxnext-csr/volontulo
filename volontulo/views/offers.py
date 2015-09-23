@@ -19,7 +19,8 @@ from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import Organization
 from volontulo.models import UserProfile
-from volontulo.utils import save_history, offer_statuses
+from volontulo.utils import OFFERS_STATUSES
+from volontulo.utils import save_history
 from volontulo.views import logged_as_admin
 
 
@@ -116,7 +117,7 @@ def offer_form(request, organization_id, offer_id=None):
                 {
                     'offer_form': form,
                     'organization': organization,
-                    'statuses': offer_statuses(),
+                    'statuses': OFFERS_STATUSES,
                     'user': user,
                 }
             )
@@ -125,7 +126,7 @@ def offer_form(request, organization_id, offer_id=None):
     context = {
         'offer_form': form,
         'organization': organization,
-        'statuses': offer_statuses(),
+        'statuses': OFFERS_STATUSES,
         'user': user,
     }
     if offer_id:
