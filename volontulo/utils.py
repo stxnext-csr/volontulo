@@ -41,3 +41,14 @@ def save_history(req, obj, action):
         object_repr=str(obj),
         action_flag=action
     )
+
+
+def offer_statuses():
+    u"""Return offers statuses dictionary with meaningful names."""
+    return {
+        'NEW': u"Nowa",
+        'ACTIVE': u"Aktywna",
+        'FINISHED': u"Zakończona",
+        'SUSPENDED': u"Zawieszona",
+        'CLOSED': u"Zamknięta",
+    }
