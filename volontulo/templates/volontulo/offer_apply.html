@@ -2,6 +2,10 @@
 
 {% block title %}Dodaj ofertę wolontariatu{% endblock %}
 
+{% block sidebar %}
+    {% include "volontulo/offers_sidebar.html" %}
+{% endblock %}
+
 {% block content %}
     <h2>Zgłoś chęć uczestnictwa w wolontariacie oferty {{ form.offer_id }}</h2>
 
