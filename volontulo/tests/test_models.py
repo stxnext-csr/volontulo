@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 u"""
-.. module:: tests
+.. module:: test_models
 """
 
 from django.test import TestCase
