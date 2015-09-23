@@ -17,8 +17,6 @@ from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
 from volontulo.forms import AdministratorContactForm
-from volontulo.forms import CreateOfferForm
-from volontulo.forms import OfferApplyForm
 from volontulo.forms import ProfileForm
 from volontulo.forms import UserForm
 from volontulo.forms import VolounteerToOrganizationContactForm
@@ -28,12 +26,34 @@ from volontulo.models import Organization
 from volontulo.models import UserProfile
 
 
+def logged_as_admin(request):
+    u""""Helper function that provide information is user has admin privilege.
+
+    It is used in separate modules.
+    """
+    return (
+        request.user.is_authenticated() and
+        UserProfile.objects.get(user=request.user).is_administrator
+    )
+
+
 def index(request):  # pylint: disable=unused-argument
     u"""Main view of app.
 
-    I will just redirect of list of offers.
+    We will display page with few step CTA links?
     """
-    return redirect('list_offers')
+    if logged_as_admin(request):
+        offers = Offer.objects.all()
+    else:
+        offers = Offer.objects.filter(status='STAGED')
+
+    return render(
+        request,
+        "volontulo/homepage.html",
+        {
+            'offers': offers,
+        }
+    )
 
 
 def login(request):
@@ -82,47 +102,6 @@ def logout(request):
         u"Użytkownik został wylogowany!"
     )
     return redirect('index')
-
-
-def list_offers(request):
-    u"""View, that show list of offers.
-
-    It's used for volunteers to show active ones and for admins to show
-    all of them.
-    """
-    if (
-            request.user.is_authenticated() and
-            UserProfile.objects.get(user=request.user).is_administrator
-    ):
-        offers = Offer.objects.all()
-    else:
-        offers = Offer.objects.filter(status='ACTIVE')
-
-    user = UserProfile.objects.get(user=request.user)
-    if user.is_administrator:
-        return render(request, "admin/list_offers.html", context={
-            'offers': offers,
-        })
-
-    return render(request, "volontulo/list_offers.html", context={
-        'offers': offers,
-    })
-
-
-def activate_offer(request, offer_id):  # pylint: disable=unused-argument
-    u"""View responsible for changing status of offer from STAGED to ACTIVE."""
-    offer = get_object_or_404(Offer, id=offer_id)
-    offer.status = 'ACTIVE'
-    offer.save()
-    return redirect('list_offers')
-
-
-def show_offer(request, offer_id):
-    u"""View responsible for showing details of particular offer."""
-    offer = get_object_or_404(Offer, id=offer_id)
-    return render(request, "volontulo/show_offer.html", context={
-        'offer': offer,
-    })
 
 
 def static_pages(request, template_name):
@@ -200,63 +179,23 @@ def register(request):
     )
 
 
-# pylint: disable=unused-argument
-def offer_form(request, organization_id, offer_id=None):
-    u"""View responsible for creating and editing offer by organization."""
-    organization = Organization.objects.get(pk=organization_id)
-    if request.method == 'POST':
-        form = CreateOfferForm(request.POST)
-        if form.is_valid():
-            offer = form.save()
-            domain = request.build_absolute_uri().replace(
-                request.get_full_path(),
-                ''
-            )
-            send_mail('offer_creation', ['administrators@volontuloapp.org'], {
-                'domain': domain,
-                'address_sufix': reverse('show_offer', args=[offer.id]),
-                'offer': offer
-            })
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                u"Dziękujemy za dodanie oferty."
-            )
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                u"Formularz zawiera niepoprawnie wypełnione pola"
-            )
-            return render(
-                request,
-                'volontulo/offer_form.html',
-                {
-                    'offer_form': form,
-                    'organization': organization,
-                }
-            )
-    form = CreateOfferForm()
-    return render(request, 'volontulo/offer_form.html', {
-        'offer_form': form,
-        'organization': organization,
-    })
-
-
 def logged_user_profile(request):
     u"""View to display user profile page."""
     user = get_object_or_404(UserProfile, user__email=request.user)
+    offers = Offer.objects.filter(volunteers=user.id)
 
     return render(
         request,
         'users/user_profile.html',
         {
-            'user': user
+            'user': user,
+            'offers': offers,
         }
     )
 
 
-def organization_form(request):
+# pylint: disable=unused-argument
+def organization_form(request, slug, organization_id):
     u"""View responsible for editing organization.
 
     Edition will only work, if logged user has been registered as organization.
@@ -286,6 +225,7 @@ def organization_form(request):
 def organization_view(request, slug, organization_id):
     u"""View responsible for viewing organization."""
     org = get_object_or_404(Organization, id=organization_id)
+    offers = Offer.objects.filter(organization_id=organization_id)
     if request.method == 'POST':
         form = VolounteerToOrganizationContactForm(request.POST)
         if form.is_valid():
@@ -303,11 +243,9 @@ def organization_view(request, slug, organization_id):
                     message=request.POST.get('message'),
                 )
             )
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                u"Email został wysłany"
-            )
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 u'Email został wysłany')
         else:
             messages.add_message(
                 request,
@@ -321,6 +259,7 @@ def organization_view(request, slug, organization_id):
                 {
                     'organization': org,
                     'contact_form': form,
+                    'offers': offers,
                 },
             )
     form = VolounteerToOrganizationContactForm()
@@ -330,6 +269,7 @@ def organization_view(request, slug, organization_id):
         {
             'organization': org,
             'contact_form': form,
+            'offers': offers,
         },
     )
 
@@ -356,11 +296,10 @@ def contact_form(request):
                     message=request.POST.get('message'),
                 )
             )
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                u'Wiadomość została wysłana do administratora'
-            )
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 u'Wiadomość została wysłana'
+                                 u' do administratora.')
         else:
             messages.add_message(
                 request,
@@ -384,63 +323,3 @@ def contact_form(request):
             'contact_form': form,
         }
     )
-
-
-def offer_apply(request, offer_id):
-    u"""Handling volounteer applying for helping with offer."""
-    if request.method == 'POST':
-        form = OfferApplyForm(request.POST)
-        if form.is_valid():
-            domain = request.build_absolute_uri().replace(
-                request.get_full_path(),
-                ''
-            )
-            offer = Offer.objects.get(pk=offer_id)
-            user = UserProfile.objects.get(
-                organization__id=offer.organization.id
-            )
-            send_mail(
-                'offer_application',
-                [
-                    user.user.email,
-                    request.POST.get('email'),
-                ],
-                dict(
-                    email=request.POST.get('email'),
-                    phone_no=request.POST.get('phone_no'),
-                    fullname=request.POST.get('fullname'),
-                    comments=request.POST.get('comments'),
-                    offer_url=domain + reverse('show_offer', args=[offer_id]),
-                    offer_id=offer_id
-                )
-            )
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                u'Zgłoszenie chęci uczestnictwa zostało wysłane'
-            )
-            return redirect(reverse('show_offer', args=[offer_id]))
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                u'Formularz zawiera nieprawidłowe dane' + form.errors
-            )
-            return render(
-                request,
-                'volontulo/offer_apply.html',
-                {
-                    'form': form,
-                    'offer_id': offer_id,
-                }
-            )
-    else:
-        form = OfferApplyForm()
-        return render(
-            request,
-            'volontulo/offer_apply.html',
-            {
-                'form': form,
-                'offer_id': offer_id,
-            }
-        )
