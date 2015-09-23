@@ -25,7 +25,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     # me/settings
 
     # offers' namesapce:
-    url(r'^offers$', offers_views.list_offers, name='list_offers'),
+    url(r'^offers$', offers_views.offers_list, name='offers_list'),
     url(
         r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)$',
         offers_views.show_offer,

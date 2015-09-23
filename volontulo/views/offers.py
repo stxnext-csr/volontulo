@@ -24,7 +24,7 @@ from volontulo.utils import save_history
 from volontulo.views import logged_as_admin
 
 
-def list_offers(request):
+def offers_list(request):
     u"""View, that show list of offers.
 
     It's used for volunteers to show active ones and for admins to show
@@ -34,7 +34,7 @@ def list_offers(request):
         offers = Offer.objects.all()
     else:
         offers = Offer.objects.filter(status='ACTIVE')
-    return render(request, "offers/list_offers.html", context={
+    return render(request, "offers/offers_list.html", context={
         'offers': offers,
     })
 
@@ -44,7 +44,7 @@ def activate_offer(request, offer_id):  # pylint: disable=unused-argument
     offer = get_object_or_404(Offer, id=offer_id)
     offer.status = 'ACTIVE'
     offer.save()
-    return redirect('list_offers')
+    return redirect('offers_list')
 
 
 def show_offer(request, slug, offer_id):  # pylint: disable=unused-argument
