@@ -41,7 +41,7 @@ def organization_form(request, slug, organization_id):
 
     return render(
         request,
-        "volontulo/organization_form.html",
+        "organizations/organization_form.html",
         {'organization': org},
     )
 
@@ -68,7 +68,7 @@ def organization_view(request, slug, organization_id):
             yield_message_error_form(request, form)
             return render(
                 request,
-                "volontulo/organization_view.html",
+                "organizations/organization_view.html",
                 {
                     'organization': org,
                     'contact_form': form,
@@ -78,7 +78,7 @@ def organization_view(request, slug, organization_id):
     form = VolounteerToOrganizationContactForm()
     return render(
         request,
-        "volontulo/organization_view.html",
+        "organizations/organization_view.html",
         {
             'organization': org,
             'contact_form': form,

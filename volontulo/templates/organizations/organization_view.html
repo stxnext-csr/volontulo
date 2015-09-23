@@ -7,17 +7,17 @@
     <div class="form-horizontal">
         <div class="form-group form-group-sm">
             <label class="col-xs-2 control-label" for="{{ organization_form.name.id_for_label }}">Nazwa</label>
-            <div class="col-xs-4">
+            <div class="col-xs-4 form-control-static">
                 <span>{{ organization.name }}</span>
             </div>
             <label class="col-xs-2 control-label" for="{{ organization_form.address.id_for_label }}">Adres</label>
-            <div class="col-xs-4">
+            <div class="col-xs-4 form-control-static">
                 <span>{{ organization.address }}</span>
             </div>
         </div>
         <div class="form-group form-group-sm">
             <label class="col-xs-2 control-label" for="{{ organization_form.description.id_for_label }}">Opis</label>
-            <div class="col-xs-10">
+            <div class="col-xs-10 form-control-static">
                 <span>{{ organization.description }}</span>
             </div>
         </div>
