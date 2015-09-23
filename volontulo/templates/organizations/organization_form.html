@@ -5,7 +5,7 @@
 {% block content %}
     <h2>Tworzenie organizacji</h2>
 
-    <form id="organization_form" class="form-horizontal" method="post" action="{% url 'organization_form' %}" role="form" enctype="multipart/form-data">
+    <form id="organization_form" class="form-horizontal" method="post" action="{% url 'organization_form' 'WRK' '0' %}" role="form" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="form-group form-group-sm">
             <label class="col-xs-2 control-label" for="{{ organization_form.name.id_for_label }}">Nazwa</label>
