@@ -28,7 +28,7 @@
     {% endif %}
 
     {% if user.is_administrator %}
-        <a href="{% url 'offer_form' 1 offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
+        <a href="{% url 'offer_form' offer.organization.id offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
     {% endif %}
 
 {% endblock %}

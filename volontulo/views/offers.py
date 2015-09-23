@@ -19,6 +19,7 @@ from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import Organization
 from volontulo.models import UserProfile
+from volontulo.utils import OFFERS_STATUSES
 from volontulo.utils import save_history
 from volontulo.views import logged_as_admin
 
@@ -62,6 +63,7 @@ def show_offer(request, slug, offer_id):  # pylint: disable=unused-argument
 def offer_form(request, organization_id, offer_id=None):
     u"""View responsible for creating and editing offer by organization."""
     organization = Organization.objects.get(pk=organization_id)
+    user = UserProfile.objects.get(user=request.user)
 
     if request.method == 'POST':
         if offer_id is not None:
@@ -115,6 +117,8 @@ def offer_form(request, organization_id, offer_id=None):
                 {
                     'offer_form': form,
                     'organization': organization,
+                    'statuses': OFFERS_STATUSES,
+                    'user': user,
                 }
             )
 
@@ -122,6 +126,8 @@ def offer_form(request, organization_id, offer_id=None):
     context = {
         'offer_form': form,
         'organization': organization,
+        'statuses': OFFERS_STATUSES,
+        'user': user,
     }
     if offer_id:
         context['offer'] = Offer.objects.get(pk=offer_id)

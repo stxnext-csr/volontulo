@@ -60,7 +60,11 @@ def index(request):  # pylint: disable=unused-argument
     We will display page with few step CTA links?
     """
     if logged_as_admin(request):
-        offers = Offer.objects.all()
+        # implement ON/OFF statuses
+        offers = Offer.objects.all().order_by('-status')
+        return render(request, "admin/list_offers.html", context={
+            'offers': offers,
+        })
     else:
         offers = Offer.objects.filter(status='STAGED')
 
