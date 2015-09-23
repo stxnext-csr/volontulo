@@ -4,7 +4,6 @@ u"""
 .. module:: organizations
 """
 
-from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -16,6 +15,8 @@ from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import Organization
 from volontulo.models import UserProfile
+from volontulo.views import yield_message_error_form
+from volontulo.views import yield_message_successful_email
 
 
 # pylint: disable=unused-argument
@@ -62,16 +63,9 @@ def organization_view(request, slug, organization_id):
                 ],
                 {k: v for k, v in request.POST.items()},
             )
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 u'Email został wysłany')
+            yield_message_successful_email(request)
         else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                u"Proszę poprawić błędy w formularzu: " +
-                "<br />".join(form.errors)
-            )
+            yield_message_error_form(request, form)
             return render(
                 request,
                 "volontulo/organization_view.html",

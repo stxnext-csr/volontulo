@@ -36,6 +36,24 @@ def logged_as_admin(request):
     )
 
 
+def yield_message_successful_email(request):
+    u"""Helper function yielding info about successful email."""
+    return messages.add_message(
+        request,
+        messages.SUCCESS,
+        u'Email został wysłany.'
+    )
+
+
+def yield_message_error_form(request, form):
+    u"""Helper function yielding info about errors in form."""
+    return messages.add_message(
+        request,
+        messages.ERROR,
+        u'Proszę poprawić błędy w formularzu: ' + u'<br />'.join(form.errors)
+    )
+
+
 def index(request):  # pylint: disable=unused-argument
     u"""Main view of app.
 
@@ -209,17 +227,9 @@ def contact_form(request):
                 ],
                 {k: v for k, v in request.POST.items()},
             )
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 u'Wiadomość została wysłana'
-                                 u' do administratora.')
+            yield_message_successful_email(request)
         else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                u'Proszę poprawić błędy w formularzu: ' +
-                '<br />'.join(form.errors)
-            )
+            yield_message_error_form(request, form)
             return render(
                 request,
                 "volontulo/contact.html",
