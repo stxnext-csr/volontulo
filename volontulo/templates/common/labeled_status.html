@@ -1,0 +1,17 @@
+{% load labeled_status %}
+
+{% if status %}
+    {% if status == 'NEW' %}
+        <span class="label label-default">{{ status|human }}</span>
+    {% elif status == 'ACTIVE' %}
+        <span class="label label-primary">{{ status|human }}</span>
+    {% elif status == 'FINISHED' %}
+        <span class="label label-success">{{ status|human }}</span>
+    {% elif status == 'SUSPENDED' %}
+        <span class="label label-info">{{ status|human }}</span>
+    {% elif status == 'CLOSED' %}
+        <span class="label label-danger">{{ status|human }}</span>
+    {% else %}
+        <span class="label label-warning">{{ status|human }}</span>
+    {% endif %}
+{% endif %}
