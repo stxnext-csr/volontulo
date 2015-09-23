@@ -4,11 +4,13 @@ u"""
 .. module:: test_offers
 """
 
+from django.contrib.auth.models import User
 from django.test import Client
 from django.test import TestCase
 
 from volontulo.models import Offer
 from volontulo.models import Organization
+from volontulo.models import UserProfile
 
 
 class TestOffersList(TestCase):
@@ -46,16 +48,35 @@ class TestOffersList(TestCase):
         )
         cls.active_offer.save()
 
+        volunteer_user = User.objects.create_user(
+            u'volunteer@example.com',
+            u'volunteer@example.com',
+            u'123volunteer'
+        )
+        volunteer_user.save()
+        cls.volunteer = UserProfile(user=volunteer_user)
+        cls.volunteer.save()
+
+        admin_user = User.objects.create_user(
+            u'admin@example.com',
+            u'admin@example.com',
+            u'123admin'
+        )
+        admin_user.save()
+        cls.admin = UserProfile(user=admin_user)
+        cls.admin.save()
+
     def setUp(self):
         u"""Set up each test."""
         self.client = Client()
 
     # pylint: disable=invalid-name
-    def test_offers_list_for_anonymous_user(self):
-        u"""Test offers' list for anonymous user.
+    def _test_offers_list_for_standard_user(self):
+        u"""Test offers' list for standard user.
 
-        List of offers is available for anonymous users and shows only ACTIVE
+        List of offers is available for standard users and shows only ACTIVE
         offers.
+        Test are common for anonymous user and volunteer.
         """
         response = self.client.get('/offers')
         self.assertEqual(response.status_code, 200)
@@ -64,3 +85,30 @@ class TestOffersList(TestCase):
         self.assertIn('offers', response.context)
         # pylint: disable=no-member
         self.assertEqual(len(response.context['offers']), 1)
+        # pylint: disable=no-member
+        self.assertEqual(response.context['offers'][0].status, 'ACTIVE')
+
+    def test_offer_list_for_anonymous_user(self):
+        u"""Test offers' list for anonymus user."""
+        return self._test_offers_list_for_standard_user()
+
+    def test_offers_list_for_volunteer(self):
+        u"""Test offers' list for account of volunteer."""
+        self.client.post('/login', {
+            'email': u'volunteer@example.com',
+            'password': '123volunteer',
+        })
+        return self._test_offers_list_for_standard_user()
+
+    def test_offers_list_for_admin(self):
+        u"""Test offers' list for account of admin."""
+        self.client.post('/login', {
+            'email': u'admin@example.com',
+            'password': '123admin',
+        })
+        response = self.client.get('/offers')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'offers/offers_list.html')
+        # pylint: disable=no-member
+        self.assertIn('offers', response.context)
+        # pylint: disable=no-member
