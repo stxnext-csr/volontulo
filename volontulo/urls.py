@@ -48,8 +48,8 @@ urlpatterns = [  # pylint: disable=invalid-name
     ),
     url(
         r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)/join$',
-        offers_views.offer_apply,
-        name='offer_apply'
+        offers_views.offers_join,
+        name='offers_join'
     ),
     # offers/filter
 

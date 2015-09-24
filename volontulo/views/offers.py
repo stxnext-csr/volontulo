@@ -200,7 +200,7 @@ def offers_view(request, slug, offer_id):  # pylint: disable=unused-argument
     return render(request, "offers/show_offer.html", context=context)
 
 
-def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
+def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
     u"""Handling volounteer applying for helping with offer."""
     offer = Offer.objects.get(pk=offer_id)
 
