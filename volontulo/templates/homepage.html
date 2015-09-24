@@ -43,7 +43,7 @@
             </tr>
         {% for o in offers %}
             <tr>
-                <td><a href="{% url 'offer_form' o.id %}">{{ o.title }}</a></td>
+                <td><a href="{% url 'offers_edit' o.title o.id %}">{{ o.title }}</a></td>
                 <td>{{ o.location }}</td>
                 <td><a href="{% url 'organization_view' slug=o.organization.name|slugify organization_id=o.organization.id %}">{{ o.organization.name }}</a></td>
                 <td>{{ o.time_period }}</td>
