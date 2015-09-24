@@ -5,10 +5,10 @@ u"""
 """
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.utils.text import slugify
 
 from volontulo.forms import VolounteerToOrganizationContactForm
 from volontulo.lib.email import send_mail
@@ -31,13 +31,18 @@ def organization_form(request, slug, organization_id):
     ):
         return redirect('index')
 
-    org = UserProfile.objects.get(user=request.user).organization
+    org = Organization.objects.get(pk=organization_id)
     if request.method == 'POST':
         org.name = request.POST.get('name')
         org.address = request.POST.get('address')
         org.description = request.POST.get('description')
         org.save()
-        return HttpResponseRedirect(reverse('organization_form'))
+        return redirect(
+            reverse(
+                'organization_view',
+                args=[slugify(org.name), org.id]
+            )
+        )
 
     return render(
         request,
