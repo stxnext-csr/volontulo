@@ -9,7 +9,7 @@
 
     {% if user.is_organization %}
         <h2>Jako organizacja chciałbym ...</h2>
-        <p><a href="{% url 'offer_form' organization_id=user.id %}">...dodać ofertę</a></p>
+        <p><a href="{% url 'offers_create' %}">...dodać ofertę</a></p>
     {% endif %}
 
     {% if not user.is_organization %}
