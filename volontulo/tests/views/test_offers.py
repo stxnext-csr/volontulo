@@ -19,15 +19,15 @@ class TestOffersList(TestCase):
     @classmethod
     def setUpTestData(cls):
         u"""Set up data for all tests."""
-        cls.organization = Organization.objects.create(
+        organization = Organization.objects.create(
             name=u'',
             address=u'',
             description=u'',
         )
-        cls.organization.save()
+        organization.save()
 
         common_offer_data = {
-            'organization': cls.organization,
+            'organization': organization,
             'description': u'',
             'requirements': u'',
             'time_commitment': u'',
@@ -57,13 +57,28 @@ class TestOffersList(TestCase):
         cls.volunteer = UserProfile(user=volunteer_user)
         cls.volunteer.save()
 
+        organization_user = User.objects.create_user(
+            u'organization@example.com',
+            u'organization@example.com',
+            u'123org'
+        )
+        organization_user.save()
+        cls.organization = UserProfile(
+            user=organization_user,
+            is_organization=True,
+            organization=organization,
+        )
+        cls.organization.save()
         admin_user = User.objects.create_user(
             u'admin@example.com',
             u'admin@example.com',
             u'123admin'
         )
         admin_user.save()
-        cls.admin = UserProfile(user=admin_user)
+        cls.admin = UserProfile(
+            user=admin_user,
+            is_administrator=True,
+        )
         cls.admin.save()
 
     def setUp(self):
@@ -76,7 +91,7 @@ class TestOffersList(TestCase):
 
         List of offers is available for standard users and shows only ACTIVE
         offers.
-        Test are common for anonymous user and volunteer.
+        Test are common for anonymous user, volunteer and organization.
         """
         response = self.client.get('/offers')
         self.assertEqual(response.status_code, 200)
@@ -100,6 +115,14 @@ class TestOffersList(TestCase):
         })
         return self._test_offers_list_for_standard_user()
 
+    def test_offers_list_for_organization(self):
+        u"""Test offers' list for account of organization."""
+        self.client.post('/login', {
+            'email': u'organization@example.com',
+            'password': '123org',
+        })
+        return self._test_offers_list_for_standard_user()
+
     def test_offers_list_for_admin(self):
         u"""Test offers' list for account of admin."""
         self.client.post('/login', {
@@ -112,3 +135,4 @@ class TestOffersList(TestCase):
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         # pylint: disable=no-member
+        self.assertEqual(len(response.context['offers']), 2)
