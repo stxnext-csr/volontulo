@@ -107,9 +107,11 @@ def offer_form(request, organization_id, offer_id=None):
                     messages.SUCCESS,
                     u"Dziękujemy za dodanie oferty."
                 )
-                return redirect(reverse(
-                    'show_offer',
-                    args=[organization_id, offer.id]),
+                return redirect(
+                    reverse(
+                        'show_offer',
+                        args=[organization_id, offer.id]
+                    ),
                 )
         else:
             messages.add_message(
@@ -188,9 +190,12 @@ def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
                                  messages.SUCCESS,
                                  u'Zgłoszenie chęci uczestnictwa'
                                  u' zostało wysłane.')
-            return redirect(reverse('show_offer',
-                                    args=[slugify(offer.title), offer_id]),
-                            )
+            return redirect(
+                reverse(
+                    'show_offer',
+                    args=[slugify(offer.title), offer_id]
+                ),
+            )
         else:
             messages.add_message(
                 request,

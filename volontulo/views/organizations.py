@@ -37,9 +37,12 @@ def organization_form(request, slug, organization_id):
         org.address = request.POST.get('address')
         org.description = request.POST.get('description')
         org.save()
-        return redirect(reverse('organization_view',
-                                args=[slugify(org.name), org.id])
-                        )
+        return redirect(
+            reverse(
+                'organization_view',
+                args=[slugify(org.name), org.id]
+            )
+        )
 
     return render(
         request,
