@@ -13,7 +13,7 @@ from volontulo.views import organizations as orgs_views
 
 urlpatterns = [  # pylint: disable=invalid-name
     # homepage:
-    url(r'^$', views.index, name='index'),
+    url(r'^$', views.homepage, name='homepage'),
 
     # login and loggged user space:
     url(r'^login$', views.login, name='login'),
