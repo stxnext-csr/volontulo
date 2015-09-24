@@ -24,7 +24,7 @@
     </table>
 
     {% if user.is_administrator %}
-        {% include 'volontulo/volunteers.html' with volunteers=volunteers %}
+        {% include 'offers/applied_volunteers.html' with volunteers=volunteers %}
     {% endif %}
 
     {% if user.is_administrator %}
