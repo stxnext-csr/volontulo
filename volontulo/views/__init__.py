@@ -130,7 +130,7 @@ def static_pages(request, template_name):
     try:
         return render(
             request,
-            "static_pages/{}.html".format(template_name)
+            "pages/{}.html".format(template_name)
         )
     except TemplateDoesNotExist:
         raise Http404
