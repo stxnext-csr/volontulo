@@ -123,7 +123,7 @@ class OffersEdit(View):
     u"""Class view supporting change of a offer."""
 
     @staticmethod
-    def get(request, slug, offer_id):
+    def get(request, slug, offer_id):  # pylint: disable=unused-argument
         u"""Method responsible for rendering form for offer to be changed."""
         offer = Offer.objects.get(pk=offer_id)
         organization = offer.organization
@@ -145,7 +145,7 @@ class OffersEdit(View):
         )
 
     @staticmethod
-    def post(request, slug, offer_id):
+    def post(request, slug, offer_id):  # pylint: disable=unused-argument
         u"""Method resposible for saving changed offer."""
         offer = Offer.objects.get(pk=offer_id)
         organization = offer.organization
