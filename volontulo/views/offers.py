@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.utils.text import slugify
+from django.views.generic import View
 
 from volontulo.forms import CreateOfferForm
 from volontulo.forms import OfferApplyForm
@@ -38,6 +39,85 @@ def offers_list(request):
     return render(request, "offers/offers_list.html", context={
         'offers': offers,
     })
+
+
+class OffersCreate(View):
+    u"""Class view supporting creation of new offer."""
+
+    @staticmethod
+    def get(request):
+        u"""Method responsible for rendering form for new offer."""
+        user = UserProfile.objects.get(user=request.user)
+        organization = user.organization
+
+        form = CreateOfferForm()
+        context = {
+            'offer_form': form,
+            'organization': organization,
+            'statuses': OFFERS_STATUSES,
+            'user': user,
+            'offer': Offer(),
+        }
+
+        return render(
+            request,
+            'offers/offer_form.html',
+            context
+        )
+
+    @staticmethod
+    def post(request):
+        U"""Method resposible for saving new offer."""
+        user = UserProfile.objects.get(user=request.user)
+        organization = user.organization
+        form = CreateOfferForm(request.POST)
+
+        if form.is_valid():
+            offer = form.save()
+            save_history(request, offer, action=ADDITION)
+            ctx = {
+                'domain': request.build_absolute_uri().replace(
+                    request.get_full_path(),
+                    ''
+                ),
+                'address_sufix': reverse(
+                    'show_offer',
+                    args=[organization.id, offer.id]
+                ),
+                'offer': offer
+            }
+            send_mail(
+                'offer_creation',
+                ['administrators@volontuloapp.org'],
+                ctx
+            )
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                u"Dziękujemy za dodanie oferty."
+            )
+            return redirect(
+                reverse(
+                    'show_offer',
+                    args=[organization.id, offer.id]
+                ),
+            )
+        messages.add_message(
+            request,
+            messages.ERROR,
+            u"Formularz zawiera niepoprawnie wypełnione pola"
+        )
+        return render(
+            request,
+            'offers/offer_form.html',
+            {
+                'offer_form': form,
+                'organization': organization,
+                'statuses': OFFERS_STATUSES,
+                'user': user,
+                'offer': Offer()
+            }
+        )
 
 
 def activate_offer(request, offer_id):  # pylint: disable=unused-argument
