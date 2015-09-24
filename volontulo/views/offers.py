@@ -202,6 +202,14 @@ def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
                 messages.ERROR,
                 u'Formularz zawiera nieprawidłowe dane' + form.errors
             )
+            return render(
+                request,
+                'volontulo/offer_apply.html',
+                {
+                    'form': form,
+                    'offer_id': offer_id,
+                }
+            )
     else:
         form = OfferApplyForm()
 

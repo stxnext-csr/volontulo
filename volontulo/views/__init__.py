@@ -82,7 +82,7 @@ def index(request):  # pylint: disable=unused-argument
 
     return render(
         request,
-        "volontulo/homepage.html",
+        "homepage.html",
         {
             'offers': offers,
         }
@@ -120,7 +120,7 @@ def login(request):
     else:
         return render(
             request,
-            'volontulo/login.html',
+            'users/login.html',
             {}
         )
 
@@ -142,7 +142,7 @@ def static_pages(request, template_name):
     try:
         return render(
             request,
-            "volontulo/static_pages/{}.html".format(template_name)
+            "pages/{}.html".format(template_name)
         )
     except TemplateDoesNotExist:
         raise Http404
@@ -204,7 +204,7 @@ def register(request):
     profile_form = ProfileForm()
     return render(
         request,
-        'volontulo/register.html',
+        'users/register.html',
         {
             'user_form': user_form,
             'profile_form': profile_form,
@@ -248,7 +248,7 @@ def contact_form(request):
             yield_message_error_form(request, form)
             return render(
                 request,
-                "volontulo/contact.html",
+                "contact.html",
                 {
                     'contact_form': form,
                 }
@@ -257,7 +257,7 @@ def contact_form(request):
     form = AdministratorContactForm()
     return render(
         request,
-        "volontulo/contact.html",
+        "contact.html",
         {
             'contact_form': form,
         }
