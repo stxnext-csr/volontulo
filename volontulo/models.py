@@ -71,7 +71,7 @@ class UserProfile(models.Model):
 class UserBadges(models.Model):
     u"""Users to bages relation table."""
     user = models.ForeignKey(UserProfile)
-    badges = models.ForeignKey(Badge)
+    badge = models.ForeignKey(Badge)
     created_at = models.DateTimeField(default=timezone.now, blank=True)
     description = models.CharField(max_length=255)
 

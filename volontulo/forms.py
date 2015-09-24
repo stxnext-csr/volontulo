@@ -33,6 +33,10 @@ class ProfileForm(forms.ModelForm):
 class CreateOfferForm(forms.ModelForm):
     u"""Form reposponsible for creating offer by organization."""
 
+    def __init__(self, *args, **kwargs):
+        super(CreateOfferForm, self).__init__(*args, **kwargs)
+        self.fields['status'].required = False
+
     class Meta(object):
         model = Offer
         fields = [

@@ -12,6 +12,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.utils.text import slugify
 
 from volontulo.forms import CreateOfferForm
 from volontulo.forms import OfferApplyForm
@@ -64,7 +65,6 @@ def offer_form(request, organization_id, offer_id=None):
     u"""View responsible for creating and editing offer by organization."""
     organization = Organization.objects.get(pk=organization_id)
     user = UserProfile.objects.get(user=request.user)
-
     if request.method == 'POST':
         if offer_id is not None:
             offer = Offer.objects.get(id=offer_id)
@@ -91,7 +91,10 @@ def offer_form(request, organization_id, offer_id=None):
                         request.get_full_path(),
                         ''
                     ),
-                    'address_sufix': reverse('show_offer', args=[offer.id]),
+                    'address_sufix': reverse(
+                        'show_offer',
+                        args=[organization_id, offer.id]
+                    ),
                     'offer': offer
                 }
                 send_mail(
@@ -104,7 +107,10 @@ def offer_form(request, organization_id, offer_id=None):
                     messages.SUCCESS,
                     u"Dziękujemy za dodanie oferty."
                 )
-                return redirect(reverse('show_offer', args=[offer.id]),)
+                return redirect(reverse(
+                    'show_offer',
+                    args=[organization_id, offer.id]),
+                )
         else:
             messages.add_message(
                 request,
@@ -144,6 +150,8 @@ def offer_form(request, organization_id, offer_id=None):
 
 def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
     u"""Handling volounteer applying for helping with offer."""
+    offer = Offer.objects.get(pk=offer_id)
+
     if request.method == 'POST':
         form = OfferApplyForm(request.POST)
         if form.is_valid():
@@ -151,7 +159,6 @@ def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
                 request.get_full_path(),
                 ''
             )
-            offer = Offer.objects.get(pk=offer_id)
             user = UserProfile.objects.get(
                 organization__id=offer.organization.id
             )
@@ -171,7 +178,9 @@ def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
                     phone_no=request.POST.get('phone_no'),
                     fullname=request.POST.get('fullname'),
                     comments=request.POST.get('comments'),
-                    offer_url=domain + reverse('show_offer', args=[offer_id]),
+                    offer_url=domain + reverse(
+                        'show_offer',
+                        args=[slugify(offer.title), offer_id]),
                     offer_id=offer_id
                 )
             )
@@ -179,28 +188,23 @@ def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
                                  messages.SUCCESS,
                                  u'Zgłoszenie chęci uczestnictwa'
                                  u' zostało wysłane.')
-            return redirect(reverse('show_offer', args=[offer_id]))
+            return redirect(reverse('show_offer',
+                                    args=[slugify(offer.title), offer_id]),
+                            )
         else:
             messages.add_message(
                 request,
                 messages.ERROR,
                 u'Formularz zawiera nieprawidłowe dane' + form.errors
             )
-            return render(
-                request,
-                'volontulo/offer_apply.html',
-                {
-                    'form': form,
-                    'offer_id': offer_id,
-                }
-            )
     else:
         form = OfferApplyForm()
-        return render(
-            request,
-            'volontulo/offer_apply.html',
-            {
-                'form': form,
-                'offer_id': offer_id,
-            }
-        )
+
+    return render(
+        request,
+        'offers/offer_apply.html',
+        {
+            'form': form,
+            'offer': offer,
+        }
+    )

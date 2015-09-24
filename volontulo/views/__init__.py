@@ -35,7 +35,7 @@ def logged_as_admin(request):
         UserProfile.objects.get(user=request.user).is_administrator
     )
 
-
+# todo: replace with more generic
 def yield_message_successful_email(request):
     u"""Helper function yielding info about successful email."""
     return messages.add_message(
@@ -44,7 +44,7 @@ def yield_message_successful_email(request):
         u'Email został wysłany.'
     )
 
-
+# todo: replace with more generic
 def yield_message_error_form(request, form):
     u"""Helper function yielding info about errors in form."""
     return messages.add_message(
@@ -52,6 +52,14 @@ def yield_message_error_form(request, form):
         messages.ERROR,
         u'Proszę poprawić błędy w formularzu: ' + u'<br />'.join(form.errors)
     )
+
+def yield_message_successful(request, msg):
+    u"""Helper function yielding success message."""
+    return messages.add_message(request, messages.SUCCESS, msg)
+
+def yield_message_error(request, msg):
+    u"""Helper function yielding error message."""
+    return messages.add_message(request, messages.ERROR, msg)
 
 
 def index(request):  # pylint: disable=unused-argument
