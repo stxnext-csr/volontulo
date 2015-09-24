@@ -42,8 +42,8 @@ class Badge(models.Model):
     priority = models.IntegerField(default=1)
 
     def __init__(self, name, priority=1, *args, **kwargs):
-        super(Badge, self).__init__(*args, **kwargs)
         u"""Initialize default badge."""
+        super(Badge, self).__init__(*args, **kwargs)
         self.name = name
         self.priority = priority
 
