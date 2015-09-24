@@ -66,7 +66,7 @@ def yield_message_error(request, msg):
     return messages.add_message(request, messages.ERROR, msg)
 
 
-def index(request):  # pylint: disable=unused-argument
+def homepage(request):  # pylint: disable=unused-argument
     u"""Main view of app.
 
     We will display page with few step CTA links?
@@ -78,7 +78,7 @@ def index(request):  # pylint: disable=unused-argument
             'offers': offers,
         })
     else:
-        offers = Offer.objects.filter(status='STAGED')
+        offers = Offer.objects.filter(status='ACTIVE')
 
     return render(
         request,
@@ -116,7 +116,7 @@ def login(request):
                 messages.ERROR,
                 u"Nieprawidłowy email lub hasło!"
             )
-        return redirect('index')
+        return redirect('homepage')
     else:
         return render(
             request,
@@ -134,7 +134,7 @@ def logout(request):
         messages.INFO,
         u"Użytkownik został wylogowany!"
     )
-    return redirect('index')
+    return redirect('homepage')
 
 
 def static_pages(request, template_name):
