@@ -24,7 +24,7 @@
                     {% include 'common/labeled_status.html' with status=offer.status %}
                 </td>
                 <td class="text-center">
-                    <a href="{% url 'offer_form' offer.organization.id offer.id  %}" class="btn btn-link">Edycja</a>
+                    <a href="{% url 'offers_edit' offer.title offer.id  %}" class="btn btn-link">Edycja</a>
                     <a href="{% url 'show_offer' offer.title|slugify offer.id  %}" class="btn btn-link">Podgląd</a>
                 </td>
             </tr>

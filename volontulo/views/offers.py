@@ -19,7 +19,6 @@ from volontulo.forms import CreateOfferForm
 from volontulo.forms import OfferApplyForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
-from volontulo.models import Organization
 from volontulo.models import UserProfile
 from volontulo.utils import OFFERS_STATUSES
 from volontulo.utils import save_history
@@ -67,7 +66,7 @@ class OffersCreate(View):
 
     @staticmethod
     def post(request):
-        U"""Method resposible for saving new offer."""
+        u"""Method resposible for saving new offer."""
         user = UserProfile.objects.get(user=request.user)
         organization = user.organization
         form = CreateOfferForm(request.POST)
@@ -120,6 +119,66 @@ class OffersCreate(View):
         )
 
 
+class OffersEdit(View):
+    u"""Class view supporting change of a offer."""
+
+    @staticmethod
+    def get(request, slug, offer_id):
+        u"""Method responsible for rendering form for offer to be changed."""
+        offer = Offer.objects.get(pk=offer_id)
+        organization = offer.organization
+        user = UserProfile.objects.get(user=request.user)
+        form = CreateOfferForm()
+
+        context = {
+            'offer_form': form,
+            'organization': organization,
+            'statuses': OFFERS_STATUSES,
+            'user': user,
+            'offer': offer,
+        }
+
+        return render(
+            request,
+            'offers/offer_form.html',
+            context
+        )
+
+    @staticmethod
+    def post(request, slug, offer_id):
+        u"""Method resposible for saving changed offer."""
+        offer = Offer.objects.get(pk=offer_id)
+        organization = offer.organization
+        user = UserProfile.objects.get(user=request.user)
+        form = CreateOfferForm(request.POST, instance=offer)
+
+        if form.is_valid():
+            offer = form.save()
+            save_history(request, offer, action=CHANGE)
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                u"Oferta została zmieniona."
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                u"Formularz zawiera niepoprawnie wypełnione pola"
+            )
+        return render(
+            request,
+            'offers/offer_form.html',
+            {
+                'offer_form': form,
+                'organization': organization,
+                'statuses': OFFERS_STATUSES,
+                'user': user,
+                'offer': Offer()
+            }
+        )
+
+
 def activate_offer(request, offer_id):  # pylint: disable=unused-argument
     u"""View responsible for changing status of offer from STAGED to ACTIVE."""
     offer = get_object_or_404(Offer, id=offer_id)
@@ -139,95 +198,6 @@ def show_offer(request, slug, offer_id):  # pylint: disable=unused-argument
         context['user'] = user
         context['volunteers'] = offer.volunteers.all()
     return render(request, "offers/show_offer.html", context=context)
-
-
-def offer_form(request, organization_id, offer_id=None):
-    u"""View responsible for creating and editing offer by organization."""
-    organization = Organization.objects.get(pk=organization_id)
-    user = UserProfile.objects.get(user=request.user)
-    if request.method == 'POST':
-        if offer_id is not None:
-            offer = Offer.objects.get(id=offer_id)
-            form = CreateOfferForm(request.POST, instance=offer)
-        else:
-            form = CreateOfferForm(request.POST)
-
-        if form.is_valid():
-            offer = form.save()
-            save_history(
-                request,
-                offer,
-                action=CHANGE if offer_id else ADDITION
-            )
-            if offer_id:
-                messages.add_message(
-                    request,
-                    messages.SUCCESS,
-                    u"Oferta została zmieniona."
-                )
-            else:
-                ctx = {
-                    'domain': request.build_absolute_uri().replace(
-                        request.get_full_path(),
-                        ''
-                    ),
-                    'address_sufix': reverse(
-                        'show_offer',
-                        args=[organization_id, offer.id]
-                    ),
-                    'offer': offer
-                }
-                send_mail(
-                    'offer_creation',
-                    ['administrators@volontuloapp.org'],
-                    ctx
-                )
-                messages.add_message(
-                    request,
-                    messages.SUCCESS,
-                    u"Dziękujemy za dodanie oferty."
-                )
-                return redirect(
-                    reverse(
-                        'show_offer',
-                        args=[organization_id, offer.id]
-                    ),
-                )
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                u"Formularz zawiera niepoprawnie wypełnione pola"
-            )
-            return render(
-                request,
-                'offers/offer_form.html',
-                {
-                    'offer_form': form,
-                    'organization': organization,
-                    'statuses': OFFERS_STATUSES,
-                    'user': user,
-                    'offer': Offer()
-                }
-            )
-
-    form = CreateOfferForm()
-    context = {
-        'offer_form': form,
-        'organization': organization,
-        'statuses': OFFERS_STATUSES,
-        'user': user,
-    }
-    if offer_id is not None:
-        context['offer'] = Offer.objects.get(pk=offer_id)
-    else:
-        context['offer'] = Offer()
-
-    return render(
-        request,
-        'offers/offer_form.html',
-        context
-    )
 
 
 def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
