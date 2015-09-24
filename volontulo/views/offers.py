@@ -80,7 +80,7 @@ class OffersCreate(View):
                     ''
                 ),
                 'address_sufix': reverse(
-                    'show_offer',
+                    'offers_view',
                     args=[organization.id, offer.id]
                 ),
                 'offer': offer
@@ -97,7 +97,7 @@ class OffersCreate(View):
             )
             return redirect(
                 reverse(
-                    'show_offer',
+                    'offers_view',
                     args=[organization.id, offer.id]
                 ),
             )
@@ -187,7 +187,7 @@ def activate_offer(request, offer_id):  # pylint: disable=unused-argument
     return redirect('offers_list')
 
 
-def show_offer(request, slug, offer_id):  # pylint: disable=unused-argument
+def offers_view(request, slug, offer_id):  # pylint: disable=unused-argument
     u"""View responsible for showing details of particular offer."""
     offer = get_object_or_404(Offer, id=offer_id)
     context = {
@@ -200,7 +200,7 @@ def show_offer(request, slug, offer_id):  # pylint: disable=unused-argument
     return render(request, "offers/show_offer.html", context=context)
 
 
-def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
+def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
     u"""Handling volounteer applying for helping with offer."""
     offer = Offer.objects.get(pk=offer_id)
 
@@ -231,7 +231,7 @@ def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
                     fullname=request.POST.get('fullname'),
                     comments=request.POST.get('comments'),
                     offer_url=domain + reverse(
-                        'show_offer',
+                        'offers_view',
                         args=[slugify(offer.title), offer_id]),
                     offer_id=offer_id
                 )
@@ -242,7 +242,7 @@ def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
                                  u' zostało wysłane.')
             return redirect(
                 reverse(
-                    'show_offer',
+                    'offers_view',
                     args=[slugify(offer.title), offer_id]
                 ),
             )

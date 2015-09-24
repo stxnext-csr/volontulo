@@ -16,7 +16,7 @@
         {% for offer in offers %}
             <tr>
                 <td>{{ offer.id }}</td>
-                <td><a href="{% url 'show_offer' offer.title|slugify offer.id  %}">{{ offer.title }}</a></td>
+                <td><a href="{% url 'offers_view' offer.title|slugify offer.id  %}">{{ offer.title }}</a></td>
                 <td>
                     <a href="{% url 'organization_view' offer.organization.name|slugify offer.organization.id %}" class="btn btn-link">{{ offer.organization.name }}</a>
                 </td>
@@ -25,7 +25,7 @@
                 </td>
                 <td class="text-center">
                     <a href="{% url 'offers_edit' offer.title offer.id  %}" class="btn btn-link">Edycja</a>
-                    <a href="{% url 'show_offer' offer.title|slugify offer.id  %}" class="btn btn-link">Podgląd</a>
+                    <a href="{% url 'offers_view' offer.title|slugify offer.id  %}" class="btn btn-link">Podgląd</a>
                 </td>
             </tr>
         {% endfor %}

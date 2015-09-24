@@ -5,7 +5,7 @@
 {% block sidebar %}
     {% include "offers/offers_sidebar.html" %}
     <div>
-        <a href="{% url "offer_apply" offer.title|slugify offer.id %}" class="btn btn-primary btn-lg">Zgłoś się do wolontariatu</a>
+        <a href="{% url "offers_join" offer.title|slugify offer.id %}" class="btn btn-primary btn-lg">Zgłoś się do wolontariatu</a>
     </div>
 {% endblock %}
 
