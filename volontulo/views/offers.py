@@ -57,7 +57,7 @@ def show_offer(request, slug, offer_id):  # pylint: disable=unused-argument
     if user.is_administrator:
         context['user'] = user
         context['volunteers'] = offer.volunteers.all()
-    return render(request, "volontulo/show_offer.html", context=context)
+    return render(request, "offers/show_offer.html", context=context)
 
 
 def offer_form(request, organization_id, offer_id=None):
@@ -113,12 +113,13 @@ def offer_form(request, organization_id, offer_id=None):
             )
             return render(
                 request,
-                'volontulo/offer_form.html',
+                'offers/offer_form.html',
                 {
                     'offer_form': form,
                     'organization': organization,
                     'statuses': OFFERS_STATUSES,
                     'user': user,
+                    'offer': Offer()
                 }
             )
 
@@ -129,14 +130,14 @@ def offer_form(request, organization_id, offer_id=None):
         'statuses': OFFERS_STATUSES,
         'user': user,
     }
-    if offer_id:
+    if offer_id is not None:
         context['offer'] = Offer.objects.get(pk=offer_id)
     else:
         context['offer'] = Offer()
 
     return render(
         request,
-        'volontulo/offer_form.html',
+        'offers/offer_form.html',
         context
     )
 

@@ -6,6 +6,7 @@ u"""
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 
 
 class Organization(models.Model):
@@ -35,12 +36,44 @@ class Offer(models.Model):
         return self.title
 
 
+class Badge(models.Model):
+    u"""Generic badge representation."""
+    name = models.CharField(max_length=150)
+    priority = models.IntegerField(default=1)
+
+    def __init__(self, name, priority=1, *args, **kwargs):
+        super(Badge, self).__init__(*args, **kwargs)
+        u"""Initialize default badge."""
+        self.name = name
+        self.priority = priority
+
+    def __str__(self):
+        u"""Badge string representation."""
+        return self.name
+
+
 class UserProfile(models.Model):
     u"""Model that handles users' profiles."""
     user = models.OneToOneField(User)
     is_organization = models.BooleanField(default=False, blank=True)
     organization = models.ForeignKey(Organization, blank=True, null=True)
     is_administrator = models.BooleanField(default=False, blank=True)
+    badges = models.ManyToManyField(
+        'Badge',
+        through='UserBadges',
+        related_name='user_profile'
+    )
 
     def __str__(self):
         return self.user.email
+
+
+class UserBadges(models.Model):
+    u"""Users to bages relation table."""
+    user = models.ForeignKey(UserProfile)
+    badges = models.ForeignKey(Badge)
+    created_at = models.DateTimeField(default=timezone.now, blank=True)
+    description = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.description
