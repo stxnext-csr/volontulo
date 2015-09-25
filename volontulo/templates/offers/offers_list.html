@@ -27,7 +27,7 @@
                 {% if o.status == 'ACTIVE' %}
                     <a href="{% url 'offers_view' o.title|slugify o.id %}">Pomóż</a>
                 {% else %}
-                    <form id="offer_ {{ o.id }}_activate" method="post" action="{% url 'offers_edit' o.title|slugify o.id %}" enctype="multipart/form-data">
+                    <form id="offer_{{ o.id }}_activate" method="post" action="{% url 'offers_edit' o.title|slugify o.id %}" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="hidden" value="status_change" name="edit_type" />
                         <input type="hidden" value="ACTIVE" name="status" />
