@@ -42,11 +42,6 @@ urlpatterns = [  # pylint: disable=invalid-name
         name='offers_edit'
     ),
     url(
-        r'^offers/activate/(?P<offer_id>[0-9]+)$',
-        offers_views.activate_offer,
-        name='activate_offer'
-    ),
-    url(
         r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)/join$',
         offers_views.offers_join,
         name='offers_join'
