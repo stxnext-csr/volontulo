@@ -148,6 +148,12 @@ class OffersEdit(View):
     def post(request, slug, offer_id):  # pylint: disable=unused-argument
         u"""Method resposible for saving changed offer."""
         offer = Offer.objects.get(pk=offer_id)
+
+        if request.POST['edit_type'] == 'status_change':
+            offer.status = request.POST['status']
+            offer.save()
+            return redirect('offers_list')
+
         organization = offer.organization
         user = UserProfile.objects.get(user=request.user)
         form = CreateOfferForm(request.POST, instance=offer)

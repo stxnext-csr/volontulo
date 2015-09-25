@@ -30,7 +30,7 @@
                     <form id="offer_ {{ o.id }}_activate" method="post" action="{% url 'offers_edit' o.title|slugify o.id %}" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="hidden" value="status_change" name="edit_type" />
-                        <input type="hidden" value="status" name="ACTIVE" />
+                        <input type="hidden" value="ACTIVE" name="status" />
                         <button type="submit" name="submit" class="btn btn-primary">Aktywuj</button>
                     </form>
                 {% endif %}
