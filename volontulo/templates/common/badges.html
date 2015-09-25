@@ -1,0 +1,10 @@
+{% if basges %}
+    <h2>Badge użytkownika</h2>
+    <ul class="badges">
+        {% for badge in badges %}
+            <li><span class="name">{{ badge.name }}</span> x {{ badge.counter }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Nie masz jeszcze żadnych odznak</p>
+{% endif %}

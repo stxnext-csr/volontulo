@@ -12,11 +12,11 @@
         <p><a href="{% url 'offer_form' organization_id=user.id %}">...dodać ofertę</a></p>
     {% endif %}
 
-    {% if not user.is_organization %}
+    {% if not user.is_organization and not user.is_administrator %}
         <h2>Jako wolontariusz chciałbym ...</h2>
-
+        {% include 'common/badges.html' with badges=badges %}
         {% include 'users/my_offers.html' with offers=offers %}
-
+f
     {% endif %}
 
     <p><a href="{% url 'logout' %}" class="btn btn-primary">Wyloguj</a></p>

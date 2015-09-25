@@ -4,24 +4,28 @@ u"""
 .. module:: offers
 """
 
-from django.contrib import messages
 from django.contrib.admin.models import ADDITION
 from django.contrib.admin.models import CHANGE
-from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.utils import timezone
 from django.utils.text import slugify
 
 from volontulo.forms import CreateOfferForm
 from volontulo.forms import OfferApplyForm
 from volontulo.lib.email import send_mail
+from volontulo.models import Badge
 from volontulo.models import Offer
+from volontulo.models import UserBadges
 from volontulo.models import Organization
 from volontulo.models import UserProfile
 from volontulo.utils import OFFERS_STATUSES
 from volontulo.utils import save_history
+from volontulo.utils import yield_message_error
+from volontulo.utils import yield_message_successful
 from volontulo.views import logged_as_admin
 
 
@@ -80,9 +84,8 @@ def offer_form(request, organization_id, offer_id=None):
                 action=CHANGE if offer_id else ADDITION
             )
             if offer_id:
-                messages.add_message(
+                yield_message_successful(
                     request,
-                    messages.SUCCESS,
                     u"Oferta została zmieniona."
                 )
             else:
@@ -102,9 +105,8 @@ def offer_form(request, organization_id, offer_id=None):
                     ['administrators@volontuloapp.org'],
                     ctx
                 )
-                messages.add_message(
+                yield_message_successful(
                     request,
-                    messages.SUCCESS,
                     u"Dziękujemy za dodanie oferty."
                 )
                 return redirect(
@@ -114,9 +116,8 @@ def offer_form(request, organization_id, offer_id=None):
                     ),
                 )
         else:
-            messages.add_message(
+            yield_message_error(
                 request,
-                messages.ERROR,
                 u"Formularz zawiera niepoprawnie wypełnione pola"
             )
             return render(
@@ -152,27 +153,44 @@ def offer_form(request, organization_id, offer_id=None):
 
 def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
     u"""Handling volounteer applying for helping with offer."""
+    if not request.user:
+        return redirect('login')
+
+    volunteer_user = UserProfile.objects.get(user=request.user)
+    offer_content_type = ContentType.objects.get(
+        app_label='volontulo',
+        model='offer'
+    )
+    has_applied = Offer.objects.filter(
+        volunteers__id=request.user.id,
+        volunteers__offer=offer_id,
+    ).count()
+    if has_applied:
+        yield_message_error(
+            request,
+            u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
+        )
+        return redirect('offers_list')
+
     offer = Offer.objects.get(pk=offer_id)
+    org_user = UserProfile.objects.get(organization__id=offer.organization.id)
 
     if request.method == 'POST':
         form = OfferApplyForm(request.POST)
+
         if form.is_valid():
+            offer.volunteers.add(request.user)
+            apply_participant_badge(offer_content_type, volunteer_user)
+            offer.save()
+
             domain = request.build_absolute_uri().replace(
                 request.get_full_path(),
                 ''
             )
-            user = UserProfile.objects.get(
-                organization__id=offer.organization.id
-            )
-            if request.user.id:
-                volunteer = User.objects.get(pk=request.user.id)
-                offer.volunteers.add(volunteer)
-                offer.save()
-
             send_mail(
                 'offer_application',
                 [
-                    user.user.email,
+                    org_user.user.email,
                     request.POST.get('email'),
                 ],
                 dict(
@@ -186,10 +204,10 @@ def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
                     offer_id=offer_id
                 )
             )
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 u'Zgłoszenie chęci uczestnictwa'
-                                 u' zostało wysłane.')
+            yield_message_successful(
+                request,
+                u'Zgłoszenie chęci uczestnictwa zostało wysłane.'
+            )
             return redirect(
                 reverse(
                     'show_offer',
@@ -197,27 +215,41 @@ def offer_apply(request, slug, offer_id):  # pylint: disable=unused-argument
                 ),
             )
         else:
-            messages.add_message(
+            errors = '<br />'.join(form.errors)
+            yield_message_error(
                 request,
-                messages.ERROR,
-                u'Formularz zawiera nieprawidłowe dane' + form.errors
-            )
-            return render(
-                request,
-                'volontulo/offer_apply.html',
-                {
-                    'form': form,
-                    'offer_id': offer_id,
-                }
+                u'Formularz zawiera nieprawidłowe dane' + errors
             )
     else:
         form = OfferApplyForm()
 
+    context = {
+        'form': form,
+        'offer': offer,
+    }
+    if not (
+            volunteer_user.is_administrator and
+            volunteer_user.is_organization
+    ):
+        context['volunteer_user'] = volunteer_user
+
     return render(
         request,
         'offers/offer_apply.html',
-        {
-            'form': form,
-            'offer': offer,
-        }
+        context
     )
+
+
+def apply_participant_badge(offer_content_type, volunteer_user):
+    u"""Helper function to apply particpant badge to specified user."""
+    badge = Badge.objects.get(slug='participant')
+    user_badges = UserBadges.objects.create(
+        userprofile=volunteer_user,
+        badge=badge,
+        content_type=offer_content_type,
+        created_at=timezone.now(),
+        description=u"Wolontariusz {} zgłosił chęć pomocy.".format(
+            volunteer_user.user.email
+        )
+    )
+    return user_badges.save()

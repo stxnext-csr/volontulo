@@ -58,7 +58,7 @@ class OfferApplyForm(forms.Form):
     email = forms.CharField(max_length=80)
     phone_no = forms.CharField(max_length=80)
     fullname = forms.CharField(max_length=80)
-    comments = forms.CharField(widget=forms.Textarea, max_length=80)
+    comments = forms.CharField(widget=forms.Textarea)
 
 
 class ContactForm(forms.Form):

@@ -16,6 +16,8 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
+from volontulo.utils import yield_message_error
+from volontulo.utils import yield_message_successful
 from volontulo.forms import AdministratorContactForm
 from volontulo.forms import ProfileForm
 from volontulo.forms import UserForm
@@ -36,36 +38,6 @@ def logged_as_admin(request):
     )
 
 
-# todo: replace with more generic
-def yield_message_successful_email(request):
-    u"""Helper function yielding info about successful email."""
-    return messages.add_message(
-        request,
-        messages.SUCCESS,
-        u'Email został wysłany.'
-    )
-
-
-# todo: replace with more generic
-def yield_message_error_form(request, form):
-    u"""Helper function yielding info about errors in form."""
-    return messages.add_message(
-        request,
-        messages.ERROR,
-        u'Proszę poprawić błędy w formularzu: ' + u'<br />'.join(form.errors)
-    )
-
-
-def yield_message_successful(request, msg):
-    u"""Helper function yielding success message."""
-    return messages.add_message(request, messages.SUCCESS, msg)
-
-
-def yield_message_error(request, msg):
-    u"""Helper function yielding error message."""
-    return messages.add_message(request, messages.ERROR, msg)
-
-
 def index(request):  # pylint: disable=unused-argument
     u"""Main view of app.
 
@@ -78,7 +50,7 @@ def index(request):  # pylint: disable=unused-argument
             'offers': offers,
         })
     else:
-        offers = Offer.objects.filter(status='STAGED')
+        offers = Offer.objects.filter(status='ACTIVE')
 
     return render(
         request,
@@ -215,7 +187,7 @@ def register(request):
 def logged_user_profile(request):
     u"""View to display user profile page."""
     user = get_object_or_404(UserProfile, user__email=request.user)
-    offers = Offer.objects.filter(volunteers=user.id)
+    offers = Offer.objects.filter(volunteers=request.user.id)
 
     return render(
         request,
@@ -243,9 +215,13 @@ def contact_form(request):
                 ],
                 {k: v for k, v in request.POST.items()},
             )
-            yield_message_successful_email(request)
+            yield_message_successful(request, u'Email został wysłany.')
         else:
-            yield_message_error_form(request, form)
+            errors = u'<br />'.join(form.errors)
+            yield_message_error(
+                request,
+                u'Proszę poprawić błędy w formularzu: ' + errors
+            )
             return render(
                 request,
                 "contact.html",

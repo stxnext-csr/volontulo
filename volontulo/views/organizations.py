@@ -15,8 +15,8 @@ from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import Organization
 from volontulo.models import UserProfile
-from volontulo.views import yield_message_error_form
-from volontulo.views import yield_message_successful_email
+from volontulo.views import yield_message_error
+from volontulo.views import yield_message_successful
 
 
 # pylint: disable=unused-argument
@@ -37,6 +37,7 @@ def organization_form(request, slug, organization_id):
         org.address = request.POST.get('address')
         org.description = request.POST.get('description')
         org.save()
+        yield_message_successful(request, u'Oferta została dodana/zmnieniona.')
         return redirect(
             reverse(
                 'organization_view',
@@ -68,9 +69,12 @@ def organization_view(request, slug, organization_id):
                 ],
                 {k: v for k, v in request.POST.items()},
             )
-            yield_message_successful_email(request)
+            yield_message_successful(request, u'Email został wysłany.')
         else:
-            yield_message_error_form(request, form)
+            yield_message_error(
+                request,
+                u"Formularz zawiera nieprawidłowe dane: {}".format(form.errors)
+            )
             return render(
                 request,
                 "organizations/organization_view.html",

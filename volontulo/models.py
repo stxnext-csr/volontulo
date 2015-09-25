@@ -5,6 +5,7 @@ u"""
 """
 
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils import timezone
 
@@ -39,13 +40,8 @@ class Offer(models.Model):
 class Badge(models.Model):
     u"""Generic badge representation."""
     name = models.CharField(max_length=150)
+    slug = models.CharField(max_length=150)
     priority = models.IntegerField(default=1)
-
-    def __init__(self, name, priority=1, *args, **kwargs):
-        u"""Initialize default badge."""
-        super(Badge, self).__init__(*args, **kwargs)
-        self.name = name
-        self.priority = priority
 
     def __str__(self):
         u"""Badge string representation."""
@@ -64,16 +60,25 @@ class UserProfile(models.Model):
         related_name='user_profile'
     )
 
+    def is_admin(self):
+        u"""Return True if current user is administrator, else return False"""
+        return self.is_administrator
+
+    def is_volunteer(self):
+        u"""Return True if current user is volunteer, else return False"""
+        return not (self.is_administrator and self.is_organization)
+
     def __str__(self):
         return self.user.email
 
 
 class UserBadges(models.Model):
     u"""Users to bages relation table."""
-    user = models.ForeignKey(UserProfile)
+    userprofile = models.ForeignKey(UserProfile, db_column='userprofile_id')
     badge = models.ForeignKey(Badge)
     created_at = models.DateTimeField(default=timezone.now, blank=True)
     description = models.CharField(max_length=255)
+    content_type = models.ForeignKey(ContentType, null=True)
 
     def __str__(self):
         return self.description
