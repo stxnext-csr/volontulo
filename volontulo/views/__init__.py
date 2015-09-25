@@ -10,7 +10,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -164,7 +163,7 @@ def register(request):
                     messages.INFO,
                     u'Użytkownik o podanym emailu już istnieje'
                 )
-                return HttpResponseRedirect(reverse('register'))
+                return redirect('register')
             else:
                 # save user
                 user = user_form.save(commit=False)
@@ -191,14 +190,14 @@ def register(request):
                     messages.SUCCESS,
                     u'Rejestracja przebiegła pomyślnie'
                 )
-                return HttpResponseRedirect(reverse('register'))
+                return redirect('register')
         else:
             messages.add_message(
                 request,
                 messages.ERROR,
                 u'Wprowadzono nieprawidłowy email lub hasło'
             )
-            return HttpResponseRedirect(reverse('register'))
+            return redirect('register')
 
     user_form = UserForm()
     profile_form = ProfileForm()
