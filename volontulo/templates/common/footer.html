@@ -4,7 +4,7 @@
         <div class="col-xs-4">
             <h3>Ogólne</h3>
             <ul>
-                <li><a href="{% url 'index' %}">Strona główna</a></li>
+                <li><a href="{% url 'homepage' %}">Strona główna</a></li>
                 <li><a href="{% url 'register' %}">Rejestracja</a></li>
                 <li><a href="{% url 'contact_form' %}">Kontakt z administratorem</a></li>
             </ul>
@@ -26,8 +26,9 @@
             <h3>Oferty</h3>
             <ul>
                 <li><a href="{% url 'offers_list' %}">Lista ofert</a></li>
-                <li><a href="{% url 'show_offer' 'WRK' 1 %}">Podgląd oferty</a></li>
-                <li><a href="{% url 'offer_apply' 'WRK' 1 %}">Zgłoś chęć współpracy przy ofercie</a></li>
+                <li><a href="{% url 'offers_view' 'WRK' 1 %}">Podgląd oferty</a></li>
+                <li><a href="{% url 'offers_join' 'WRK' 1 %}">Zgłoś chęć współpracy przy ofercie</a></li>
+                <li><a href="{% url 'offers_create' %}">Tworzenie oferty</a></li>
             </ul>
         </div>
     </div>

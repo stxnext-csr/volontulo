@@ -38,7 +38,7 @@ def logged_as_admin(request):
     )
 
 
-def index(request):  # pylint: disable=unused-argument
+def homepage(request):  # pylint: disable=unused-argument
     u"""Main view of app.
 
     We will display page with few step CTA links?
@@ -88,7 +88,7 @@ def login(request):
                 messages.ERROR,
                 u"Nieprawidłowy email lub hasło!"
             )
-        return redirect('index')
+        return redirect('homepage')
     else:
         return render(
             request,
@@ -106,7 +106,7 @@ def logout(request):
         messages.INFO,
         u"Użytkownik został wylogowany!"
     )
-    return redirect('index')
+    return redirect('homepage')
 
 
 def static_pages(request, template_name):

@@ -6,19 +6,19 @@
     <div class="row">
         <div class="col-xs-4 text-center">
             <div>
-                <img src="http://placehold.it/260x260?text=Załóż+konto" />
+                <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Załóż+konto" />
             </div>
             <p><a href="{% url 'register' %}">Załóż konto</a></p>
         </div>
         <div class="col-xs-4 text-center">
             <div>
-                <img src="http://placehold.it/260x260?text=Wybierz ofertę" />
+                <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Wybierz ofertę" />
             </div>
             <p><a href="{% url 'offers_list' %}">Wybierz ofertę</a></p>
         </div>
         <div class="col-xs-4 text-center">
             <div>
-                <img src="http://placehold.it/260x260?text=Podziel+się" />
+                <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Podziel+się" />
             </div>
             <p><a href="#">Podziel się...</a></p>
         </div>
@@ -27,7 +27,7 @@
     <div class="row">
         <div class="col-xs-12 text-center">
             <div>
-                <img src="http://placehold.it/1140x260?text=Albo+jeden+duży+banner" />
+                <img class="img-responsive center-block" src="http://placehold.it/1140x260?text=Albo+jeden+duży+banner" />
             </div>
         </div>
     </div>
@@ -43,7 +43,8 @@
             </tr>
         {% for o in offers %}
             <tr>
-                <td><a href="{% url 'show_offer' o.title|slugify o.id %}">{{ o.title }}</a></td>
+                <td><a href="{% url 'offers_edit' o.title|slugify o.id %}">{{ o.title }}</a></td>
+                <td><a href="{% url 'offers_view' o.title|slugify o.id %}">{{ o.title }}</a></td>
                 <td>{{ o.location }}</td>
                 <td><a href="{% url 'organization_view' o.organization.name|slugify o.organization.id %}">{{ o.organization.name }}</a></td>
                 <td>{{ o.time_period }}</td>

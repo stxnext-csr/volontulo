@@ -29,7 +29,7 @@ def organization_form(request, slug, organization_id):
             request.user.is_authenticated() and
             UserProfile.objects.get(user=request.user).is_organization
     ):
-        return redirect('index')
+        return redirect('homepage')
 
     org = Organization.objects.get(pk=organization_id)
     if request.method == 'POST':

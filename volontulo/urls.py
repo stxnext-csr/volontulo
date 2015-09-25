@@ -13,7 +13,7 @@ from volontulo.views import organizations as orgs_views
 
 urlpatterns = [  # pylint: disable=invalid-name
     # homepage:
-    url(r'^$', views.index, name='index'),
+    url(r'^$', views.homepage, name='homepage'),
 
     # login and loggged user space:
     url(r'^login$', views.login, name='login'),
@@ -27,32 +27,26 @@ urlpatterns = [  # pylint: disable=invalid-name
     # offers' namesapce:
     url(r'^offers$', offers_views.offers_list, name='offers_list'),
     url(
-        r'^offers/form/(?P<organization_id>[0-9]+)$',
-        offers_views.offer_form,
-        name='offer_form'
-    ),
-    url(
-        r'^offers/form/(?P<organization_id>[0-9]+)/(?P<offer_id>[0-9]+)$',
-        offers_views.offer_form,
-        name='offer_form'
-    ),
-    url(
-        r'^offers/activate/(?P<offer_id>[0-9]+)$',
-        offers_views.activate_offer,
-        name='activate_offer'
+        r'^offers/create$',
+        offers_views.OffersCreate.as_view(),
+        name='offers_create'
     ),
     url(
         r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)$',
-        offers_views.show_offer,
-        name='show_offer'
+        offers_views.offers_view,
+        name='offers_view'
+    ),
+    url(
+        r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)/edit$',
+        offers_views.OffersEdit.as_view(),
+        name='offers_edit'
     ),
     url(
         r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)/join$',
-        offers_views.offer_apply,
-        name='offer_apply'
+        offers_views.offers_join,
+        name='offers_join'
     ),
     # offers/filter
-    # offers/create
 
     # users' namesapce:
     # users
