@@ -8,7 +8,6 @@ from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -177,7 +176,7 @@ def register(request):
 
                 # 87 - if user check, that he/she's representing organization
                 # we need to create new organization and link it to this user:
-                if profile.is_organization:
+                if 'is_organization' in profile_form.data:
                     org = Organization(name=profile.user)
                     org.save()
                     profile.organization = org

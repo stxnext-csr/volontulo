@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    {% if not user.is_organization %}
+    {% if not user.organization %}
     <div class="form-horizontal">
         {% include 'contact_form.html' with contact_form=contact_form  %}
     </div>

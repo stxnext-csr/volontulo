@@ -27,7 +27,7 @@ def organization_form(request, slug, organization_id):
     """
     if not (
             request.user.is_authenticated() and
-            UserProfile.objects.get(user=request.user).is_organization
+            UserProfile.objects.get(user=request.user).organization
     ):
         return redirect('homepage')
 
@@ -56,6 +56,10 @@ def organization_view(request, slug, organization_id):
     u"""View responsible for viewing organization."""
     org = get_object_or_404(Organization, id=organization_id)
     offers = Offer.objects.filter(organization_id=organization_id)
+    try:
+        user = UserProfile.objects.get(user__email=request.user)
+    except UserProfile.DoesNotExist:
+        user = None
     if request.method == 'POST':
         form = VolounteerToOrganizationContactForm(request.POST)
         if form.is_valid():
@@ -75,6 +79,7 @@ def organization_view(request, slug, organization_id):
                 request,
                 "organizations/organization_view.html",
                 {
+                    'user': user,
                     'organization': org,
                     'contact_form': form,
                     'offers': offers,
@@ -85,6 +90,7 @@ def organization_view(request, slug, organization_id):
         request,
         "organizations/organization_view.html",
         {
+            'user': user,
             'organization': org,
             'contact_form': form,
             'offers': offers,
