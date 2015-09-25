@@ -185,14 +185,6 @@ class OffersEdit(View):
         )
 
 
-def activate_offer(request, offer_id):  # pylint: disable=unused-argument
-    u"""View responsible for changing status of offer from STAGED to ACTIVE."""
-    offer = get_object_or_404(Offer, id=offer_id)
-    offer.status = 'ACTIVE'
-    offer.save()
-    return redirect('offers_list')
-
-
 def offers_view(request, slug, offer_id):  # pylint: disable=unused-argument
     u"""View responsible for showing details of particular offer."""
     offer = get_object_or_404(Offer, id=offer_id)
