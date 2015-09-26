@@ -79,7 +79,6 @@ def organization_view(request, slug, organization_id):
                 request,
                 "organizations/organization_view.html",
                 {
-                    'user': user,
                     'organization': org,
                     'contact_form': form,
                     'offers': offers,
@@ -90,7 +89,6 @@ def organization_view(request, slug, organization_id):
         request,
         "organizations/organization_view.html",
         {
-            'user': user,
             'organization': org,
             'contact_form': form,
             'offers': offers,

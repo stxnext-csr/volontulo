@@ -219,7 +219,6 @@ def logged_user_profile(request):
         request,
         'users/user_profile.html',
         {
-            'user': user,
             'offers': offers,
         }
     )
