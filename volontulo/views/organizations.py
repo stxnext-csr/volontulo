@@ -56,10 +56,6 @@ def organization_view(request, slug, organization_id):
     u"""View responsible for viewing organization."""
     org = get_object_or_404(Organization, id=organization_id)
     offers = Offer.objects.filter(organization_id=organization_id)
-    try:
-        user = UserProfile.objects.get(user__email=request.user)
-    except UserProfile.DoesNotExist:
-        user = None
     if request.method == 'POST':
         form = VolounteerToOrganizationContactForm(request.POST)
         if form.is_valid():
