@@ -3,16 +3,16 @@
 {% block title %}Strona użytkownika {{ user.email }}{% endblock %}
 
 {% block content %}
-    <h2>Strona użytkownika {{ user.user.email }}</h2>
-    <p><img src="http://placehold.it/150x150" alt="{{ user.user.username }}" /></p>
-    <p><strong>Real User ID:</strong> {{ user.user.id }} - <strong>UserProfile ID:</strong> {{ user.id }}</p>
+    <h2>Strona użytkownika {{ user.email }}</h2>
+    <p><img src="http://placehold.it/150x150" alt="{{ user.username }}" /></p>
+    <p><strong>Real User ID:</strong> {{ user.id }} - <strong>UserProfile ID:</strong> {{ user.userprofile.id }}</p>
 
-    {% if user.organization %}
+    {% if user.userprofile.organization %}
         <h2>Jako organizacja chciałbym ...</h2>
         <p><a href="{% url 'offers_create' %}">...dodać ofertę</a></p>
     {% endif %}
 
-    {% if not user.organization %}
+    {% if not user.userprofile.organization %}
         <h2>Jako wolontariusz chciałbym ...</h2>
 
         {% include 'users/my_offers.html' with offers=offers %}
