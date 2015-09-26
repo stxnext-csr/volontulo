@@ -65,7 +65,6 @@ class TestOffersList(TestCase):
         organization_user.save()
         cls.organization = UserProfile(
             user=organization_user,
-            is_organization=True,
             organization=organization,
         )
         cls.organization.save()
