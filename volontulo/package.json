@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.6.0",
+    "gulp-util": "^3.0.6",
+  },
+  "dependencies": {}
+}

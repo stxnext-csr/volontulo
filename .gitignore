@@ -58,3 +58,7 @@ target/
 
 # PyCharm directory
 .idea/
+
+# npm and gulp
+volontulo/node_modules/
+volontulo/static/
