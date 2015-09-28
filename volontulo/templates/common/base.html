@@ -1,11 +1,16 @@
 {% load bootstrap3 %}
-{% bootstrap_css %}
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block page_title %}Volontulo{% endblock %}</title>
+
+        {% block styles %}
+            <link href="{% static "volontulo/css/bootstrap.css" %}" rel="stylesheet">
+        {% endblock %}
+
     </head>
 
     <body>
@@ -20,8 +25,7 @@
 
         {% block scripts %}
             <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+            <script src="{% static "volontulo/javascripts/bootstrap.js" %}"></script>
         {% endblock %}
-
-        {% bootstrap_javascript %}
     </body>
 </html>

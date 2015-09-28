@@ -340,8 +340,7 @@ input[type="checkbox"] {
     height: auto;
   }
   .form-control-static {
-    height: $input-height-small;
-    min-height: ($line-height-computed + $font-size-small);
+    min-height: $input-height-small;
     padding: ($padding-small-vertical + 1) $padding-small-horizontal;
     font-size: $font-size-small;
     line-height: $line-height-small;
@@ -366,8 +365,7 @@ input[type="checkbox"] {
     height: auto;
   }
   .form-control-static {
-    height: $input-height-large;
-    min-height: ($line-height-computed + $font-size-large);
+    min-height: $input-height-large;
     padding: ($padding-large-vertical + 1) $padding-large-horizontal;
     font-size: $font-size-large;
     line-height: $line-height-large;
