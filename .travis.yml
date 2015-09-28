@@ -7,5 +7,6 @@ script:
   - "pep8 --exclude='volontulo/migrations/*' ."
   - "pylint --load-plugins pylint_django --min-similarity-lines=10 volontulo"
   - "coverage run --source=volontulo setup.py test"
+  - "cd volontulo && npm install && gulp build"
 after_success:
   - "codecov"
