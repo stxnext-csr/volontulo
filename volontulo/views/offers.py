@@ -67,8 +67,6 @@ class OffersCreate(View):
     @staticmethod
     def post(request):
         u"""Method resposible for saving new offer."""
-        user = UserProfile.objects.get(user=request.user)
-        organization = user.organization
         form = CreateOfferForm(request.POST)
 
         if form.is_valid():
@@ -81,7 +79,7 @@ class OffersCreate(View):
                 ),
                 'address_sufix': reverse(
                     'offers_view',
-                    args=[organization.id, offer.id]
+                    args=[offer.title, offer.id]
                 ),
                 'offer': offer
             }
@@ -98,7 +96,7 @@ class OffersCreate(View):
             return redirect(
                 reverse(
                     'offers_view',
-                    args=[organization.id, offer.id]
+                    args=[offer.title, offer.id]
                 ),
             )
         messages.add_message(
@@ -111,9 +109,7 @@ class OffersCreate(View):
             'offers/offer_form.html',
             {
                 'offer_form': form,
-                'organization': organization,
                 'statuses': OFFERS_STATUSES,
-                'user': user,
                 'offer': Offer()
             }
         )
@@ -153,8 +149,6 @@ class OffersEdit(View):
             offer.save()
             return redirect('offers_list')
 
-        organization = offer.organization
-        user = UserProfile.objects.get(user=request.user)
         form = CreateOfferForm(request.POST, instance=offer)
 
         if form.is_valid():
@@ -176,9 +170,7 @@ class OffersEdit(View):
             'offers/offer_form.html',
             {
                 'offer_form': form,
-                'organization': organization,
                 'statuses': OFFERS_STATUSES,
-                'user': user,
                 'offer': Offer()
             }
         )
