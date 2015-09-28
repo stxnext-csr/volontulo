@@ -8,9 +8,7 @@ from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -136,7 +134,7 @@ def register(request):
                     messages.INFO,
                     u'Użytkownik o podanym emailu już istnieje'
                 )
-                return HttpResponseRedirect(reverse('register'))
+                return redirect('register')
             else:
                 # save user
                 user = user_form.save(commit=False)
@@ -150,7 +148,7 @@ def register(request):
 
                 # 87 - if user check, that he/she's representing organization
                 # we need to create new organization and link it to this user:
-                if profile.is_organization:
+                if 'is_organization' in profile_form.data:
                     org = Organization(name=profile.user)
                     org.save()
                     profile.organization = org
@@ -163,14 +161,14 @@ def register(request):
                     messages.SUCCESS,
                     u'Rejestracja przebiegła pomyślnie'
                 )
-                return HttpResponseRedirect(reverse('register'))
+                return redirect('register')
         else:
             messages.add_message(
                 request,
                 messages.ERROR,
                 u'Wprowadzono nieprawidłowy email lub hasło'
             )
-            return HttpResponseRedirect(reverse('register'))
+            return redirect('register')
 
     user_form = UserForm()
     profile_form = ProfileForm()
@@ -186,14 +184,12 @@ def register(request):
 
 def logged_user_profile(request):
     u"""View to display user profile page."""
-    user = get_object_or_404(UserProfile, user__email=request.user)
     offers = Offer.objects.filter(volunteers=request.user.id)
 
     return render(
         request,
         'users/user_profile.html',
         {
-            'user': user,
             'offers': offers,
         }
     )

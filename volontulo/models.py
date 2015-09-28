@@ -51,7 +51,6 @@ class Badge(models.Model):
 class UserProfile(models.Model):
     u"""Model that handles users' profiles."""
     user = models.OneToOneField(User)
-    is_organization = models.BooleanField(default=False, blank=True)
     organization = models.ForeignKey(Organization, blank=True, null=True)
     is_administrator = models.BooleanField(default=False, blank=True)
     badges = models.ManyToManyField(
@@ -66,7 +65,7 @@ class UserProfile(models.Model):
 
     def is_volunteer(self):
         u"""Return True if current user is volunteer, else return False"""
-        return not (self.is_administrator and self.is_organization)
+        return not (self.is_administrator and self.organization)
 
     def __str__(self):
         return self.user.email

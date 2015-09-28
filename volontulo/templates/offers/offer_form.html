@@ -6,7 +6,7 @@
     <form id="offer_form" class="form-horizontal" method="post" action="{{ request.get_full_path }}" role="form" enctype="multipart/form-data">
         {% csrf_token %}
         <h2>{{ offer.id|yesno:"Edycja,Tworzenie" }} oferty "{{ organization.name }}" dla wolontariuszy</h2>
-        {% if user.is_administrator %}
+        {% if user.userprofile.is_administrator %}
         <div class="form-group form-group-sm">
             <label class="col-xs-offset-6 col-xs-2 control-label" for="{{ offer_form.status.id_for_label }}">Status</label>
             <div class="col-xs-4">

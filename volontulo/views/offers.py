@@ -58,7 +58,6 @@ class OffersCreate(View):
             'offer_form': form,
             'organization': organization,
             'statuses': OFFERS_STATUSES,
-            'user': user,
             'offer': Offer(),
         }
 
@@ -129,14 +128,12 @@ class OffersEdit(View):
         u"""Method responsible for rendering form for offer to be changed."""
         offer = Offer.objects.get(pk=offer_id)
         organization = offer.organization
-        user = UserProfile.objects.get(user=request.user)
         form = CreateOfferForm()
 
         context = {
             'offer_form': form,
             'organization': organization,
             'statuses': OFFERS_STATUSES,
-            'user': user,
             'offer': offer,
         }
 
@@ -268,7 +265,7 @@ def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
             send_mail(
                 'offer_application',
                 [
-                    request.user.user.email,
+                    request.user.email,
                     request.POST.get('email'),
                 ],
                 dict(
