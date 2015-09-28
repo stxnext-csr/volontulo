@@ -9,7 +9,7 @@ from distutils.command.install import install
 from setuptools import setup
 from subprocess import check_output
 
-HERE = os.path.dirname(__file__)
+REPO_ROOT = os.path.dirname(__file__)
 
 
 class install_with_gulp(install):
@@ -19,12 +19,15 @@ class install_with_gulp(install):
         u"""Definition of custom install command."""
         check_output(
             ['npm', 'install', '--quiet'],
-            cwd=os.path.join(HERE, 'volontulo'),
+            cwd=os.path.join(REPO_ROOT, 'volontulo'),
         )
-        check_output(['gulp', 'build'], cwd=os.path.join(HERE, 'volontulo'))
+        check_output(
+            ['gulp', 'build'],
+            cwd=os.path.join(REPO_ROOT, 'volontulo')
+        )
         install.run(self)
 
-with open(os.path.join(HERE, 'README.md')) as readme:
+with open(os.path.join(REPO_ROOT, 'README.md')) as readme:
     README = readme.read()
 
 # allow setup.py to be run from any path
