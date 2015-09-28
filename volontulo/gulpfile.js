@@ -2,7 +2,6 @@
 
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var watchify = require('watchify');
 
 gulp.task('build', function() {
     gulp.src('./frontend/**/*')
