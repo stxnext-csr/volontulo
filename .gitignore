@@ -62,4 +62,5 @@ target/
 # npm and gulp
 volontulo/node_modules/
 volontulo/static/
-node_modules/
+node_modules/*
+static/*

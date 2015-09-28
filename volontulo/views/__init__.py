@@ -184,7 +184,12 @@ def register(request):
 
 def logged_user_profile(request):
     u"""View to display user profile page."""
-    offers = Offer.objects.filter(volunteers=request.user.id)
+    userprofile = UserProfile.objects.get(user=request.user)
+    organization = Organization.objects.get(id=userprofile.organization.id)
+    if userprofile.organization:
+        offers = Offer.objects.filter(organization__id=organization.id)
+    else:
+        offers = Offer.objects.filter(volunteers=request.user.id)
 
     return render(
         request,
