@@ -6,7 +6,6 @@
   "devDependencies": {
     "gulp": "^3.6.0",
     "gulp-util": "^3.0.6",
-    "gulp-watchify": "^0.5.0"
   },
   "dependencies": {}
 }
