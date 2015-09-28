@@ -15,13 +15,18 @@ gulp.task('build_img', function() {
         .pipe(gulp.dest('./static/volontulo/img/'));
 });
 
+gulp.task('build_javascripts', function() {
+    gulp.src('./frontend/javascripts/**/*.js')
+        .pipe(gulp.dest('./static/volontulo/javascripts/'));
+});
+
 gulp.task('build_scss', function() {
     gulp.src('./frontend/scss/**/*.scss')
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest('./static/volontulo/css/'));
 });
 
-gulp.task('build', ['build_fonts', 'build_img', 'build_scss'], function() {
+gulp.task('build', ['build_fonts', 'build_img', 'build_javascripts', 'build_scss'], function() {
 });
 
 gulp.task('watch', ['build'], function() {
