@@ -33,7 +33,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     ),
     url(
         r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)$',
-        offers_views.offers_view,
+        offers_views.OffersView.as_view(),
         name='offers_view'
     ),
     url(

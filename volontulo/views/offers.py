@@ -148,6 +148,17 @@ class OffersEdit(View):
         u"""Method resposible for saving changed offer."""
         offer = Offer.objects.get(pk=offer_id)
 
+        # is it really required?
+        if request.POST.get('close_offer') == 'close':
+            offer.status = 'CLOSED'
+            offer.save()
+            return redirect(
+                reverse(
+                    'offers_view',
+                    args=[slugify(offer.title), offer.id]
+                )
+            )
+
         if request.POST['edit_type'] == 'status_change':
             offer.status = request.POST['status']
             offer.save()
@@ -214,17 +225,48 @@ class OffersEdit(View):
         )
 
 
-def offers_view(request, slug, offer_id):  # pylint: disable=unused-argument
-    u"""View responsible for showing details of particular offer."""
-    offer = get_object_or_404(Offer, id=offer_id)
-    context = {
-        'offer': offer,
-    }
-    user = UserProfile.objects.filter(user__id=request.user.id)[0]
-    if user.is_administrator:
-        context['user'] = user
-        context['volunteers'] = offer.volunteers.all()
-    return render(request, "offers/show_offer.html", context=context)
+class OffersView(View):
+    u"""Class view supporting offer preview."""
+
+    @staticmethod
+    def get(request, slug, offer_id):  # pylint: disable=unused-argument
+        u"""View responsible for showing details of particular offer."""
+        offer = get_object_or_404(Offer, id=offer_id)
+        user = UserProfile.objects.get(user=request.user)
+        context = {
+            'offer': offer,
+            'user': user,
+            'volunteers': offer.volunteers.all(),
+        }
+        return render(request, "offers/show_offer.html", context=context)
+
+    @staticmethod
+    def post(request, slug, offer_id):  # pylint: disable=unused-argument
+        u"""View responsible for submitting volunteers awarding."""
+        offer = get_object_or_404(Offer, id=offer_id)
+        for award in request.POST.keys():
+            if award in {'csrfmiddlewaretoken', 'submit'}:
+                continue
+            userprofile_id = award.split('_')[1]
+            usersbadge = UserBadges.objects.get(
+                user_profile=userprofile_id,
+                badge__slug='participant',
+                content_type__app_lable='volontulo',
+                content_type__model='offer',
+            )
+            if request.POST.get('award_%s' % userprofile_id):
+                award_value = request.POST.get('award_%s' % userprofile_id)
+                if award_value == 'PROMINENT-PARTICIPANT':
+                    badge = Badge.objects.get(slug='prominent-participant')
+                    usersbadge.badge = badge
+                    usersbadge.save()
+                elif award_value == 'NOT-APPLY':
+                    usersbadge.delete()
+
+        context = {
+            'offer': offer,
+        }
+        return render(request, "offers/show_offer.html", context=context)
 
 
 def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
