@@ -32,17 +32,17 @@ urlpatterns = [  # pylint: disable=invalid-name
         name='offers_create'
     ),
     url(
-        r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)$',
+        r'^offers/(?P<slug>[\w-]+)/(?P<id_>[0-9]+)$',
         offers_views.offers_view,
         name='offers_view'
     ),
     url(
-        r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)/edit$',
+        r'^offers/(?P<slug>[\w-]+)/(?P<id_>[0-9]+)/edit$',
         offers_views.OffersEdit.as_view(),
         name='offers_edit'
     ),
     url(
-        r'^offers/(?P<slug>[\w-]+)/(?P<offer_id>[0-9]+)/join$',
+        r'^offers/(?P<slug>[\w-]+)/(?P<id_>[0-9]+)/join$',
         offers_views.offers_join,
         name='offers_join'
     ),
@@ -59,12 +59,12 @@ urlpatterns = [  # pylint: disable=invalid-name
     # organizations/filter
     # organization/create
     url(
-        r'^organizations/(?P<slug>[\w-]+)/(?P<organization_id>[0-9]+)$',
+        r'^organizations/(?P<slug>[\w-]+)/(?P<id_>[0-9]+)$',
         orgs_views.organization_view,
         name='organization_view'
     ),
     url(
-        r'^organizations/(?P<slug>[\w-]+)/(?P<organization_id>[0-9]+)/edit$',
+        r'^organizations/(?P<slug>[\w-]+)/(?P<id_>[0-9]+)/edit$',
         orgs_views.organization_form,
         name='organization_form'
     ),

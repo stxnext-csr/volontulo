@@ -22,6 +22,7 @@ from volontulo.models import Offer
 from volontulo.models import UserProfile
 from volontulo.utils import OFFERS_STATUSES
 from volontulo.utils import save_history
+from volontulo.utils import correct_slug
 from volontulo.views import logged_as_admin
 
 
@@ -122,9 +123,10 @@ class OffersEdit(View):
     u"""Class view supporting change of a offer."""
 
     @staticmethod
-    def get(request, slug, offer_id):  # pylint: disable=unused-argument
+    @correct_slug(Offer, 'offers_edit', 'title')
+    def get(request, slug, id_):  # pylint: disable=unused-argument
         u"""Method responsible for rendering form for offer to be changed."""
-        offer = Offer.objects.get(pk=offer_id)
+        offer = Offer.objects.get(pk=id_)
         organization = offer.organization
         form = CreateOfferForm()
 
@@ -142,9 +144,9 @@ class OffersEdit(View):
         )
 
     @staticmethod
-    def post(request, slug, offer_id):  # pylint: disable=unused-argument
+    def post(request, slug, id_):  # pylint: disable=unused-argument
         u"""Method resposible for saving changed offer."""
-        offer = Offer.objects.get(pk=offer_id)
+        offer = Offer.objects.get(pk=id_)
 
         if request.POST['edit_type'] == 'status_change':
             offer.status = request.POST['status']
@@ -182,9 +184,10 @@ class OffersEdit(View):
         )
 
 
-def offers_view(request, slug, offer_id):  # pylint: disable=unused-argument
+@correct_slug(Offer, 'offers_view', 'title')
+def offers_view(request, slug, id_):  # pylint: disable=unused-argument
     u"""View responsible for showing details of particular offer."""
-    offer = get_object_or_404(Offer, id=offer_id)
+    offer = get_object_or_404(Offer, id=id_)
     context = {
         'offer': offer,
     }
@@ -195,9 +198,10 @@ def offers_view(request, slug, offer_id):  # pylint: disable=unused-argument
     return render(request, "offers/show_offer.html", context=context)
 
 
-def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
+@correct_slug(Offer, 'offers_view', 'title')
+def offers_join(request, slug, id_):  # pylint: disable=unused-argument
     u"""Handling volounteer applying for helping with offer."""
-    offer = Offer.objects.get(pk=offer_id)
+    offer = Offer.objects.get(pk=id_)
 
     if request.method == 'POST':
         form = OfferApplyForm(request.POST)
@@ -227,8 +231,8 @@ def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
                     comments=request.POST.get('comments'),
                     offer_url=domain + reverse(
                         'offers_view',
-                        args=[slugify(offer.title), offer_id]),
-                    offer_id=offer_id
+                        args=[slugify(offer.title), id_]),
+                    offer_id=id_
                 )
             )
             messages.add_message(request,
@@ -238,7 +242,7 @@ def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
             return redirect(
                 reverse(
                     'offers_view',
-                    args=[slugify(offer.title), offer_id]
+                    args=[slugify(offer.title), id_]
                 ),
             )
         else:
@@ -252,7 +256,7 @@ def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
                 'volontulo/offer_apply.html',
                 {
                     'form': form,
-                    'offer_id': offer_id,
+                    'offer_id': id_,
                 }
             )
     else:
