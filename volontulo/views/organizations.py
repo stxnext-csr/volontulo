@@ -45,7 +45,7 @@ class OrganizationsCreate(View):
 
     @staticmethod
     def post(request):
-        u"""Method resposible for saving new organization."""
+        u"""Method responsible for saving new organization."""
         organization = Organization(
             name=request.POST.get('name'),
             address=request.POST.get('address'),
