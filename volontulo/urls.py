@@ -57,7 +57,11 @@ urlpatterns = [  # pylint: disable=invalid-name
     # organizations' namespace:
     # organizations
     # organizations/filter
-    # organization/create
+    url(
+        r'^organizations/create$',
+        orgs_views.OrganizationsCreate.as_view(),
+        name='organizations_create',
+    ),
     url(
         r'^organizations/(?P<slug>[\w-]+)/(?P<id_>[0-9]+)$',
         orgs_views.organization_view,
