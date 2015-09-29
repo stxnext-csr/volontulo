@@ -20,6 +20,16 @@ from volontulo.views import yield_message_error_form
 from volontulo.views import yield_message_successful_email
 
 
+def organizations_list(request):
+    u"""View responsible for listing all organizations."""
+    organizations = Organization.objects.all()
+    return render(
+        request,
+        "organizations/list.html",
+        {'organizations': organizations},
+    )
+
+
 @correct_slug(Organization, 'organization_form', 'name')
 # pylint: disable=unused-argument
 def organization_form(request, slug, id_):

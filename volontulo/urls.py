@@ -59,6 +59,11 @@ urlpatterns = [  # pylint: disable=invalid-name
     # organizations/filter
     # organization/create
     url(
+        r'^organizations$',
+        orgs_views.organizations_list,
+        name='organizations_list'
+    ),
+    url(
         r'^organizations/(?P<slug>[\w-]+)/(?P<id_>[0-9]+)$',
         orgs_views.organization_view,
         name='organization_view'
