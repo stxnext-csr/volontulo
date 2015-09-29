@@ -47,13 +47,9 @@ class OffersCreate(View):
     @staticmethod
     def get(request):
         u"""Method responsible for rendering form for new offer."""
-        user = UserProfile.objects.get(user=request.user)
-        organization = user.organization
-
         form = CreateOfferForm()
         context = {
             'offer_form': form,
-            'organization': organization,
             'statuses': OFFERS_STATUSES,
             'offer': Offer(),
         }

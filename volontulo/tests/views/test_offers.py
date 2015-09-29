@@ -65,9 +65,11 @@ class TestOffersList(TestCase):
         organization_user.save()
         cls.organization = UserProfile(
             user=organization_user,
-            organization=organization,
         )
         cls.organization.save()
+        # pylint: disable=no-member
+        cls.organization.organizations.add(organization)
+
         admin_user = User.objects.create_user(
             u'admin@example.com',
             u'admin@example.com',

@@ -25,8 +25,10 @@
         <div class="form-group form-group-sm">
             <label class="col-xs-2 control-label" for="{{ offer_form.organization.id_for_label }}">Organizacja</label>
             <div class="col-xs-10">
-            <select value="{{ user.userprofile.organization.id }}" name="organization" class="form-control" id="{{ offer_form.organization.id_for_label }}">
-                <option value="{{ user.userprofile.organization.id }}">{{ user.userprofile.organization.name }}</option>
+            <select value="{{ user.userprofile.organizations.all.0.id }}" name="organization" class="form-control" id="{{ offer_form.organization.id_for_label }}">
+                {% for o in user.userprofile.organizations.all %}
+                    <option value="{{ o.id }}">{{ o.name }}</option>
+                {% endfor %}
             </select>
             </div>
         </div>
