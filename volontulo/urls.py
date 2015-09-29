@@ -58,6 +58,11 @@ urlpatterns = [  # pylint: disable=invalid-name
     # organizations
     # organizations/filter
     url(
+        r'^organizations$',
+        orgs_views.organizations_list,
+        name='organizations_list'
+    ),
+    url(
         r'^organizations/create$',
         orgs_views.OrganizationsCreate.as_view(),
         name='organizations_create',
