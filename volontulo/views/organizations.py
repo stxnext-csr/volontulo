@@ -37,6 +37,11 @@ class OrganizationsCreate(View):
     @staticmethod
     def get(request):
         u"""Method responsible for rendering form for new organization."""
+        return render(
+            request,
+            "organizations/organization_form.html",
+            {'organization': Organization()}
+        )
 
     @staticmethod
     def post(request):
