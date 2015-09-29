@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.utils.text import slugify
+from django.views.generic import View
 
 from volontulo.forms import VolounteerToOrganizationContactForm
 from volontulo.lib.email import send_mail
@@ -28,6 +29,35 @@ def organizations_list(request):
         "organizations/list.html",
         {'organizations': organizations},
     )
+
+
+class OrganizationsCreate(View):
+    u"""Class view supporting creation of new organization."""
+
+    @staticmethod
+    def get(request):
+        u"""Method responsible for rendering form for new organization."""
+        return render(
+            request,
+            "organizations/organization_form.html",
+            {'organization': Organization()}
+        )
+
+    @staticmethod
+    def post(request):
+        u"""Method responsible for saving new organization."""
+        organization = Organization(
+            name=request.POST.get('name'),
+            address=request.POST.get('address'),
+            description=request.POST.get('description'),
+        )
+        organization.save()
+        request.user.userprofile.organizations.add(organization)
+        return redirect(
+            'organization_view',
+            slug=slugify(organization.name),
+            id_=organization.id,
+        )
 
 
 @correct_slug(Organization, 'organization_form', 'name')
