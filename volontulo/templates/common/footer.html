@@ -20,18 +20,13 @@
             <ul>
                 <li><a href="{% url 'organizations_list' %}">Lista organizacji</a></li>
                 <li><a href="{% url 'organizations_create' %}">Załóż organizację</a></li>
-                <li><a href="{% url 'organization_view' 'WRK' 1 %}">Widok organizacji</a></li>
-                <li><a href="{% url 'organization_form' 'WRK' 1 %}">Edycja organizacji</a></li>
             </ul>
         </div>
         <div class="col-xs-4">
             <h3>Oferty</h3>
             <ul>
                 <li><a href="{% url 'offers_list' %}">Lista ofert</a></li>
-                <li><a href="{% url 'offers_view' 'WRK' 1 %}">Podgląd oferty</a></li>
-                <li><a href="{% url 'offers_join' 'WRK' 1 %}">Zgłoś chęć współpracy przy ofercie</a></li>
                 <li><a href="{% url 'offers_create' %}">Tworzenie oferty</a></li>
-                <li><a href="{% url 'offers_edit' 'WRK' 1 %}">Edycja oferty</a></li>
             </ul>
         </div>
     </div>

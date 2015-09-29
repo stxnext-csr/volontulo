@@ -25,6 +25,7 @@
                     <button type="submit" name="submit" class="btn btn-primary">Aktywuj</button>
                 </form>
             {% endif %}
+                <a href="{% url 'offers_edit' o.title|slugify o.id %}">Edytuj</a>
             </td>
         </tr>
     {% endfor %}
