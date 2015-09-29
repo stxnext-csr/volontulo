@@ -55,7 +55,10 @@ class Badge(models.Model):
 class UserProfile(models.Model):
     u"""Model that handles users' profiles."""
     user = models.OneToOneField(User)
-    organizations = models.ManyToManyField(Organization)
+    organizations = models.ManyToManyField(
+        Organization,
+        related_name='userprofiles',
+    )
     is_administrator = models.BooleanField(default=False, blank=True)
     badges = models.ManyToManyField(
         'Badge',
