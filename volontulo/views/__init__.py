@@ -176,12 +176,11 @@ def register(request):
 
                 # 87 - if user check, that he/she's representing organization
                 # we need to create new organization and link it to this user:
+                profile.save()
                 if 'is_organization' in profile_form.data:
                     org = Organization(name=profile.user)
                     org.save()
-                    profile.organization = org
-
-                profile.save()
+                    profile.organizations.add(org)
 
                 send_mail('registration', [user.email])
                 messages.add_message(

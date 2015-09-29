@@ -30,7 +30,7 @@ def organization_form(request, slug, id_):
     org = Organization.objects.get(pk=id_)
     if not (
             request.user.is_authenticated() and
-            UserProfile.objects.get(user=request.user).organization
+            UserProfile.objects.get(user=request.user).organizations
     ):
         return redirect('homepage')
 
