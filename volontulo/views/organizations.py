@@ -46,6 +46,18 @@ class OrganizationsCreate(View):
     @staticmethod
     def post(request):
         u"""Method resposible for saving new organization."""
+        organization = Organization(
+            name=request.POST.get('name'),
+            address=request.POST.get('address'),
+            description=request.POST.get('description'),
+        )
+        organization.save()
+        request.user.userprofile.organizations.add(organization)
+        return redirect(
+            'organization_view',
+            slug=slugify(organization.name),
+            id_=organization.id,
+        )
 
 
 @correct_slug(Organization, 'organization_form', 'name')
