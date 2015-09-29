@@ -31,7 +31,8 @@ class Offer(models.Model):
     location = models.CharField(max_length=150)
     title = models.CharField(max_length=150)
     time_period = models.CharField(max_length=150)
-    status = models.CharField(max_length=30, default='STAGED')
+    status = models.CharField(max_length=30, default='NEW')
+    votes = models.BooleanField(default=0)
 
     def __str__(self):
         return self.title
@@ -78,6 +79,7 @@ class UserBadges(models.Model):
     created_at = models.DateTimeField(default=timezone.now, blank=True)
     description = models.CharField(max_length=255)
     content_type = models.ForeignKey(ContentType, null=True)
+    counter = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
         return self.description

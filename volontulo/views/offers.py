@@ -244,16 +244,21 @@ class OffersView(View):
     def post(request, slug, offer_id):  # pylint: disable=unused-argument
         u"""View responsible for submitting volunteers awarding."""
         offer = get_object_or_404(Offer, id=offer_id)
-        for award in request.POST.keys():
-            if award in {'csrfmiddlewaretoken', 'submit'}:
-                continue
+        post_data = request.POST
+        if post_data.get('csrfmiddlewaretoken'):
+            del post_data['csrfmiddlewaretoken']
+        if post_data.get('submit'):
+            del post_data['submit']
+
+        for award in post_data:
             userprofile_id = award.split('_')[1]
-            usersbadge = UserBadges.objects.get(
-                user_profile=userprofile_id,
+            # PROBLEM: not selecting offer badge
+            usersbadge = UserBadges.objects.filter(
+                userprofile=userprofile_id,
                 badge__slug='participant',
-                content_type__app_lable='volontulo',
+                content_type__app_label='volontulo',
                 content_type__model='offer',
-            )
+            )[0]
             if request.POST.get('award_%s' % userprofile_id):
                 award_value = request.POST.get('award_%s' % userprofile_id)
                 if award_value == 'PROMINENT-PARTICIPANT':

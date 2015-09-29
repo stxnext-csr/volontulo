@@ -8,8 +8,8 @@ from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Count
 from django.http import Http404
-from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
@@ -22,6 +22,7 @@ from volontulo.forms import UserForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import Organization
+from volontulo.models import UserBadges
 from volontulo.models import UserProfile
 
 
@@ -185,8 +186,14 @@ def register(request):
 def logged_user_profile(request):
     u"""View to display user profile page."""
     userprofile = UserProfile.objects.get(user=request.user)
-    organization = Organization.objects.get(id=userprofile.organization.id)
+    badges = UserBadges.objects\
+        .filter(userprofile=userprofile.id)\
+        .values('badge_id', 'badge__name', 'badge__priority')\
+        .annotate(badges=Count('badge_id'))\
+        .order_by('-badge__priority')
+
     if userprofile.organization:
+        organization = Organization.objects.get(id=userprofile.organization.id)
         offers = Offer.objects.filter(organization__id=organization.id)
     else:
         offers = Offer.objects.filter(volunteers=request.user.id)
@@ -196,6 +203,7 @@ def logged_user_profile(request):
         'users/user_profile.html',
         {
             'offers': offers,
+            'badges': badges,
         }
     )
 
