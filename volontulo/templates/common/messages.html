@@ -1,9 +1,6 @@
+{% load bootstrap3 %}
 {% if messages %}
 <div class="messages">
-    {% for msg in messages %}
-    <div class="alert alert-{{msg.level_tag}}" role="alert">
-        {{msg.message}}
-    </div>
-    {% endfor %}
+    {% bootstrap_messages %}
 </div>
 {% endif %}
