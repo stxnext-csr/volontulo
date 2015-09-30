@@ -1,4 +1,4 @@
-{% if volunteers %}
+{% if volunteers and not offer.votes %}
     <form id="offer_form" class="form-horizontal" method="post" action="{{ request.get_full_path }}" role="form" enctype="multipart/form-data">
         {% csrf_token %}
         <h2>Ocena wolontariuszy</h2>

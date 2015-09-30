@@ -86,3 +86,79 @@ class UserBadges(models.Model):
 
     def __str__(self):
         return self.description
+
+    @staticmethod
+    def apply_participant_badge(content_type, volunteer_user):
+        u"""Helper function to apply particpant badge to specified user."""
+
+        participant_badge = Badge.objects.get(slug='participant')
+        try:
+            usersbadge = UserBadges.objects.get(
+                userprofile=volunteer_user,
+                badge=participant_badge,
+                content_type=content_type,
+            )
+            usersbadge.counter += 1
+            usersbadge.save()
+        except UserBadges.DoesNotExist:
+            UserBadges.objects.create(
+                userprofile=volunteer_user,
+                badge=participant_badge,
+                content_type=content_type,
+                created_at=timezone.now(),
+                description=u"Wolontariusz {} - 'Uczestnik'.".format(
+                    volunteer_user.user.email
+                ),
+                counter=1
+            )
+
+    @staticmethod
+    # pylint: disable=invalid-name
+    def apply_prominent_participant_badge(content_type, volunteer_user):
+        u"""Helper function to apply particpant badge to specified user."""
+
+        badge = Badge.objects.get(slug='prominent-participant')
+        try:
+            usersbadge = UserBadges.objects.get(
+                userprofile=volunteer_user,
+                badge=badge,
+                content_type=content_type,
+            )
+            usersbadge.counter += 1
+            usersbadge.save()
+        except UserBadges.DoesNotExist:
+            UserBadges.objects.create(
+                userprofile=volunteer_user,
+                badge=badge,
+                content_type=content_type,
+                created_at=timezone.now(),
+                description=u"Wolontariusz {} - 'Wybitny uczestnik'.".format(
+                    volunteer_user.user.email
+                ),
+                counter=1
+            )
+        finally:
+            UserBadges.decrease_user_participant_badge(
+                content_type,
+                volunteer_user
+            )
+
+    @staticmethod
+    def decrease_user_participant_badge(content_type, volunteer_user):
+        u"""Helper function to decrease users participant badge."""
+
+        badge = Badge.objects.get(slug='participant')
+        try:
+            usersbadge = UserBadges.objects.get(
+                userprofile=volunteer_user,
+                badge=badge,
+                content_type=content_type,
+            )
+            if usersbadge.counter == 1:
+                usersbadge.delete()
+            else:
+                usersbadge.counter -= 1
+                usersbadge.save()
+        except UserBadges.DoesNotExist:
+            # innocent user does not have any participant badge
+            pass

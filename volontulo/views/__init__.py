@@ -183,20 +183,16 @@ def logged_user_profile(request):
         .values('badge_id', 'badge__name', 'badge__priority')\
         .annotate(badges=Count('badge_id'))\
         .order_by('-badge__priority')
-
-    if userprofile.organization:
-        organization = Organization.objects.get(id=userprofile.organization.id)
-        offers = Offer.objects.filter(organization__id=organization.id)
-    else:
-        offers = Offer.objects.filter(volunteers=request.user.id)
+    ctx = {
+        'badges': badges,
+    }
+    if not userprofile.organizations.count():
+        ctx['offers'] = Offer.objects.filter(volunteers=request.user.id)
 
     return render(
         request,
         'users/user_profile.html',
-        {
-            'offers': offers,
-            'badges': badges,
-        }
+        ctx
     )
 
 

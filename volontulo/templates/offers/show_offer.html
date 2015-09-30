@@ -22,9 +22,9 @@
         <tr><th>Korzyści dla wolontariusza</th><td>{{ offer.benefits }}</td></tr>
     </table>
 
-    {# User jest organizacją.    #}
+    {# User jest organizacją i oferta jest zamknięta. #}
     {% if offer.status == 'CLOSED' and user.organization %}
-        {% include 'offers/rewarding_volunteers.html' with volunteers=volunteers %}
+        {% include 'offers/rewarding_volunteers.html' with volunteers=volunteers offer=offer %}
     {% endif %}
 
     {% if user.is_administrator %}
