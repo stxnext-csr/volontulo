@@ -157,12 +157,12 @@ class TestOffersCreate(TestCase):
             u'123org'
         )
         organization_user.save()
-        cls.organization = UserProfile(
+        cls.organization_profile = UserProfile(
             user=organization_user,
         )
-        cls.organization.save()
+        cls.organization_profile.save()
         # pylint: disable=no-member
-        cls.organization.organizations.add(organization)
+        cls.organization_profile.organizations.add(organization)
 
     def setUp(self):
         u"""Set up each test."""
@@ -198,7 +198,7 @@ class TestOffersCreate(TestCase):
             'email': u'organization@example.com',
             'password': '123org',
         })
-        for i in range(1, 10):
+        for i in range(1, 11):
             response = self.client.post('/offers/create', {
                 'organization': u'1',
                 'description': u'required description',
@@ -218,7 +218,7 @@ class TestOffersCreate(TestCase):
             offer = Offer.objects.get(id=i)
             self.assertEqual(
                 offer.organization,
-                self.organization.organizations.all()[0],
+                self.organization_profile.organizations.all()[0],
             )
             self.assertEqual(offer.description, u'required description')
             self.assertEqual(offer.requirements, u'required requirements')
