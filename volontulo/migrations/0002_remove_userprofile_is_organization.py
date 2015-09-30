@@ -7,13 +7,12 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('volontulo', '0004_userbadges_counter'),
+        ('volontulo', '0001_initial'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='offer',
-            name='votes',
-            field=models.BooleanField(default=0),
+        migrations.RemoveField(
+            model_name='userprofile',
+            name='is_organization',
         ),
     ]

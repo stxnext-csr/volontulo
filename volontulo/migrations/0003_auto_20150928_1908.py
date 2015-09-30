@@ -13,11 +13,8 @@ def move_organization(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    # dependencies = [
-    #     ('volontulo', '0002_remove_userprofile_is_organization'),
-    # ]
     dependencies = [
-        ('volontulo', '0002_auto_20150928_1230'),
+        ('volontulo', '0002_remove_userprofile_is_organization'),
     ]
 
     operations = [

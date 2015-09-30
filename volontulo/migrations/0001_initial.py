@@ -10,23 +10,21 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('contenttypes', '0002_remove_content_type_name'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Badge',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=150)),
-                ('slug', models.CharField(max_length=150)),
                 ('priority', models.IntegerField(default=1)),
             ],
         ),
         migrations.CreateModel(
             name='Offer',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('description', models.TextField()),
                 ('requirements', models.TextField()),
                 ('time_commitment', models.TextField()),
@@ -40,7 +38,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Organization',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=150)),
                 ('address', models.CharField(max_length=150)),
                 ('description', models.TextField()),
@@ -49,27 +47,27 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserBadges',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now, blank=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('created_at', models.DateTimeField(blank=True, default=django.utils.timezone.now)),
                 ('description', models.CharField(max_length=255)),
                 ('badge', models.ForeignKey(to='volontulo.Badge')),
-                ('content_type', models.ForeignKey(null=True, to='contenttypes.ContentType')),
             ],
         ),
         migrations.CreateModel(
             name='UserProfile',
             fields=[
-                ('id', models.AutoField(serialize=False, auto_created=True, primary_key=True, verbose_name='ID')),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('is_organization', models.BooleanField(default=False)),
                 ('is_administrator', models.BooleanField(default=False)),
                 ('badges', models.ManyToManyField(related_name='user_profile', to='volontulo.Badge', through='volontulo.UserBadges')),
-                ('organization', models.ForeignKey(null=True, blank=True, to='volontulo.Organization')),
+                ('organization', models.ForeignKey(to='volontulo.Organization', blank=True, null=True)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
             model_name='userbadges',
-            name='userprofile',
-            field=models.ForeignKey(db_column='userprofile_id', to='volontulo.UserProfile'),
+            name='user',
+            field=models.ForeignKey(to='volontulo.UserProfile'),
         ),
         migrations.AddField(
             model_name='offer',
