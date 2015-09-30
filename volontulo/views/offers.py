@@ -11,14 +11,12 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.utils import timezone
 from django.utils.text import slugify
 from django.views.generic import View
 
 from volontulo.forms import CreateOfferForm
 from volontulo.forms import OfferApplyForm
 from volontulo.lib.email import send_mail
-from volontulo.models import Badge
 from volontulo.models import Offer
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
@@ -171,10 +169,6 @@ class OffersEdit(View):
         if form.is_valid():
             offer = form.save()
             save_history(request, offer, action=CHANGE)
-            yield_message_successful(
-                request,
-                u"Oferta została zmieniona."
-            )
             if offer_id:
                 yield_message_successful(
                     request,
@@ -250,23 +244,26 @@ class OffersView(View):
         if post_data.get('submit'):
             del post_data['submit']
 
+        offer_content_type = ContentType.objects.get(
+            app_label='volontulo',
+            model='offer'
+        )
         for award in post_data:
             userprofile_id = award.split('_')[1]
-            # PROBLEM: not selecting offer badge
-            usersbadge = UserBadges.objects.filter(
-                userprofile=userprofile_id,
-                badge__slug='participant',
-                content_type__app_label='volontulo',
-                content_type__model='offer',
-            )[0]
-            if request.POST.get('award_%s' % userprofile_id):
-                award_value = request.POST.get('award_%s' % userprofile_id)
-                if award_value == 'PROMINENT-PARTICIPANT':
-                    badge = Badge.objects.get(slug='prominent-participant')
-                    usersbadge.badge = badge
-                    usersbadge.save()
-                elif award_value == 'NOT-APPLY':
-                    usersbadge.delete()
+            volunteer_user = UserProfile.objects.get(id=userprofile_id)
+            award_value = request.POST.get('award_%s' % userprofile_id)
+            if award_value == 'PROMINENT-PARTICIPANT':
+                UserBadges.apply_prominent_participant_badge(
+                    offer_content_type,
+                    volunteer_user,
+                )
+            elif award_value == 'NOT-APPLY':
+                UserBadges.decrease_user_participant_badge(
+                    offer_content_type,
+                    volunteer_user,
+                )
+        offer.votes = True
+        offer.save()
 
         context = {
             'offer': offer,
@@ -302,7 +299,10 @@ def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
 
         if form.is_valid():
             offer.volunteers.add(request.user)
-            apply_participant_badge(offer_content_type, volunteer_user)
+            UserBadges.apply_participant_badge(
+                offer_content_type,
+                volunteer_user
+            )
             offer.save()
 
             domain = request.build_absolute_uri().replace(
@@ -360,18 +360,3 @@ def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
         'offers/offer_apply.html',
         context
     )
-
-
-def apply_participant_badge(offer_content_type, volunteer_user):
-    u"""Helper function to apply particpant badge to specified user."""
-    badge = Badge.objects.get(slug='participant')
-    user_badges = UserBadges.objects.create(
-        userprofile=volunteer_user,
-        badge=badge,
-        content_type=offer_content_type,
-        created_at=timezone.now(),
-        description=u"Wolontariusz {} zgłosił chęć pomocy.".format(
-            volunteer_user.user.email
-        )
-    )
-    return user_badges.save()
