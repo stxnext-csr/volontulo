@@ -75,7 +75,10 @@ class OffersCreate(View):
                 ),
                 'address_sufix': reverse(
                     'offers_view',
-                    args=[offer.title, offer.id]
+                    kwargs={
+                        'slug': slugify(offer.title),
+                        'id_': offer.id,
+                    },
                 ),
                 'offer': offer
             }
@@ -90,10 +93,9 @@ class OffersCreate(View):
                 u"Dziękujemy za dodanie oferty."
             )
             return redirect(
-                reverse(
-                    'offers_view',
-                    args=[offer.title, offer.id]
-                ),
+                'offers_view',
+                slug=slugify(offer.title),
+                id_=offer.id,
             )
         messages.add_message(
             request,
