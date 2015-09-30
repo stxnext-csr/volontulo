@@ -191,10 +191,8 @@ class OffersView(View):
     def get(request, slug, id_):  # pylint: disable=unused-argument
         u"""View responsible for showing details of particular offer."""
         offer = get_object_or_404(Offer, id=id_)
-        user = UserProfile.objects.get(user=request.user)
         context = {
             'offer': offer,
-            'user': user,
             'volunteers': offer.volunteers.all(),
         }
         return render(request, "offers/show_offer.html", context=context)

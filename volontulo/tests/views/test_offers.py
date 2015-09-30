@@ -394,3 +394,84 @@ class TestOffersEdit(TestCase):
         )
         offer = Offer.objects.get(id=1)
         self.assertEqual(offer.status, u'ACTIVE')
+
+
+class TestOffersView(TestCase):
+    u"""Class responsible for testing offer's view page."""
+
+    @classmethod
+    def setUpTestData(cls):
+        u"""Set up data for all tests."""
+        organization = Organization.objects.create(
+            name=u'',
+            address=u'',
+            description=u'',
+        )
+        organization.save()
+        administrator = User.objects.create_user(
+            u'admin@example.com',
+            u'admin@example.com',
+            u'123admin'
+        )
+        administrator.save()
+        cls.administrator_profile = UserProfile(
+            user=administrator,
+            is_administrator=True,
+        )
+        cls.administrator_profile.save()
+        cls.offer = Offer.objects.create(
+            organization=organization,
+            description=u'',
+            requirements=u'',
+            time_commitment=u'',
+            benefits=u'',
+            location=u'',
+            title=u'volontulo offer',
+            time_period=u'',
+            status='NEW',
+        )
+        cls.offer.save()
+
+        volunteers = [User.objects.create_user(
+            u'v{}@example.com'.format(i),
+            u'v{}@example.com'.format(i),
+            u'v{}'.format(i),
+        ) for i in range(10)]
+        for i in range(10):
+            volunteers[i].save()
+        cls.volunteers_profiles = [
+            UserProfile(user=volunteers[i]) for i in range(10)
+        ]
+        for i in range(10):
+            cls.volunteers_profiles[i].save()
+        for i in range(0, 10, 2):
+            cls.offer.volunteers.add(cls.volunteers_profiles[i].user)
+
+    def setUp(self):
+        u"""Set up each test."""
+        self.client = Client()
+
+    def test_for_non_existing_offer(self):
+        u"""Test if error 404 will be raised when offer dosn't exits."""
+        response = self.client.get('/offers/some-slug/42')
+        self.assertEqual(response.status_code, 404)
+
+    def test_for_different_slug(self):
+        u"""Test if redirect will be raised when offer has different slug."""
+        response = self.client.get('/offers/different-slug/1')
+        self.assertRedirects(
+            response,
+            '/offers/volontulo-offer/1',
+            302,
+            200,
+        )
+
+    def test_for_correct_slug(self):
+        u"""Test offer details for standard user."""
+        response = self.client.get('/offers/volontulo-offer/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'offers/show_offer.html')
+        # pylint: disable=no-member
+        self.assertIn('offer', response.context)
+        self.assertIn('volunteers', response.context)
+        self.assertEqual(len(response.context['volunteers']), 5)
