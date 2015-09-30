@@ -15,12 +15,6 @@
             {{ user_form.password.label_tag }}
             <input type="password" value="" name="password" class="form-control" id="{{ user_form.password.id_for_label }}" />
         </div>
-        <div class="form-group checkbox">
-            <label>
-            <input type="checkbox" value="is_organization" name="is_organization" class="" id="{{ profile_form.is_organization.id_for_label }}" /> Jestem organizacją
-            </label>
-        </div>
-
         <button type="submit" name="submit" class="btn btn-primary">Zarejestruj się</button>
     </form>
 {% endblock %}

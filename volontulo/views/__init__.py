@@ -146,14 +146,6 @@ def register(request):
                 # save profile
                 profile = profile_form.save(commit=False)
                 profile.user = user
-
-                # 87 - if user check, that he/she's representing organization
-                # we need to create new organization and link it to this user:
-                if 'is_organization' in profile_form.data:
-                    org = Organization(name=profile.user)
-                    org.save()
-                    profile.organization = org
-
                 profile.save()
 
                 send_mail('registration', [user.email])

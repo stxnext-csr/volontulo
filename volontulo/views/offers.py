@@ -22,6 +22,7 @@ from volontulo.models import Badge
 from volontulo.models import Offer
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
+from volontulo.utils import correct_slug
 from volontulo.utils import OFFERS_STATUSES
 from volontulo.utils import save_history
 from volontulo.utils import yield_message_error
@@ -50,13 +51,9 @@ class OffersCreate(View):
     @staticmethod
     def get(request):
         u"""Method responsible for rendering form for new offer."""
-        user = UserProfile.objects.get(user=request.user)
-        organization = user.organization
-
         form = CreateOfferForm()
         context = {
             'offer_form': form,
-            'organization': organization,
             'statuses': OFFERS_STATUSES,
             'offer': Offer(),
         }
@@ -70,8 +67,6 @@ class OffersCreate(View):
     @staticmethod
     def post(request):
         u"""Method resposible for saving new offer."""
-        user = UserProfile.objects.get(user=request.user)
-        organization = user.organization
         form = CreateOfferForm(request.POST)
 
         if form.is_valid():
@@ -84,7 +79,10 @@ class OffersCreate(View):
                 ),
                 'address_sufix': reverse(
                     'offers_view',
-                    args=[organization.id, offer.id]
+                    kwargs={
+                        'slug': slugify(offer.title),
+                        'id_': offer.id,
+                    },
                 ),
                 'offer': offer
             }
@@ -98,10 +96,9 @@ class OffersCreate(View):
                 u"Dziękujemy za dodanie oferty."
             )
             return redirect(
-                reverse(
-                    'offers_view',
-                    args=[organization.id, offer.id]
-                ),
+                'offers_view',
+                slug=slugify(offer.title),
+                id_=offer.id,
             )
         yield_message_error(
             request,
@@ -112,9 +109,7 @@ class OffersCreate(View):
             'offers/offer_form.html',
             {
                 'offer_form': form,
-                'organization': organization,
                 'statuses': OFFERS_STATUSES,
-                'user': user,
                 'offer': Offer()
             }
         )
@@ -124,9 +119,10 @@ class OffersEdit(View):
     u"""Class view supporting change of a offer."""
 
     @staticmethod
-    def get(request, slug, offer_id):  # pylint: disable=unused-argument
+    @correct_slug(Offer, 'offers_edit', 'title')
+    def get(request, slug, id_):  # pylint: disable=unused-argument
         u"""Method responsible for rendering form for offer to be changed."""
-        offer = Offer.objects.get(pk=offer_id)
+        offer = Offer.objects.get(id=id_)
         organization = offer.organization
         form = CreateOfferForm()
 
@@ -144,9 +140,9 @@ class OffersEdit(View):
         )
 
     @staticmethod
-    def post(request, slug, offer_id):  # pylint: disable=unused-argument
+    def post(request, slug, id_):  # pylint: disable=unused-argument
         u"""Method resposible for saving changed offer."""
-        offer = Offer.objects.get(pk=offer_id)
+        offer = Offer.objects.get(id=id_)
 
         # is it really required?
         if request.POST.get('close_offer') == 'close':
@@ -164,8 +160,6 @@ class OffersEdit(View):
             offer.save()
             return redirect('offers_list')
 
-        organization = offer.organization
-        user = UserProfile.objects.get(user=request.user)
         form = CreateOfferForm(request.POST, instance=offer)
 
         if form.is_valid():
@@ -175,38 +169,6 @@ class OffersEdit(View):
                 request,
                 u"Oferta została zmieniona."
             )
-            if offer_id:
-                yield_message_successful(
-                    request,
-                    u"Oferta została zmieniona."
-                )
-            else:
-                ctx = {
-                    'domain': request.build_absolute_uri().replace(
-                        request.get_full_path(),
-                        ''
-                    ),
-                    'address_sufix': reverse(
-                        'show_offer',
-                        args=[organization.id, offer.id]
-                    ),
-                    'offer': offer
-                }
-                send_mail(
-                    'offer_creation',
-                    ['administrators@volontuloapp.org'],
-                    ctx
-                )
-                yield_message_successful(
-                    request,
-                    u"Dziękujemy za dodanie oferty."
-                )
-                return redirect(
-                    reverse(
-                        'show_offer',
-                        args=[organization.id, offer.id]
-                    ),
-                )
         else:
             yield_message_error(
                 request,
@@ -217,9 +179,7 @@ class OffersEdit(View):
             'offers/offer_form.html',
             {
                 'offer_form': form,
-                'organization': organization,
                 'statuses': OFFERS_STATUSES,
-                'user': user,
                 'offer': Offer()
             }
         )
@@ -229,9 +189,10 @@ class OffersView(View):
     u"""Class view supporting offer preview."""
 
     @staticmethod
-    def get(request, slug, offer_id):  # pylint: disable=unused-argument
+    @correct_slug(Offer, 'offers_view', 'title')
+    def get(request, slug, id_):  # pylint: disable=unused-argument
         u"""View responsible for showing details of particular offer."""
-        offer = get_object_or_404(Offer, id=offer_id)
+        offer = get_object_or_404(Offer, id=id_)
         user = UserProfile.objects.get(user=request.user)
         context = {
             'offer': offer,
@@ -241,9 +202,9 @@ class OffersView(View):
         return render(request, "offers/show_offer.html", context=context)
 
     @staticmethod
-    def post(request, slug, offer_id):  # pylint: disable=unused-argument
+    def post(request, slug, id_):  # pylint: disable=unused-argument
         u"""View responsible for submitting volunteers awarding."""
-        offer = get_object_or_404(Offer, id=offer_id)
+        offer = get_object_or_404(Offer, id=id_)
         post_data = request.POST
         if post_data.get('csrfmiddlewaretoken'):
             del post_data['csrfmiddlewaretoken']
@@ -274,7 +235,7 @@ class OffersView(View):
         return render(request, "offers/show_offer.html", context=context)
 
 
-def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
+def offers_join(request, slug, id_):  # pylint: disable=unused-argument
     u"""Handling volounteer applying for helping with offer."""
     if not request.user:
         return redirect('login')
@@ -286,7 +247,7 @@ def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
     )
     has_applied = Offer.objects.filter(
         volunteers__id=request.user.id,
-        volunteers__offer=offer_id,
+        volunteers__offer=id_,
     ).count()
     if has_applied:
         yield_message_error(
@@ -295,7 +256,7 @@ def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
         )
         return redirect('offers_list')
 
-    offer = Offer.objects.get(pk=offer_id)
+    offer = Offer.objects.get(id=id_)
 
     if request.method == 'POST':
         form = OfferApplyForm(request.POST)
@@ -322,8 +283,8 @@ def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
                     comments=request.POST.get('comments'),
                     offer_url=domain + reverse(
                         'offers_view',
-                        args=[slugify(offer.title), offer_id]),
-                    offer_id=offer_id
+                        args=[slugify(offer.title), id_]),
+                    offer_id=id_
                 )
             )
             yield_message_successful(
@@ -333,7 +294,7 @@ def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
             return redirect(
                 reverse(
                     'offers_view',
-                    args=[slugify(offer.title), offer_id]
+                    args=[slugify(offer.title), id_]
                 ),
             )
         else:
@@ -341,6 +302,14 @@ def offers_join(request, slug, offer_id):  # pylint: disable=unused-argument
             yield_message_error(
                 request,
                 u'Formularz zawiera nieprawidłowe dane' + errors
+            )
+            return render(
+                request,
+                'volontulo/offer_apply.html',
+                {
+                    'form': form,
+                    'offer_id': id_,
+                }
             )
     else:
         form = OfferApplyForm()

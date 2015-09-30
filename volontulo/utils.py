@@ -7,6 +7,9 @@ from django.contrib import messages
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
+from django.utils.text import slugify
 
 from volontulo.models import UserProfile
 
@@ -62,3 +65,27 @@ def save_history(req, obj, action):
         object_repr=str(obj),
         action_flag=action
     )
+
+
+def correct_slug(model_class, view_name, slug_field):
+    u"""Decorator that is reposponsible for redirect to url with correct slug.
+
+    It is used by url for offers, organizations and users.
+    """
+    def decorator(wrapped_func):
+        u"""Decorator function for correcting slugs."""
+
+        def wrapping_func(request, slug, id_):
+            u"""Wrapping function for correcting slugs."""
+            obj = get_object_or_404(model_class, id=id_)
+            if slug != slugify(getattr(obj, slug_field)):
+                return redirect(
+                    view_name,
+                    slug=slugify(getattr(obj, slug_field)),
+                    id_=id_
+                )
+            return wrapped_func(request, slug, id_)
+
+        return wrapping_func
+
+    return decorator

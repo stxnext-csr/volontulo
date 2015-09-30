@@ -1,14 +1,6 @@
+{% load bootstrap3 %}
 {% if messages %}
 <div class="messages">
-    {% for msg in messages %}
-        {# temporary fix of danger/error message #}
-        {% if msg.level_tag == 'error' %}
-        <div class="alert alert-danger" role="alert">
-        {% else %}
-            <div class="alert alert-{{msg.level_tag}}" role="alert">
-        {% endif %}
-            {{msg.message}}
-        </div>
-    {% endfor %}
+    {% bootstrap_messages %}
 </div>
 {% endif %}

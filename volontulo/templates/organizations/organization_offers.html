@@ -26,6 +26,7 @@
                 </form>
                 <a href="{% url 'offers_edit' o.title|slugify o.id %}" class="btn btn-primary">Edytuj</a>
             {% endif %}
+                <a href="{% url 'offers_edit' o.title|slugify o.id %}">Edytuj</a>
             </td>
         </tr>
     {% endfor %}
