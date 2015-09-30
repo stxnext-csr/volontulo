@@ -375,3 +375,22 @@ class TestOffersEdit(TestCase):
         self.assertEqual(offer.location, u'required location')
         self.assertEqual(offer.title, u'another volontulo offer')
         self.assertEqual(offer.time_period, u'required time_period')
+
+    def test_offers_status_change(self):
+        u"""Test status change made using offers/edit."""
+        self.client.post('/login', {
+            'email': u'organization@example.com',
+            'password': '123org',
+        })
+        response = self.client.post('/offers/volontulo-offer/1/edit', {
+            'edit_type': 'status_change',
+            'status': 'ACTIVE'
+        })
+        self.assertRedirects(
+            response,
+            '/offers',
+            302,
+            200,
+        )
+        offer = Offer.objects.get(id=1)
+        self.assertEqual(offer.status, u'ACTIVE')
