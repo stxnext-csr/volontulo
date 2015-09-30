@@ -3,18 +3,18 @@
 {% block title %}Zgłoś chęć uczestnictwa w wolontariacie{% endblock %}
 
 {% block content %}
-    <h2>Zgłoś chęć uczestnictwa w wolontariacie oferty {{ offer.title }}</h2>
+    <h2>Zgłoś chęć uczestnictwa w wolontariacie oferty <strong>"{{ offer.title }}"</strong></h2>
 
     <form class="form-horizontal" action="{{ request.get_full_path }}" method="post" role="form">
         {% csrf_token %}
         <div class="form-group form-group-sm">
             <label class="col-xs-2 control-label" for="{{ form.fullname.id_for_label }}">Imię i nazwisko:</label>
             <div class="col-xs-5">
-               <input type="text" value="{{ request.POST.fullname|default:'' }}" name="fullname" class="form-control" id="{{form.fullname.id_for_label }}" />
+               <input type="text" value="{{ request.POST.fullname|default:volunteer_user.user.username }}" name="fullname" class="form-control" id="{{form.fullname.id_for_label }}" />
             </div>
             <label class="col-xs-1 control-label" for="{{ form.email.id_for_label }}">Email:</label>
             <div class="col-xs-4">
-               <input type="text" value="{{ request.POST.email|default:'' }}" name="email" class="form-control" id="{{form.email.id_for_label }}" />
+               <input type="text" value="{{ request.POST.email|default:volunteer_user.user.email }}" name="email" class="form-control" id="{{form.email.id_for_label }}" />
             </div>
         </div>
         <div class="form-group form-group-sm">

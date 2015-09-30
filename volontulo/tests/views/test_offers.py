@@ -466,23 +466,8 @@ class TestOffersView(TestCase):
             200,
         )
 
-    # pylint: disable=invalid-name
-    def test_offers_view_for_standard_user(self):
+    def test_for_correct_slug(self):
         u"""Test offer details for standard user."""
-        response = self.client.get('/offers/volontulo-offer/1')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'offers/show_offer.html')
-        # pylint: disable=no-member
-        self.assertIn('offer', response.context)
-        self.assertNotIn('volunteers', response.context)
-
-    # pylint: disable=invalid-name
-    def test_offers_view_for_administrator(self):
-        u"""Test offer details for standard user."""
-        self.client.post('/login', {
-            'email': u'admin@example.com',
-            'password': '123admin',
-        })
         response = self.client.get('/offers/volontulo-offer/1')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/show_offer.html')

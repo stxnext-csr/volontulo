@@ -80,6 +80,9 @@
         <div class="form-group form-group-sm">
             <div class="col-xs-offset-2 col-xs-10">
                 <button type="submit" name="submit" class="btn btn-primary">Zapisz ofertę</button>
+                {% if offer.id %}
+                <button type="submit" name="close_offer" value="close" class="btn btn-danger confirm-required">Zakończ ofertę</button>
+                {% endif %}
             </div>
         </div>
     </form>
