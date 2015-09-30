@@ -230,3 +230,148 @@ class TestOffersCreate(TestCase):
             self.assertEqual(offer.location, u'required location')
             self.assertEqual(offer.title, u'volontulo offer')
             self.assertEqual(offer.time_period, u'required time_period')
+
+
+class TestOffersEdit(TestCase):
+    u"""Class responsible for testing offer's edit page."""
+
+    @classmethod
+    def setUpTestData(cls):
+        u"""Set up data for all tests."""
+        organization = Organization.objects.create(
+            name=u'',
+            address=u'',
+            description=u'',
+        )
+        organization.save()
+        organization_user = User.objects.create_user(
+            u'organization@example.com',
+            u'organization@example.com',
+            u'123org'
+        )
+        organization_user.save()
+        cls.organization_profile = UserProfile(
+            user=organization_user,
+        )
+        cls.organization_profile.save()
+        # pylint: disable=no-member
+        cls.organization_profile.organizations.add(organization)
+        cls.offer = Offer.objects.create(
+            organization=organization,
+            description=u'',
+            requirements=u'',
+            time_commitment=u'',
+            benefits=u'',
+            location=u'',
+            title=u'volontulo offer',
+            time_period=u'',
+            status='NEW',
+        )
+        cls.offer.save()
+
+    def setUp(self):
+        u"""Set up each test."""
+        self.client = Client()
+
+    def test_for_non_existing_offer(self):
+        u"""Test if error 404 will be raised when offer dosn't exits."""
+        self.client.post('/login', {
+            'email': u'organization@example.com',
+            'password': '123org',
+        })
+        response = self.client.get('/offers/some-slug/42/edit')
+        self.assertEqual(response.status_code, 404)
+
+    def test_for_different_slug(self):
+        u"""Test if redirect will be raised when offer has different slug."""
+        self.client.post('/login', {
+            'email': u'organization@example.com',
+            'password': '123org',
+        })
+        response = self.client.get('/offers/different-slug/1/edit')
+        self.assertRedirects(
+            response,
+            '/offers/volontulo-offer/1/edit',
+            302,
+            200,
+        )
+
+    def test_for_correct_slug(self):
+        u"""Test of get request for offers/edit with correct slug."""
+        self.client.post('/login', {
+            'email': u'organization@example.com',
+            'password': '123org',
+        })
+        response = self.client.get('/offers/volontulo-offer/1/edit')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'offers/offer_form.html')
+
+    def test_offers_edit_invalid_form(self):
+        u"""Test attempt of edition of offer with invalid form."""
+        self.client.post('/login', {
+            'email': u'organization@example.com',
+            'password': '123org',
+        })
+        response = self.client.post('/offers/volontulo-offer/1/edit', {
+            'edit_type': 'full_edit',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'offers/offer_form.html')
+        self.assertContains(
+            response,
+            u'Formularz zawiera niepoprawnie wypełnione pola'
+        )
+        offer = Offer.objects.get(id=1)
+        self.assertEqual(
+            offer.organization,
+            self.organization_profile.organizations.all()[0],
+        )
+        self.assertEqual(offer.description, u'')
+        self.assertEqual(offer.requirements, u'')
+        self.assertEqual(
+            offer.time_commitment,
+            u''
+        )
+        self.assertEqual(offer.benefits, u'')
+        self.assertEqual(offer.location, u'')
+        self.assertEqual(offer.title, u'volontulo offer')
+        self.assertEqual(offer.time_period, u'')
+
+    def test_offers_edit_valid_form(self):
+        u"""Test attempt of edition of offer with valid form."""
+        self.client.post('/login', {
+            'email': u'organization@example.com',
+            'password': '123org',
+        })
+        response = self.client.post('/offers/volontulo-offer/1/edit', {
+            'edit_type': 'full_edit',
+            'organization': u'1',
+            'description': u'required description',
+            'requirements': u'required requirements',
+            'time_commitment': u'required time_commitment',
+            'benefits': u'required benefits',
+            'location': u'required location',
+            'title': u'another volontulo offer',
+            'time_period': u'required time_period',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'offers/offer_form.html')
+        self.assertContains(
+            response,
+            u'Oferta została zmieniona.'
+        )
+        offer = Offer.objects.get(id=1)
+        self.assertEqual(
+            offer.organization,
+            self.organization_profile.organizations.all()[0],
+        )
+        self.assertEqual(offer.description, u'required description')
+        self.assertEqual(offer.requirements, u'required requirements')
+        self.assertEqual(
+            offer.time_commitment,
+            u'required time_commitment'
+        )
+        self.assertEqual(offer.benefits, u'required benefits')
+        self.assertEqual(offer.location, u'required location')
+        self.assertEqual(offer.title, u'another volontulo offer')
+        self.assertEqual(offer.time_period, u'required time_period')
