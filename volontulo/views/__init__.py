@@ -8,18 +8,21 @@ from django.contrib import auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Count
 from django.http import Http404
-from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
+from volontulo.utils import yield_message_error
+from volontulo.utils import yield_message_successful
 from volontulo.forms import AdministratorContactForm
 from volontulo.forms import ProfileForm
 from volontulo.forms import UserForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import Organization
+from volontulo.models import UserBadges
 from volontulo.models import UserProfile
 
 
@@ -32,36 +35,6 @@ def logged_as_admin(request):
         request.user.is_authenticated() and
         UserProfile.objects.get(user=request.user).is_administrator
     )
-
-
-# todo: replace with more generic
-def yield_message_successful_email(request):
-    u"""Helper function yielding info about successful email."""
-    return messages.add_message(
-        request,
-        messages.SUCCESS,
-        u'Email został wysłany.'
-    )
-
-
-# todo: replace with more generic
-def yield_message_error_form(request, form):
-    u"""Helper function yielding info about errors in form."""
-    return messages.add_message(
-        request,
-        messages.ERROR,
-        u'Proszę poprawić błędy w formularzu: ' + u'<br />'.join(form.errors)
-    )
-
-
-def yield_message_successful(request, msg):
-    u"""Helper function yielding success message."""
-    return messages.add_message(request, messages.SUCCESS, msg)
-
-
-def yield_message_error(request, msg):
-    u"""Helper function yielding error message."""
-    return messages.add_message(request, messages.ERROR, msg)
 
 
 def homepage(request):  # pylint: disable=unused-argument
@@ -204,15 +177,22 @@ def register(request):
 
 def logged_user_profile(request):
     u"""View to display user profile page."""
-    user = get_object_or_404(UserProfile, user__email=request.user)
-    offers = Offer.objects.filter(volunteers=user.id)
+    userprofile = UserProfile.objects.get(user=request.user)
+    badges = UserBadges.objects\
+        .filter(userprofile=userprofile.id)\
+        .values('badge_id', 'badge__name', 'badge__priority')\
+        .annotate(badges=Count('badge_id'))\
+        .order_by('-badge__priority')
+    ctx = {
+        'badges': badges,
+    }
+    if not userprofile.organizations.count():
+        ctx['offers'] = Offer.objects.filter(volunteers=request.user.id)
 
     return render(
         request,
         'users/user_profile.html',
-        {
-            'offers': offers,
-        }
+        ctx
     )
 
 
@@ -232,9 +212,13 @@ def contact_form(request):
                 ],
                 {k: v for k, v in request.POST.items()},
             )
-            yield_message_successful_email(request)
+            yield_message_successful(request, u'Email został wysłany.')
         else:
-            yield_message_error_form(request, form)
+            errors = u'<br />'.join(form.errors)
+            yield_message_error(
+                request,
+                u'Proszę poprawić błędy w formularzu: ' + errors
+            )
             return render(
                 request,
                 "contact.html",

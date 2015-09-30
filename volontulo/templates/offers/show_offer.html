@@ -22,12 +22,17 @@
         <tr><th>Korzyści dla wolontariusza</th><td>{{ offer.benefits }}</td></tr>
     </table>
 
+    {# User jest organizacją i oferta jest zamknięta. #}
+    {% if offer.status == 'CLOSED' and user.organization %}
+        {% include 'offers/rewarding_volunteers.html' with volunteers=volunteers offer=offer %}
+    {% endif %}
+
     {% if user.is_administrator %}
         {% include 'offers/applied_volunteers.html' with volunteers=volunteers %}
     {% endif %}
 
     {% if user.is_administrator %}
-        <a href="{% url 'offers_edit' offer.title offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
+        <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
     {% endif %}
 
 {% endblock %}

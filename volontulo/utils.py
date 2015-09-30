@@ -3,7 +3,7 @@
 u"""
 .. module:: utils
 """
-
+from django.contrib import messages
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -22,6 +22,16 @@ OFFERS_STATUSES = {
     'SUSPENDED': u"Zawieszona",
     'CLOSED': u"Zamknięta",
 }
+
+
+def yield_message_successful(request, msg):
+    u"""Helper function yielding success message."""
+    return messages.add_message(request, messages.SUCCESS, msg)
+
+
+def yield_message_error(request, msg):
+    u"""Helper function yielding error message."""
+    return messages.add_message(request, messages.ERROR, msg)
 
 
 def get_administrators_emails():
