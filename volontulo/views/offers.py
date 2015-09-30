@@ -181,9 +181,10 @@ def offers_view(request, slug, id_):  # pylint: disable=unused-argument
     context = {
         'offer': offer,
     }
-    user = UserProfile.objects.filter(user__id=request.user.id)[0]
-    if user.is_administrator:
-        context['user'] = user
+    if (
+            request.user.is_authenticated() and
+            request.user.userprofile.is_administrator
+    ):
         context['volunteers'] = offer.volunteers.all()
     return render(request, "offers/show_offer.html", context=context)
 
