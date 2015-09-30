@@ -9,18 +9,18 @@ def populate_badges(apps, schema_editor):
     records = Badge.objects.all().count()
     initial = [
         {
-            'name': 'Wolontariusz',
-            'slug': 'volunteer',
+            'name': u'Wolontariusz',
+            'slug': u'volunteer',
             'priority': 1,
         },
         {
-            'name': 'Uczestnik',
-            'slug': 'participant',
+            'name': u'Uczestnik',
+            'slug': u'participant',
             'priority': 2,
         },
         {
-            'name': 'Wybitny uczestnik',
-            'slug': 'prominent-participant',
+            'name': u'Wybitny uczestnik',
+            'slug': u'prominent-participant',
             'priority': 3,
         }
     ]
