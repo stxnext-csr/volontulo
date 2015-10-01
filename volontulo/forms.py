@@ -7,7 +7,7 @@ u"""
 from django import forms
 from django.contrib.auth.models import User
 
-from volontulo.models import Offer
+from volontulo.models import Offer, UserGallery
 from volontulo.models import UserProfile
 from volontulo.utils import get_administrators_emails
 
@@ -50,6 +50,19 @@ class CreateOfferForm(forms.ModelForm):
             'time_period',
             'status',
         ]
+
+
+class UserGalleryForm(forms.ModelForm):
+    u"""Form used for changing user profile of user."""
+    image = forms.FileField(label=u"Wybierz grafikę")
+
+    class Meta(object):
+        model = UserGallery
+        fields = [
+            'image',
+        ]
+
+    # def upload_file(self):
 
 
 class OfferApplyForm(forms.Form):

@@ -162,3 +162,9 @@ class UserBadges(models.Model):
         except UserBadges.DoesNotExist:
             # innocent user does not have any participant badge
             pass
+
+
+class UserGallery(models.Model):
+    u"""Handling user images."""
+    userprofile = models.ForeignKey(UserProfile, related_name='images')
+    image = models.FileField(upload_to='profile/')
