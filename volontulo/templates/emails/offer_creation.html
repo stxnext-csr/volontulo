@@ -1,1 +1,9 @@
+{% extends "emails/base.html" %}
+
+{% block title %}Zg³oszenie oferty{% endblock %}
+
+{% block email_content %}
+
 ID oferty: <a href="{{ domain }}{{ address_sufix }}">{{ offer.id }}</a>
+
+{% endblock %}
