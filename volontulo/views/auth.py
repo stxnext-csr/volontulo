@@ -6,6 +6,7 @@ u"""
 
 from django.contrib import auth
 from django.contrib import messages
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
@@ -47,7 +48,7 @@ def login(request):
     else:
         return render(
             request,
-            'users/login.html',
+            'auth/login.html',
             {}
         )
 
@@ -112,7 +113,7 @@ def register(request):
     profile_form = ProfileForm()
     return render(
         request,
-        'users/register.html',
+        'auth/register.html',
         {
             'user_form': user_form,
             'profile_form': profile_form,
@@ -122,4 +123,8 @@ def register(request):
 
 def password_reset(request):
     u"""View responsible for password reset."""
-    return render(request, 'users/register.html')
+    return auth_views.password_reset(
+        request,
+        post_reset_redirect='login',
+        email_template_name='emails/registration.html',
+    )
