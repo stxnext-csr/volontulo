@@ -18,6 +18,8 @@
         {% include 'common/badges.html' with badges=badges %}
         {% include 'users/my_offers.html' with offers=offers %}
 
+        {% include 'users/gallery.html' with image=image %}
+
     {% endif %}
 
     <p><a href="{% url 'logout' %}" class="btn btn-primary">Wyloguj</a></p>

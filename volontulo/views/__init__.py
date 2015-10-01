@@ -13,6 +13,7 @@ from django.template import TemplateDoesNotExist
 from volontulo.utils import yield_message_error
 from volontulo.utils import yield_message_successful
 from volontulo.forms import AdministratorContactForm
+from volontulo.forms import UserGalleryForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import UserBadges
@@ -67,6 +68,20 @@ def static_pages(request, template_name):
 def logged_user_profile(request):
     u"""View to display user profile page."""
     userprofile = UserProfile.objects.get(user=request.user)
+    if request.method == 'POST' and request.FILES:
+        gallery_form = UserGalleryForm(request.POST, request.FILES)
+        if gallery_form.is_valid():
+            gallery = gallery_form.save(commit=False)
+            gallery.userprofile = userprofile
+            gallery.save()
+            yield_message_successful(request, u"Dodano grafikę")
+        else:
+            errors = '<br />'.join(gallery_form.errors)
+            yield_message_error(
+                request,
+                u"Problem w trakcie dodawania grafiki: {}".format(errors)
+            )
+
     badges = UserBadges.objects\
         .filter(userprofile=userprofile.id)\
         .values('badge_id', 'badge__name', 'badge__priority')\
@@ -78,6 +93,7 @@ def logged_user_profile(request):
     if not userprofile.organizations.count():
         ctx['offers'] = Offer.objects.filter(volunteers=request.user.id)
 
+    ctx['image'] = UserGalleryForm()
     return render(
         request,
         'users/user_profile.html',
