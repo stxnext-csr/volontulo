@@ -222,32 +222,68 @@ class OffersView(View):
         return render(request, "offers/show_offer.html", context=context)
 
 
-def offers_join(request, slug, id_):  # pylint: disable=unused-argument
-    u"""Handling volounteer applying for helping with offer."""
-    if not request.user:
-        return redirect('login')
+class OffersJoin(View):
+    u"""Class view supporting joining offer."""
 
-    volunteer_user = UserProfile.objects.get(user=request.user)
-    offer_content_type = ContentType.objects.get(
-        app_label='volontulo',
-        model='offer'
-    )
-    has_applied = Offer.objects.filter(
-        volunteers__id=request.user.id,
-        volunteers__offer=id_,
-    ).count()
-    if has_applied:
-        yield_message_error(
+    @staticmethod
+    @correct_slug(Offer, 'offers_join', 'title')
+    def get(request, slug, id_):  # pylint: disable=unused-argument
+        u"""View responsible for showing join form for particular offer."""
+        if request.user.is_authenticated():
+            has_applied = Offer.objects.filter(
+                volunteers=request.user,
+                volunteers__offer=id_,
+            ).count()
+            if has_applied:
+                yield_message_error(
+                    request,
+                    u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
+                )
+                return redirect('offers_list')
+
+        offer = Offer.objects.get(id=id_)
+        form = OfferApplyForm()
+        context = {
+            'form': form,
+            'offer': offer,
+        }
+
+        context['volunteer_user'] = UserProfile()
+        if request.user.is_authenticated() and not (
+                request.user.userprofile.is_administrator and
+                request.user.userprofile.is_organization
+        ):
+            context['volunteer_user'] = request.user.userprofile
+
+        return render(
             request,
-            u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
+            'offers/offer_apply.html',
+            context
         )
-        return redirect('offers_list')
 
-    offer = Offer.objects.get(id=id_)
+    @staticmethod
+    def post(request, slug, id_):  # pylint: disable=unused-argument
+        u"""View responsible for saving join for particular offer."""
+        if request.is_authenticated():
+            has_applied = Offer.objects.filter(
+                volunteers=request.user,
+                volunteers__offer=id_,
+            ).count()
+            if has_applied:
+                yield_message_error(
+                    request,
+                    u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
+                )
+                return redirect('offers_list')
 
-    if request.method == 'POST':
+        offer_content_type = ContentType.objects.get(
+            app_label='volontulo',
+            model='offer'
+        )
+        offer = Offer.objects.get(id=id_)
         form = OfferApplyForm(request.POST)
 
+        volunteer_user = UserProfile.objects.get(user=request.user)
         if form.is_valid():
             offer.volunteers.add(request.user)
             UserBadges.apply_participant_badge(
@@ -295,21 +331,19 @@ def offers_join(request, slug, id_):  # pylint: disable=unused-argument
                     'offer_id': id_,
                 }
             )
-    else:
-        form = OfferApplyForm()
 
-    context = {
-        'form': form,
-        'offer': offer,
-    }
-    if not (
-            volunteer_user.is_administrator and
-            volunteer_user.is_organization
-    ):
-        context['volunteer_user'] = volunteer_user
+        context = {
+            'form': form,
+            'offer': offer,
+        }
+        if not (
+                volunteer_user.is_administrator and
+                volunteer_user.is_organization
+        ):
+            context['volunteer_user'] = volunteer_user
 
-    return render(
-        request,
-        'offers/offer_apply.html',
-        context
-    )
+        return render(
+            request,
+            'offers/offer_apply.html',
+            context
+        )
