@@ -63,8 +63,6 @@ class UserGalleryForm(forms.ModelForm):
             'image',
         ]
 
-    # def upload_file(self):
-
 
 class OfferApplyForm(forms.Form):
     u"""Form for applying for join to offer ."""
