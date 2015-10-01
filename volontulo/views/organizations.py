@@ -106,6 +106,7 @@ def organization_view(request, slug, id_):
         if form.is_valid():
             profile = UserProfile.objects.get(organization_id=id_)
             send_mail(
+                request,
                 'volunteer_to_organisation',
                 [
                     profile.user.email,
