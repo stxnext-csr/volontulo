@@ -7,6 +7,7 @@ u"""
 from django.contrib.auth.models import User
 from django.db.models import Count
 from django.http import Http404
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
