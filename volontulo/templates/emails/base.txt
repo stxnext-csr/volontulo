@@ -1,0 +1,5 @@
+{% load bootstrap3 %}
+{% load staticfiles %}
+VOLONTULO
+{% block email_content %}
+{% endblock %}

@@ -1,5 +1,8 @@
+{% extends "emails/base.txt" %}
+{% block email_content %}
 Email wolontariusza: {{ email }}
 Numer telefonu: {{ phone_no }}
 Imię i nazwisko: {{ fullname }}
 Uwagi: {{ comments }}
 ID oferty: {{ offer_id }}
+{% endblock %}
