@@ -16,6 +16,8 @@ from volontulo.forms import ProfileForm
 from volontulo.forms import UserForm
 from volontulo.lib.email import FROM_ADDRESS
 from volontulo.lib.email import send_mail
+from volontulo.utils import yield_message_error
+from volontulo.utils import yield_message_successful
 
 
 def login(request):
@@ -27,12 +29,10 @@ def login(request):
         if user is not None:
             if user.is_active:
                 auth.login(request, user)
-                messages.add_message(
+                yield_message_successful(
                     request,
-                    messages.SUCCESS,
                     u"Poprawnie zalogowano"
                 )
-
             else:
                 messages.add_message(
                     request,
@@ -40,9 +40,8 @@ def login(request):
                     u"Konto zostało wyłączone!"
                 )
         else:
-            messages.add_message(
+            yield_message_error(
                 request,
-                messages.ERROR,
                 u"Nieprawidłowy email lub hasło!"
             )
         return redirect('homepage')
@@ -96,16 +95,14 @@ def register(request):
                 profile.save()
 
                 send_mail('registration', [user.email])
-                messages.add_message(
+                yield_message_successful(
                     request,
-                    messages.SUCCESS,
                     u'Rejestracja przebiegła pomyślnie'
                 )
                 return redirect('register')
         else:
-            messages.add_message(
+            yield_message_error(
                 request,
-                messages.ERROR,
                 u'Wprowadzono nieprawidłowy email lub hasło'
             )
             return redirect('register')
@@ -135,7 +132,6 @@ def password_reset(request):
     )
 
 
-# pylint: disable=unused-argument
 def password_reset_confirm(request, uidb64, token):
     u"""Landing page for password reset."""
     return auth_views.password_reset_confirm(
