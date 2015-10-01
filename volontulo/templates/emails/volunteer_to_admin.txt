@@ -1,4 +1,4 @@
-{% extends "emails/base.html" %}
+{% extends "emails/base.txt" %}
 {% block email_content %}
 Imię i nazwisko: {{ name}},
 Email: {{ email }},
