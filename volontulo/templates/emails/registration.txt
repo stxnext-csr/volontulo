@@ -1,1 +1,4 @@
+{% extends "emails/base.html" %}
+{% block email_content %}
 Dziękujemy za rejestrację.
+{% endblock %}
