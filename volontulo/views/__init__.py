@@ -110,6 +110,7 @@ def contact_form(request):
             administrator_id = request.POST.get('administrator')
             admin = User.objects.get(pk=administrator_id)
             send_mail(
+                request,
                 'volunteer_to_admin',
                 [
                     admin.email,

@@ -4,6 +4,7 @@ u"""
 .. module:: email
 """
 
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail import get_connection
 from django.template import Context
@@ -26,8 +27,7 @@ SUBJECTS = {
 }
 
 
-# pylint: disable=unused-argument
-def send_mail(templates_name, recipient_list, context=None):
+def send_mail(request, templates_name, recipient_list, context=None):
     u"""Proxy for sending emails."""
 
     fail_silently = FAIL_SILENTLY
@@ -36,6 +36,10 @@ def send_mail(templates_name, recipient_list, context=None):
     connection = CONNECTION
 
     context = Context(context or {})
+    context.update({
+        'protocol': 'https' if request.is_secure() else 'http',
+        'domain': get_current_site(request).domain,
+    })
     text_template = get_template('emails/{}.txt'.format(templates_name))
     html_template = get_template('emails/{}.html'.format(templates_name))
 

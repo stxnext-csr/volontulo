@@ -94,7 +94,7 @@ def register(request):
                 profile.user = user
                 profile.save()
 
-                send_mail('registration', [user.email])
+                send_mail(request, 'registration', [user.email])
                 yield_message_successful(
                     request,
                     u'Rejestracja przebiegła pomyślnie'

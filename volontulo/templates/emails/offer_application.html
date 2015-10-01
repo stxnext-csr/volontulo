@@ -8,6 +8,6 @@ Email wolontariusza: {{ email }}<br />
 Numer telefonu: {{ phone_no }}<br />
 Imię i nazwisko: {{ fullname }}<br />
 Uwagi: {{ comments }}<br />
-ID oferty: <a href="{{ offer_url }}">{{ offer_id }}</a><br />
+ID oferty: <a href="{{ protocol }}://{{ domain }}{% url 'offers_view' offer.title|slugify offer.id %}">{{ offer.id }}</a><br />
 
 {% endblock %}
