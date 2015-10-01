@@ -177,6 +177,9 @@ def register(request):
 
 def logged_user_profile(request):
     u"""View to display user profile page."""
+    if not request.user.id:
+        return redirect('login')
+
     userprofile = UserProfile.objects.get(user=request.user)
     if request.method == 'POST' and request.FILES:
         gallery_form = UserGalleryForm(request.POST, request.FILES)
@@ -200,7 +203,13 @@ def logged_user_profile(request):
     ctx = {
         'badges': badges,
     }
-    if not userprofile.organizations.count():
+
+    # Current user is organization
+    if userprofile.organizations:
+        ctx['offers'] = Offer.objects.filter(
+            organization__userprofiles__user=request.user
+        )
+    else:
         ctx['offers'] = Offer.objects.filter(volunteers=request.user.id)
 
     ctx['image'] = UserGalleryForm()
