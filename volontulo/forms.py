@@ -7,7 +7,8 @@ u"""
 from django import forms
 from django.contrib.auth.models import User
 
-from volontulo.models import Offer, UserGallery
+from volontulo.models import Offer
+from volontulo.models import UserGallery
 from volontulo.models import UserProfile
 from volontulo.utils import get_administrators_emails
 

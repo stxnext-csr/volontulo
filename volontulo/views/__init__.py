@@ -22,7 +22,6 @@ from volontulo.forms import ProfileForm
 from volontulo.forms import UserForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
-from volontulo.models import Organization
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
 
