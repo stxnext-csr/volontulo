@@ -20,7 +20,12 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^login$', auth_views.login, name='login'),
     url(r'^logout$', auth_views.logout, name='logout'),
     url(r'^register$', auth_views.register, name='register'),
-    url(r'^password-reset$', auth_views.password_reset, name='password-reset'),
+    url(r'^password-reset$', auth_views.password_reset, name='password_reset'),
+    url(
+        r'^password-reset/(?P<uidb64>.+)/(?P<token>.+)$',
+        auth_views.password_reset_confirm,
+        name='password_reset_confirm'
+    ),
     url(r'^me$', views.logged_user_profile, name='logged_user_profile'),
     # me/edit
     # me/settings

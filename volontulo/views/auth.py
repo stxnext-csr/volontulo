@@ -133,3 +133,9 @@ def password_reset(request):
         email_template_name='emails/password_reset.txt',
         html_email_template_name='emails/password_reset.html',
     )
+
+
+# pylint: disable=unused-argument
+def password_reset_confirm(request, uidb64, token):
+    u"""Landing page for password reset."""
+    return redirect('homepage')
