@@ -85,6 +85,7 @@ class OffersCreate(View):
                 'offer': offer
             }
             send_mail(
+                request,
                 'offer_creation',
                 ['administrators@volontuloapp.org'],
                 ctx
@@ -273,6 +274,7 @@ def offers_join(request, slug, id_):  # pylint: disable=unused-argument
                 ''
             )
             send_mail(
+                request,
                 'offer_application',
                 [
                     request.user.email,
