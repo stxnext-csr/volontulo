@@ -138,4 +138,10 @@ def password_reset(request):
 # pylint: disable=unused-argument
 def password_reset_confirm(request, uidb64, token):
     u"""Landing page for password reset."""
-    return redirect('homepage')
+    return auth_views.password_reset_confirm(
+        request,
+        uidb64,
+        token,
+        template_name='auth/password_reset_confirm.html',
+        post_reset_redirect='login',
+    )

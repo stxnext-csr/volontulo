@@ -22,7 +22,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^register$', auth_views.register, name='register'),
     url(r'^password-reset$', auth_views.password_reset, name='password_reset'),
     url(
-        r'^password-reset/(?P<uidb64>.+)/(?P<token>.+)$',
+        r'^password-reset/(?P<uidb64>[0-9A-Za-z]+)/(?P<token>.+)$',
         auth_views.password_reset_confirm,
         name='password_reset_confirm'
     ),
@@ -61,8 +61,6 @@ urlpatterns = [  # pylint: disable=invalid-name
     # users/slug-id/contact
 
     # organizations' namespace:
-    # organizations
-    # organizations/filter
     url(
         r'^organizations$',
         orgs_views.organizations_list,
@@ -83,6 +81,7 @@ urlpatterns = [  # pylint: disable=invalid-name
         orgs_views.organization_form,
         name='organization_form'
     ),
+    # organizations/filter
     # organizations/<slug>/<id>/contact
 
     # others:
