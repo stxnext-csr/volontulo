@@ -1,5 +1,13 @@
+{% extends "emails/base.html" %}
+
+{% block title %}Kontakt wolontariusza z administratorem{% endblock %}
+
+{% block email_content %}
+
 <strong>Imię i nazwisko:</strong> {{ name }},<br />
 <strong>Email:</strong> {{ email }},<br />
 <strong>Numer telefonu:</strong> {{ phone_no }},<br />
 <strong>Aplikant:</strong> {{ applicant }},<br />
 <strong>Wiadomość:</strong> {{ message }},<br />
+
+{% endblock %}
