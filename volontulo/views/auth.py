@@ -14,6 +14,7 @@ from django.shortcuts import render
 
 from volontulo.forms import ProfileForm
 from volontulo.forms import UserForm
+from volontulo.lib.email import FROM_ADDRESS
 from volontulo.lib.email import send_mail
 
 
@@ -125,6 +126,10 @@ def password_reset(request):
     u"""View responsible for password reset."""
     return auth_views.password_reset(
         request,
+        template_name='auth/password_reset.html',
         post_reset_redirect='login',
-        email_template_name='emails/registration.html',
+        from_email=FROM_ADDRESS,
+        subject_template_name='emails/password_reset.subject',
+        email_template_name='emails/password_reset.txt',
+        html_email_template_name='emails/password_reset.html',
     )
