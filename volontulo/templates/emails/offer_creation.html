@@ -4,6 +4,6 @@
 
 {% block email_content %}
 
-ID oferty: <a href="{{ domain }}{{ address_sufix }}">{{ offer.id }}</a>
+ID oferty: <a href="{{ protocol }}://{{ domain }}{% url 'offers_view' offer.title|slugify offer.id %}">{{ offer.id }}</a>
 
 {% endblock %}

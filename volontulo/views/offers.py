@@ -70,20 +70,7 @@ class OffersCreate(View):
         if form.is_valid():
             offer = form.save()
             save_history(request, offer, action=ADDITION)
-            ctx = {
-                'domain': request.build_absolute_uri().replace(
-                    request.get_full_path(),
-                    ''
-                ),
-                'address_sufix': reverse(
-                    'offers_view',
-                    kwargs={
-                        'slug': slugify(offer.title),
-                        'id_': offer.id,
-                    },
-                ),
-                'offer': offer
-            }
+            ctx = {'offer': offer}
             send_mail(
                 request,
                 'offer_creation',
@@ -269,10 +256,6 @@ def offers_join(request, slug, id_):  # pylint: disable=unused-argument
             )
             offer.save()
 
-            domain = request.build_absolute_uri().replace(
-                request.get_full_path(),
-                ''
-            )
             send_mail(
                 request,
                 'offer_application',
@@ -285,10 +268,7 @@ def offers_join(request, slug, id_):  # pylint: disable=unused-argument
                     phone_no=request.POST.get('phone_no'),
                     fullname=request.POST.get('fullname'),
                     comments=request.POST.get('comments'),
-                    offer_url=domain + reverse(
-                        'offers_view',
-                        args=[slugify(offer.title), id_]),
-                    offer_id=id_
+                    offer=offer,
                 )
             )
             yield_message_successful(
