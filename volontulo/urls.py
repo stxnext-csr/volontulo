@@ -7,6 +7,7 @@ u"""
 from django.conf.urls import url
 
 from volontulo import views
+from volontulo.views import auth as auth_views
 from volontulo.views import offers as offers_views
 from volontulo.views import organizations as orgs_views
 
@@ -16,11 +17,16 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^$', views.homepage, name='homepage'),
 
     # login and loggged user space:
-    url(r'^login$', views.login, name='login'),
-    url(r'^logout$', views.logout, name='logout'),
-    url(r'^register$', views.register, name='register'),
+    url(r'^login$', auth_views.login, name='login'),
+    url(r'^logout$', auth_views.logout, name='logout'),
+    url(r'^register$', auth_views.register, name='register'),
+    url(r'^password-reset$', auth_views.password_reset, name='password_reset'),
+    url(
+        r'^password-reset/(?P<uidb64>[0-9A-Za-z]+)/(?P<token>.+)$',
+        auth_views.password_reset_confirm,
+        name='password_reset_confirm'
+    ),
     url(r'^me$', views.logged_user_profile, name='logged_user_profile'),
-    # password-reset
     # me/edit
     # me/settings
 
@@ -55,8 +61,6 @@ urlpatterns = [  # pylint: disable=invalid-name
     # users/slug-id/contact
 
     # organizations' namespace:
-    # organizations
-    # organizations/filter
     url(
         r'^organizations$',
         orgs_views.organizations_list,
@@ -77,6 +81,7 @@ urlpatterns = [  # pylint: disable=invalid-name
         orgs_views.organization_form,
         name='organization_form'
     ),
+    # organizations/filter
     # organizations/<slug>/<id>/contact
 
     # others:
