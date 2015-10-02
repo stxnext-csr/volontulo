@@ -9,13 +9,15 @@ from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.utils import IntegrityError
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.views.generic import View
 
-from volontulo.forms import ProfileForm
 from volontulo.forms import UserForm
 from volontulo.lib.email import FROM_ADDRESS
 from volontulo.lib.email import send_mail
+from volontulo.models import UserProfile
 from volontulo.utils import yield_message_error
 from volontulo.utils import yield_message_successful
 
@@ -65,17 +67,32 @@ def logout(request):
     return redirect('homepage')
 
 
-def register(request):
+class Register(View):
     u"""View responsible for registering new users."""
-    if request.method == 'POST':
+
+    @staticmethod
+    def get(request):
+        u"""Simple view to render register form."""
+        return render(
+            request,
+            'auth/register.html',
+            {
+                'user_form': UserForm(),
+            }
+        )
+
+    @staticmethod
+    def post(request):
+        u"""Method handes creation of new user."""
         user_form = UserForm(request.POST)
-        profile_form = ProfileForm(request.POST)
-        if user_form.is_valid() and profile_form.is_valid():
+        if user_form.is_valid():
             try:
-                user = User.objects.get(email=request.POST.get('email'))
-            except User.DoesNotExist:
-                user = None
-            if user:
+                user = User.objects.create_user(
+                    username=request.POST.get('email'),
+                    email=request.POST.get('email'),
+                    password=request.POST.get('password'),
+                )
+            except IntegrityError:
                 messages.add_message(
                     request,
                     messages.INFO,
@@ -83,15 +100,7 @@ def register(request):
                 )
                 return redirect('register')
             else:
-                # save user
-                user = user_form.save(commit=False)
-                user.set_password(request.POST.get('password'))
-                # to prevent username UNIQUE constraint
-                user.username = user.email
-                user.save()
-                # save profile
-                profile = profile_form.save(commit=False)
-                profile.user = user
+                profile = UserProfile(user=user)
                 profile.save()
 
                 send_mail(request, 'registration', [user.email])
@@ -106,17 +115,6 @@ def register(request):
                 u'Wprowadzono nieprawidłowy email lub hasło'
             )
             return redirect('register')
-
-    user_form = UserForm()
-    profile_form = ProfileForm()
-    return render(
-        request,
-        'auth/register.html',
-        {
-            'user_form': user_form,
-            'profile_form': profile_form,
-        }
-    )
 
 
 def password_reset(request):
