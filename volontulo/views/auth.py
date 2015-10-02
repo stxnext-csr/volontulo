@@ -70,50 +70,65 @@ class Register(View):
     u"""View responsible for registering new users."""
 
     @staticmethod
-    def get(request):
+    def get(request, user_form=None):
         u"""Simple view to render register form."""
         return render(
             request,
             'auth/register.html',
             {
-                'user_form': UserForm(),
+                'user_form': UserForm() if user_form is None else user_form,
             }
         )
 
-    @staticmethod
-    def post(request):
+    @classmethod
+    def post(cls, request):
         u"""Method handes creation of new user."""
-        user_form = UserForm(request.POST)
-        if user_form.is_valid():
-            try:
-                user = User.objects.create_user(
-                    username=request.POST.get('email'),
-                    email=request.POST.get('email'),
-                    password=request.POST.get('password'),
-                )
-            except IntegrityError:
-                messages.add_message(
-                    request,
-                    messages.INFO,
-                    u'Użytkownik o podanym emailu już istnieje'
-                )
-                return redirect('register')
-            else:
-                profile = UserProfile(user=user)
-                profile.save()
 
-                send_mail(request, 'registration', [user.email])
-                yield_message_successful(
-                    request,
-                    u'Rejestracja przebiegła pomyślnie'
-                )
-                return redirect('register')
-        else:
+        # validation of register form:
+        user_form = UserForm(request.POST)
+        if not user_form.is_valid():
             yield_message_error(
                 request,
                 u'Wprowadzono nieprawidłowy email lub hasło'
             )
-            return redirect('register')
+            return cls.get(request, user_form)
+
+        username = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # attempt of new user creation:
+        try:
+            user = User.objects.create_user(
+                username=username,
+                email=username,
+                password=password,
+            )
+            profile = UserProfile(user=user)
+            profile.save()
+        except IntegrityError:
+            # if attempt failed, because user already exists we need show
+            # error message:
+            messages.add_message(
+                request,
+                messages.INFO,
+                u'Użytkownik o podanym emailu już istnieje'
+            )
+            return cls.get(request, user_form)
+
+        # sending email to user:
+        send_mail(request, 'registration', [user.email])
+
+        # automatically login new user:
+        user = auth.authenticate(username=username, password=password)
+        auth.login(request, user)
+
+        # show info about successful creation of new user and redirect to
+        # homepage:
+        yield_message_successful(
+            request,
+            u'Rejestracja przebiegła pomyślnie'
+        )
+        return redirect('homepage')
 
 
 def password_reset(request):
