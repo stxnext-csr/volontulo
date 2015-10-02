@@ -4,10 +4,13 @@ u"""
 .. module:: offers
 """
 
+from django.contrib import messages
 from django.contrib.admin.models import ADDITION
 from django.contrib.admin.models import CHANGE
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
+from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -264,28 +267,56 @@ class OffersJoin(View):
     @staticmethod
     def post(request, slug, id_):  # pylint: disable=unused-argument
         u"""View responsible for saving join for particular offer."""
-        if request.is_authenticated():
-            has_applied = Offer.objects.filter(
-                volunteers=request.user,
-                volunteers__offer=id_,
-            ).count()
-            if has_applied:
-                yield_message_error(
-                    request,
-                    u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
+        form = OfferApplyForm(request.POST)
+        offer = Offer.objects.get(id=id_)
+
+        if request.user.is_authenticated():
+            user = request.user
+        else:
+            try:
+                user = User.objects.create_user(
+                    username=request.POST.get('email'),
+                    email=request.POST.get('email'),
+                    password=User.objects.make_random_password(),
                 )
-                return redirect('offers_list')
+            except IntegrityError:
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    u'Użytkownik o podanym emailu już istnieje. Zaloguj się.'
+                )
+                return render(
+                    request,
+                    'offers/offer_apply.html',
+                    {
+                        'form': form,
+                        'offer_id': id_,
+                        'volunteer_user': UserProfile(),
+                    }
+                )
+
+            profile = UserProfile(user=user)
+            profile.save()
+
+        has_applied = Offer.objects.filter(
+            volunteers=user,
+            volunteers__offer=id_,
+        ).count()
+        if has_applied:
+            yield_message_error(
+                request,
+                u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
+            )
+            return redirect('offers_list')
 
         offer_content_type = ContentType.objects.get(
             app_label='volontulo',
             model='offer'
         )
-        offer = Offer.objects.get(id=id_)
-        form = OfferApplyForm(request.POST)
 
-        volunteer_user = UserProfile.objects.get(user=request.user)
+        volunteer_user = UserProfile.objects.get(user=user)
         if form.is_valid():
-            offer.volunteers.add(request.user)
+            offer.volunteers.add(user)
             UserBadges.apply_participant_badge(
                 offer_content_type,
                 volunteer_user
@@ -296,7 +327,7 @@ class OffersJoin(View):
                 request,
                 'offer_application',
                 [
-                    request.user.email,
+                    user.email,
                     request.POST.get('email'),
                 ],
                 dict(
@@ -325,7 +356,7 @@ class OffersJoin(View):
             )
             return render(
                 request,
-                'volontulo/offer_apply.html',
+                'offers/offer_apply.html',
                 {
                     'form': form,
                     'offer_id': id_,
