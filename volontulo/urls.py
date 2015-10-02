@@ -19,7 +19,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     # login and loggged user space:
     url(r'^login$', auth_views.login, name='login'),
     url(r'^logout$', auth_views.logout, name='logout'),
-    url(r'^register$', auth_views.register, name='register'),
+    url(r'^register$', auth_views.Register.as_view(), name='register'),
     url(r'^password-reset$', auth_views.password_reset, name='password_reset'),
     url(
         r'^password-reset/(?P<uidb64>[0-9A-Za-z]+)/(?P<token>.+)$',
@@ -49,7 +49,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     ),
     url(
         r'^offers/(?P<slug>[\w-]+)/(?P<id_>[0-9]+)/join$',
-        offers_views.offers_join,
+        offers_views.OffersJoin.as_view(),
         name='offers_join'
     ),
     # offers/filter

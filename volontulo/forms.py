@@ -9,7 +9,6 @@ from django.contrib.auth.models import User
 
 from volontulo.models import Offer
 from volontulo.models import UserGallery
-from volontulo.models import UserProfile
 from volontulo.utils import get_administrators_emails
 
 
@@ -20,15 +19,6 @@ class UserForm(forms.ModelForm):
     class Meta(object):
         model = User
         fields = ['email']
-
-
-class ProfileForm(forms.ModelForm):
-    u"""Form used for changing profile of user."""
-    is_organization = forms.BooleanField(required=False)
-
-    class Meta(object):
-        model = UserProfile
-        fields = ['is_organization']
 
 
 class CreateOfferForm(forms.ModelForm):
