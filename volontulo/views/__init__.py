@@ -3,11 +3,10 @@
 u"""
 .. module:: __init__
 """
-
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Count
 from django.http import Http404
-from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
@@ -66,10 +65,9 @@ def static_pages(request, template_name):
         raise Http404
 
 
+@login_required
 def logged_user_profile(request):
     u"""View to display user profile page."""
-    if not request.user.id:
-        return redirect('login')
 
     userprofile = UserProfile.objects.get(user=request.user)
     if request.method == 'POST' and request.FILES:
@@ -96,12 +94,13 @@ def logged_user_profile(request):
     }
 
     # Current user is organization
-    if userprofile.organizations:
+    if userprofile.organizations.count():
         ctx['offers'] = Offer.objects.filter(
             organization__userprofiles__user=request.user
         )
     else:
-        ctx['offers'] = Offer.objects.filter(volunteers=request.user.id)
+        # get offers that volunteer applied
+        ctx['offers'] = Offer.objects.filter(volunteers=request.user)
 
     ctx['image'] = UserGalleryForm()
     return render(

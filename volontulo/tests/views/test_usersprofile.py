@@ -15,7 +15,7 @@ from volontulo.models import UserProfile
 
 
 class TestUsersProfile(TestCase):
-    u"""Class responsible for testing offers' list."""
+    u"""Class responsible for testing users profile view."""
 
     @classmethod
     def setUpTestData(cls):
@@ -122,12 +122,7 @@ class TestUsersProfile(TestCase):
         u"""Testing user profile page for anonymous"""
         response = self.client.get('/me')
 
-        self.assertRedirects(
-            response,
-            '/login',
-            302,
-            200,
-        )
+        self.assertEqual(response.status_code, 302)
 
     # pylint: disable=invalid-name
     def test__logged_user_profile(self):
