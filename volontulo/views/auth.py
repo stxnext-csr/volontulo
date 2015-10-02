@@ -33,6 +33,7 @@ def login(request):
                     request,
                     u"Poprawnie zalogowano"
                 )
+                return redirect('homepage')
             else:
                 messages.add_message(
                     request,
@@ -44,13 +45,11 @@ def login(request):
                 request,
                 u"Nieprawidłowy email lub hasło!"
             )
-        return redirect('homepage')
-    else:
-        return render(
-            request,
-            'auth/login.html',
-            {}
-        )
+    return render(
+        request,
+        'auth/login.html',
+        {}
+    )
 
 
 @login_required
