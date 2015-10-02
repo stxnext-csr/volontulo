@@ -268,58 +268,58 @@ class OffersJoin(View):
     def post(request, slug, id_):  # pylint: disable=unused-argument
         u"""View responsible for saving join for particular offer."""
         form = OfferApplyForm(request.POST)
-        offer = Offer.objects.get(id=id_)
 
-        if request.user.is_authenticated():
-            user = request.user
-        else:
-            try:
-                user = User.objects.create_user(
-                    username=request.POST.get('email'),
-                    email=request.POST.get('email'),
-                    password=User.objects.make_random_password(),
-                )
-            except IntegrityError:
-                messages.add_message(
-                    request,
-                    messages.INFO,
-                    u'Użytkownik o podanym emailu już istnieje. Zaloguj się.'
-                )
-                return render(
-                    request,
-                    'offers/offer_apply.html',
-                    {
-                        'form': form,
-                        'offer_id': id_,
-                        'volunteer_user': UserProfile(),
-                    }
-                )
-
-            profile = UserProfile(user=user)
-            profile.save()
-
-        has_applied = Offer.objects.filter(
-            volunteers=user,
-            volunteers__offer=id_,
-        ).count()
-        if has_applied:
-            yield_message_error(
-                request,
-                u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
-            )
-            return redirect('offers_list')
-
-        offer_content_type = ContentType.objects.get(
-            app_label='volontulo',
-            model='offer'
-        )
-
-        volunteer_user = UserProfile.objects.get(user=user)
         if form.is_valid():
+            offer = Offer.objects.get(id=id_)
+
+            if request.user.is_authenticated():
+                user = request.user
+            else:
+                try:
+                    user = User.objects.create_user(
+                        username=request.POST.get('email'),
+                        email=request.POST.get('email'),
+                        password=User.objects.make_random_password(),
+                    )
+                    profile = UserProfile(user=user)
+                    profile.save()
+                except IntegrityError:
+                    messages.add_message(
+                        request,
+                        messages.INFO,
+                        u'Użytkownik o podanym emailu już istnieje.'
+                        u' Zaloguj się.'
+                    )
+                    return render(
+                        request,
+                        'offers/offer_apply.html',
+                        {
+                            'form': form,
+                            'offer_id': id_,
+                            'volunteer_user': UserProfile(),
+                        }
+                    )
+
+            has_applied = Offer.objects.filter(
+                volunteers=user,
+                volunteers__offer=id_,
+            ).count()
+            if has_applied:
+                yield_message_error(
+                    request,
+                    u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
+                )
+                return redirect('offers_list')
+
+            offer_content_type = ContentType.objects.get(
+                app_label='volontulo',
+                model='offer'
+            )
+
             offer.volunteers.add(user)
             UserBadges.apply_participant_badge(
                 offer_content_type,
-                volunteer_user
+                user.userprofile,
             )
             offer.save()
 
@@ -343,10 +343,9 @@ class OffersJoin(View):
                 u'Zgłoszenie chęci uczestnictwa zostało wysłane.'
             )
             return redirect(
-                reverse(
-                    'offers_view',
-                    args=[slugify(offer.title), id_]
-                ),
+                'offers_view',
+                slug=slugify(offer.title),
+                id_=offer.id,
             )
         else:
             errors = '<br />'.join(form.errors)
@@ -362,19 +361,3 @@ class OffersJoin(View):
                     'offer_id': id_,
                 }
             )
-
-        context = {
-            'form': form,
-            'offer': offer,
-        }
-        if not (
-                volunteer_user.is_administrator and
-                volunteer_user.is_organization
-        ):
-            context['volunteer_user'] = volunteer_user
-
-        return render(
-            request,
-            'offers/offer_apply.html',
-            context
-        )
