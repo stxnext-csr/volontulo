@@ -120,9 +120,19 @@ class TestUsersProfile(TestCase):
     # pylint: disable=invalid-name
     def test__logged_user_profile_anonymous(self):
         u"""Testing user profile page for anonymous"""
-        response = self.client.get('/me')
+        response = self.client.get('/me', follow=True)
 
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response,
+            'http://testserver/login?next=/me',
+            302,
+            200,
+        )
+        self.assertEqual(len(response.redirect_chain), 1)
+        self.assertEqual(
+            response.redirect_chain[0],
+            ('http://testserver/login?next=/me', 302),
+        )
 
     # pylint: disable=invalid-name
     def test__logged_user_profile(self):
