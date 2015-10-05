@@ -452,7 +452,7 @@ class TestOffersView(TestCase):
         self.client = Client()
 
     def test_for_non_existing_offer(self):
-        u"""Test if error 404 will be raised when offer dosn't exits."""
+        u"""Test if error 404 will be raised when offer dosn't exist."""
         response = self.client.get('/offers/some-slug/42')
         self.assertEqual(response.status_code, 404)
 
@@ -475,3 +475,109 @@ class TestOffersView(TestCase):
         self.assertIn('offer', response.context)
         self.assertIn('volunteers', response.context)
         self.assertEqual(len(response.context['volunteers']), 5)
+
+
+class TestOffersJoin(TestCase):
+    u"""Class responsible for testing offer's join page."""
+
+    @classmethod
+    def setUpTestData(cls):
+        u"""Set up data for all tests."""
+        organization = Organization.objects.create(
+            name=u'',
+            address=u'',
+            description=u'',
+        )
+        organization.save()
+
+        cls.offer = Offer.objects.create(
+            organization=organization,
+            description=u'',
+            requirements=u'',
+            time_commitment=u'',
+            benefits=u'',
+            location=u'',
+            title=u'volontulo offer',
+            time_period=u'',
+            status='NEW',
+        )
+        cls.offer.save()
+
+        volunteer = User.objects.create_user(
+            u'volunteer@example.com',
+            u'volunteer@example.com',
+            u'vol123',
+        )
+        volunteer.save()
+        cls.volunteer_profile = UserProfile(user=volunteer)
+        cls.volunteer_profile.save()
+
+    def setUp(self):
+        u"""Set up each test."""
+        self.client = Client()
+
+    def test_for_nonexisting_offer(self):
+        u"""Test if error 404 will be raised when offer dosn't exist."""
+        response = self.client.get('/offers/some-slug/42/join')
+        self.assertEqual(response.status_code, 404)
+
+    def test_for_different_slug(self):
+        u"""Test if redirect will be raised when offer has different slug."""
+        response = self.client.get('/offers/different-slug/1/join')
+        self.assertRedirects(
+            response,
+            '/offers/volontulo-offer/1/join',
+            302,
+            200,
+        )
+
+    # pylint: disable=invalid-name
+    def test_correct_slug_for_anonymous_user(self):
+        u"""Test get method of offer join for anonymous user."""
+        response = self.client.get('/offers/volontulo-offer/1/join')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'offers/offer_apply.html')
+        # pylint: disable=no-member
+        self.assertIn('offer', response.context)
+        self.assertIn('volunteer_user', response.context)
+        self.assertEqual(response.context['volunteer_user'].pk, None)
+
+    # pylint: disable=invalid-name
+    def test_correct_slug_for_logged_in_user(self):
+        u"""Test get method of offer join for logged in user."""
+        self.client.post('/login', {
+            'email': u'volunteer@example.com',
+            'password': u'vol123',
+        })
+        response = self.client.get('/offers/volontulo-offer/1/join')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'offers/offer_apply.html')
+        # pylint: disable=no-member
+        self.assertIn('offer', response.context)
+        self.assertIn('volunteer_user', response.context)
+        self.assertEqual(response.context['volunteer_user'].pk, 1)
+        self.assertContains(response, u'volunteer@example.com')
+
+    def test_offers_join_invalid_form(self):
+        u"""Test attempt of joining offer with invalid form."""
+        response = self.client.post('/offers/volontulo-offer/1/join', {})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'offers/offer_apply.html')
+        self.assertContains(
+            response,
+            u'Formularz zawiera nieprawidłowe dane',
+        )
+
+    def test_offers_join_valid_form_and_logged_user(self):
+        u"""Test attempt of joining offer with valid form and logged user."""
+        self.client.post('/login', {
+            'email': u'volunteer@example.com',
+            'password': u'vol123',
+        })
+        response = self.client.post('/offers/volontulo-offer/1/join', {
+            'email': u'volunteer@example.com',
+            'phone_no': u'+42 42 42 42',
+            'fullname': u'Mister Volunteer',
+            'comments': u'Some important staff.',
+        })
+        self.assertEqual(response.status_code, 302)
