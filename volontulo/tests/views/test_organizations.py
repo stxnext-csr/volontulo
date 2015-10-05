@@ -4,26 +4,35 @@ u"""
 .. module:: test_organizations
 """
 from django.test import Client
-from django.test import TestCase
+from django.test import TransactionTestCase
 
 from volontulo.models import Organization
 from volontulo.tests.common import Common
 
 
-class TestOrganizations(TestCase):
+class TestOrganizations(TransactionTestCase):
     u"""Class responsible for testing organization specific views."""
-
-    @classmethod
-    def setUpTestData(cls):
-        u"""Set up data for all tests."""
-        # volunteer user - totally useless
-        Common.initialize_empty_volunteer()
-        # organization user - no offers
-        Common.initialize_empty_organization()
 
     def setUp(self):
         u"""Set up each test."""
         self.client = Client()
+        # volunteer user - totally useless
+        Common.initialize_empty_volunteer()
+        # organization user - no offers
+        Common.initialize_empty_organization()
+        # create 5 organizations
+        Common.initialize_empty_organizations()
+
+    # pylint: disable=invalid-name
+    def test__organization_list(self):
+        u"""Test getting organization list as anonymous"""
+        response = self.client.get('/organizations', follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'organizations/list.html')
+        # pylint: disable=no-member
+        self.assertIn('organizations', response.context)
+        self.assertEqual(Organization.objects.all().count(), 5)
 
     # pylint: disable=invalid-name
     def test__create_organization_get_form_anonymous_user(self):
@@ -148,7 +157,7 @@ class TestOrganizations(TestCase):
 
         self.assertRedirects(
             response,
-            '/organizations/halperin-organix/2',
+            '/organizations/halperin-organix/31',
             302,
             200,
         )
@@ -156,8 +165,8 @@ class TestOrganizations(TestCase):
             response,
             u"Organizacja została dodana."
         )
-        record = Organization.objects.get(id=2)
-        self.assertEqual(record.id, 2)
+        record = Organization.objects.get(id=31)
+        self.assertEqual(record.id, 31)
         self.assertEqual(record.name, u'Halperin Organix')
         self.assertEqual(record.address, u'East Street 123')
         self.assertEqual(record.description, u'User unfriendly organization')

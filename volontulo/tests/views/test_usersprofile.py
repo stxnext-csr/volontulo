@@ -129,7 +129,7 @@ class TestUsersProfile(TestCase):
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertEqual(
-            5,
+            4,
             Offer.objects.all().count()
         )
         self.assertNotContains(

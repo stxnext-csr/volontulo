@@ -87,7 +87,7 @@ class Common(object):
         organization_profile2.organizations.add(organization2)
 
         # create organization offers and assign volunteer to them
-        for i in range(1, 6):
+        for i in range(11, 15):
             offer = Offer.objects.create(
                 title=u'Title {}'.format(i),
                 description=u'Description {}'.format(i),
@@ -102,3 +102,22 @@ class Common(object):
             )
             offer.volunteers.add(volunteer_user2)
             offer.save()
+
+    @staticmethod
+    def initialize_empty_organizations():
+        u"""Initialize empty organization."""
+        for i in range(11, 15):
+            organization = Organization.objects.create(
+                name=u'Organization {}'.format(i)
+            )
+            organization.save()
+            organization_user = User.objects.create_user(
+                'organization{}@example.com'.format(i),
+                'organization{}@example.com'.format(i),
+                'organization{}'.format(i)
+            )
+            organization_user.save()
+            user_profile = UserProfile.objects.create(
+                user=organization_user,
+            )
+            user_profile.organizations.add(organization)
