@@ -16,8 +16,8 @@ from volontulo.models import UserProfile
 class Common(object):
     u"""Handle helper methods used in many places."""
 
-    @classmethod
-    def initialize_empty_volunteer(cls):
+    @staticmethod
+    def initialize_empty_volunteer():
         u"""Initialize empty volunteer."""
         volunteer_user1 = User.objects.create_user(
             'volunteer1@example.com',
@@ -25,10 +25,10 @@ class Common(object):
             'volunteer1'
         )
         volunteer_user1.save()
-        cls.user_profile1 = UserProfile.objects.create(user=volunteer_user1)
+        UserProfile.objects.create(user=volunteer_user1)
 
-    @classmethod
-    def initialize_empty_organization(cls):
+    @staticmethod
+    def initialize_empty_organization():
         u"""Initialize empty organization."""
         organization1 = Organization.objects.create(name=u'Organization 1')
         organization1.save()
@@ -38,14 +38,14 @@ class Common(object):
             'organization1'
         )
         organization_user1.save()
-        cls.organization_profile1 = UserProfile.objects.create(
+        organization_profile1 = UserProfile.objects.create(
             user=organization_user1,
         )
-        cls.organization_profile1.organizations.add(organization1)
+        organization_profile1.organizations.add(organization1)
 
-    @classmethod
+    @staticmethod
     # pylint: disable=invalid-name
-    def initialize_filled_volunteer_and_organization(cls):
+    def initialize_filled_volunteer_and_organization():
         u"""Initialize volunteer filled with data."""
         # create volunteer user
         volunteer_user2 = User.objects.create_user(
@@ -54,7 +54,7 @@ class Common(object):
             'volunteer2'
         )
         volunteer_user2.save()
-        cls.user_profile2 = UserProfile.objects.create(user=volunteer_user2)
+        user_profile2 = UserProfile.objects.create(user=volunteer_user2)
 
         # create 3 badges with different priorities
         for i in range(1, 4):
@@ -65,7 +65,7 @@ class Common(object):
             )
             badge.save()
             usersbadge = UserBadges.objects.create(
-                userprofile=cls.user_profile2,
+                userprofile=user_profile2,
                 badge=badge,
                 counter=i,
             )
@@ -81,10 +81,10 @@ class Common(object):
             'organization2'
         )
         organization_user2.save()
-        cls.organization_profile2 = UserProfile.objects.create(
+        organization_profile2 = UserProfile.objects.create(
             user=organization_user2,
         )
-        cls.organization_profile2.organizations.add(organization2)
+        organization_profile2.organizations.add(organization2)
 
         # create organization offers and assign volunteer to them
         for i in range(1, 6):
