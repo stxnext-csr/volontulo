@@ -99,6 +99,7 @@ class TestAuth(TestCase):
             response.redirect_chain[0],
             ('http://testserver/login?next=/logout', 302),
         )
+        self.assertNotIn('_auth_user_id', self.client.session)
 
     def test__logged_out_authenticated_user(self):
         u"""Testing logout view for authenticated user"""
@@ -123,3 +124,4 @@ class TestAuth(TestCase):
             response,
             u"Użytkownik został wylogowany!"
         )
+        self.assertNotIn('_auth_user_id', self.client.session)
