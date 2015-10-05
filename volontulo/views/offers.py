@@ -252,10 +252,7 @@ class OffersJoin(View):
         }
 
         context['volunteer_user'] = UserProfile()
-        if request.user.is_authenticated() and not (
-                request.user.userprofile.is_administrator and
-                request.user.userprofile.is_organization
-        ):
+        if request.user.is_authenticated():
             context['volunteer_user'] = request.user.userprofile
 
         return render(
@@ -353,11 +350,15 @@ class OffersJoin(View):
                 request,
                 u'Formularz zawiera nieprawidłowe dane' + errors
             )
+            volunteer_user = UserProfile()
+            if request.user.is_authenticated():
+                volunteer_user = request.user.userprofile
             return render(
                 request,
                 'offers/offer_apply.html',
                 {
                     'form': form,
                     'offer_id': id_,
+                    'volunteer_user': volunteer_user,
                 }
             )
