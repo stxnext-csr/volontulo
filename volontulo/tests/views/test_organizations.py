@@ -7,7 +7,7 @@ from django.test import Client
 from django.test import TestCase
 
 from volontulo.models import Organization
-from volontulo.tests.views.test_usersprofile import TestUsersProfile
+from volontulo.tests.common import Common
 
 
 class TestOrganizations(TestCase):
@@ -17,9 +17,9 @@ class TestOrganizations(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         # volunteer user - totally useless
-        TestUsersProfile.initialize_empty_volunteer()
+        Common.initialize_empty_volunteer()
         # organization user - no offers
-        TestUsersProfile.initialize_empty_organization()
+        Common.initialize_empty_organization()
 
     def setUp(self):
         u"""Set up each test."""
@@ -61,7 +61,7 @@ class TestOrganizations(TestCase):
     def test__create_organization_post_form_anonymous_user(self):
         u"""Test posting form for creating organization as anonymous"""
         # Disable for anonymous user
-        response = self.client.get('/organizations/create')
+        response = self.client.post('/organizations/create')
 
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
@@ -73,7 +73,7 @@ class TestOrganizations(TestCase):
 
     # pylint: disable=invalid-name
     def test__create_empty_organization_post_form(self):
-        u"""Test posting form for creating organization as anonymous"""
+        u"""Test posting form for creating empty (not filled) organization"""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
@@ -91,6 +91,42 @@ class TestOrganizations(TestCase):
         self.assertContains(
             response,
             u"Należy wypełnić wszystkie pola formularza."
+        )
+
+    # pylint: disable=invalid-name
+    def test__create_organization_post_form_fill_fields(self):
+        u"""Test posting form and check fields population."""
+        self.client.post('/login', {
+            'email': u'volunteer1@example.com',
+            'password': 'volunteer1',
+        })
+        form_params = {
+            'name': u'Halperin Organix',
+            'address': u'East Street 123',
+        }
+        response = self.client.post('/organizations/create', form_params)
+
+        # pylint: disable=no-member
+        self.assertIn('organization', response.context)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            u'Halperin Organix'
+        )
+        self.assertContains(
+            response,
+            u'East Street 123'
+        )
+
+        form_params = {
+            'description': u'User unfriendly organization',
+        }
+        response = self.client.post('/organizations/create', form_params)
+        self.assertIn('organization', response.context)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            u'User unfriendly organization'
         )
 
     def test__create_valid_organization_form_post(self):
@@ -122,3 +158,6 @@ class TestOrganizations(TestCase):
         )
         record = Organization.objects.get(id=2)
         self.assertEqual(record.id, 2)
+        self.assertEqual(record.name, u'Halperin Organix')
+        self.assertEqual(record.address, u'East Street 123')
+        self.assertEqual(record.description, u'User unfriendly organization')
