@@ -3,7 +3,7 @@
 u"""
 .. module:: organizations
 """
-
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -35,6 +35,7 @@ class OrganizationsCreate(View):
     u"""Class view supporting creation of new organization."""
 
     @staticmethod
+    @login_required
     def get(request):
         u"""Method responsible for rendering form for new organization."""
         return render(
@@ -44,8 +45,24 @@ class OrganizationsCreate(View):
         )
 
     @staticmethod
+    @login_required
     def post(request):
         u"""Method responsible for saving new organization."""
+        if not (
+                request.POST.get('name') and
+                request.POST.get('address') and
+                request.POST.get('description')
+        ):
+            yield_message_error(
+                request,
+                u"Należy wypełnić wszystkie pola formularza."
+            )
+            return render(
+                request,
+                "organizations/organization_form.html",
+                {'organization': Organization()}
+            )
+
         organization = Organization(
             name=request.POST.get('name'),
             address=request.POST.get('address'),
@@ -53,6 +70,10 @@ class OrganizationsCreate(View):
         )
         organization.save()
         request.user.userprofile.organizations.add(organization)
+        yield_message_successful(
+            request,
+            u"Organizacja została dodana."
+        )
         return redirect(
             'organization_view',
             slug=slugify(organization.name),
