@@ -8,7 +8,7 @@ from django.test import Client
 from django.test import TestCase
 from django.test import TransactionTestCase
 
-from volontulo.tests.views.test_usersprofile import TestUsersProfile
+from volontulo.tests.common import Common
 
 
 class TestRegister(TransactionTestCase):
@@ -77,7 +77,7 @@ class TestAuth(TestCase):
     @classmethod
     def setUpTestData(cls):
         # volunteer user
-        TestUsersProfile.initialize_empty_volunteer()
+        Common.initialize_empty_volunteer()
 
     def setUp(self):
         u"""Set up each test."""
