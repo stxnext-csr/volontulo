@@ -574,10 +574,66 @@ class TestOffersJoin(TestCase):
             'email': u'volunteer@example.com',
             'password': u'vol123',
         })
+
+        # successfull joining offer:
         response = self.client.post('/offers/volontulo-offer/1/join', {
             'email': u'volunteer@example.com',
             'phone_no': u'+42 42 42 42',
             'fullname': u'Mister Volunteer',
             'comments': u'Some important staff.',
-        })
-        self.assertEqual(response.status_code, 302)
+        }, follow=True)
+        self.assertRedirects(
+            response,
+            '/offers/volontulo-offer/1',
+            302,
+            200,
+        )
+
+        # unsuccessfull joining the same offer for the second time:
+        response = self.client.post('/offers/volontulo-offer/1/join', {
+            'email': u'volunteer@example.com',
+            'phone_no': u'+42 42 42 42',
+            'fullname': u'Mister Volunteer',
+            'comments': u'Some important staff.',
+        }, follow=True)
+        self.assertRedirects(
+            response,
+            '/offers',
+            302,
+            200,
+        )
+        self.assertContains(
+            response,
+            u'Już wyraziłeś chęć uczestnictwa w tej ofercie.',
+        )
+
+    def test_offers_join_valid_form_and_anonymous_user(self):
+        u"""Test attempt of joining offer with valid form and anon user."""
+
+        # successfull joining offer:
+        response = self.client.post('/offers/volontulo-offer/1/join', {
+            'email': u'anon@example.com',
+            'phone_no': u'+42 42 42 42',
+            'fullname': u'Mister Anonymous',
+            'comments': u'Some important staff.',
+        }, follow=True)
+        self.assertRedirects(
+            response,
+            '/offers/volontulo-offer/1',
+            302,
+            200,
+        )
+
+        # unsuccessfull joining the same offer for the second time:
+        response = self.client.post('/offers/volontulo-offer/1/join', {
+            'email': u'anon@example.com',
+            'phone_no': u'+42 42 42 42',
+            'fullname': u'Mister Anonymous',
+            'comments': u'Some important staff.',
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'offers/offer_apply.html')
+        self.assertContains(
+            response,
+            u'Użytkownik o podanym emailu już istnieje. Zaloguj się.',
+        )
