@@ -490,7 +490,7 @@ class TestOffersJoin(TestCase):
         )
         organization.save()
 
-        cls.offer = Offer.objects.create(
+        offer = Offer.objects.create(
             organization=organization,
             description=u'',
             requirements=u'',
@@ -501,7 +501,7 @@ class TestOffersJoin(TestCase):
             time_period=u'',
             status='NEW',
         )
-        cls.offer.save()
+        offer.save()
 
         volunteer = User.objects.create_user(
             u'volunteer@example.com',
@@ -509,8 +509,8 @@ class TestOffersJoin(TestCase):
             u'vol123',
         )
         volunteer.save()
-        cls.volunteer_profile = UserProfile(user=volunteer)
-        cls.volunteer_profile.save()
+        volunteer_profile = UserProfile(user=volunteer)
+        volunteer_profile.save()
 
     def setUp(self):
         u"""Set up each test."""
