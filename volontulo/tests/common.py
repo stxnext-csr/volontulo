@@ -103,6 +103,22 @@ class Common(object):
             offer.volunteers.add(volunteer_user2)
             offer.save()
 
+        # create additional organization offers for administrator use
+        for i in range(100, 110):
+            offer2 = Offer.objects.create(
+                title=u'Title {}'.format(i),
+                description=u'Description {}'.format(i),
+                requirements=u'Requirements {}'.format(i),
+                time_commitment=u'Time commitment {}'.format(i),
+                benefits=u'Benefits {}'.format(i),
+                location=u'Location {}'.format(i),
+                time_period=u'Time period {}'.format(i),
+                status=u'SUSPENDED' if i % 2 == 0 else u'NEW',
+                votes=True,
+                organization=organization2,
+            )
+            offer2.save()
+
     @staticmethod
     def initialize_empty_organizations():
         u"""Initialize empty organization."""
@@ -121,3 +137,16 @@ class Common(object):
                 user=organization_user,
             )
             user_profile.organizations.add(organization)
+
+    @staticmethod
+    def initialize_administrator():
+        u"""Initialize administrator user."""
+        administrator1 = User.objects.create_user(
+            'administrator1@example.com',
+            'administrator1@example.com',
+            'administrator1'
+        )
+        administrator1.save()
+        administrator_profile = UserProfile.objects.create(user=administrator1)
+        administrator_profile.is_administrator = True
+        administrator_profile.save()
