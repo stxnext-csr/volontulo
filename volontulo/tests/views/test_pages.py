@@ -9,7 +9,7 @@ from django.test import TestCase
 from volontulo.tests.common import Common
 
 
-class TestOffersList(TestCase):
+class TestPages(TestCase):
     u"""Class responsible for testing various pages."""
 
     @classmethod
