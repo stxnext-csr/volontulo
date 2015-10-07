@@ -24,6 +24,10 @@ from volontulo.utils import yield_message_successful
 
 def login(request):
     u"""Login view."""
+    if '_auth_user_id' in request.session:
+        return redirect('/me')
+
+    user_form = UserForm()
     if request.method == 'POST':
         username = request.POST.get('email')
         password = request.POST.get('password')
@@ -50,7 +54,9 @@ def login(request):
     return render(
         request,
         'auth/login.html',
-        {}
+        {
+            'user_form': user_form
+        }
     )
 
 
