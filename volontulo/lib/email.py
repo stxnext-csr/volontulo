@@ -29,7 +29,6 @@ SUBJECTS = {
 
 def send_mail(request, templates_name, recipient_list, context=None):
     u"""Proxy for sending emails."""
-
     fail_silently = FAIL_SILENTLY
     auth_user = AUTH_USER
     auth_password = AUTH_PASSWORD

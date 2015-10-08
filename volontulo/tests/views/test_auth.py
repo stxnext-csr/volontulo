@@ -102,7 +102,7 @@ class TestAuth(TestCase):
         self.assertNotIn('_auth_user_id', self.client.session)
 
     def test__logged_out_authenticated_user(self):
-        u"""Testing logout view for authenticated user"""
+        u"""Testing logout view for authenticated user."""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
