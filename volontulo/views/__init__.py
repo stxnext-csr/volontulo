@@ -110,6 +110,7 @@ def logged_user_profile(request):
     )
 
 
+@login_required
 def contact_form(request):
     u"""View responsible for contact forms."""
     if request.method == 'POST':
@@ -117,7 +118,7 @@ def contact_form(request):
         if form.is_valid():
             # get administrators by IDS
             administrator_id = request.POST.get('administrator')
-            admin = User.objects.get(pk=administrator_id)
+            admin = User.objects.get(id=administrator_id)
             send_mail(
                 request,
                 'volunteer_to_admin',

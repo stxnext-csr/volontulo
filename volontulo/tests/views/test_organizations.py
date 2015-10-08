@@ -25,7 +25,7 @@ class TestOrganizations(TransactionTestCase):
 
     # pylint: disable=invalid-name
     def test__organization_list(self):
-        u"""Test getting organization list as anonymous"""
+        u"""Test getting organization list as anonymous."""
         response = self.client.get('/organizations', follow=True)
 
         self.assertEqual(response.status_code, 200)
@@ -36,7 +36,7 @@ class TestOrganizations(TransactionTestCase):
 
     # pylint: disable=invalid-name
     def test__create_organization_get_form_anonymous_user(self):
-        u"""Test getting form for creating organization as anonymous"""
+        u"""Test getting form for creating organization as anonymous."""
         # Disable for anonymous user
         response = self.client.get('/organizations/create')
 
@@ -50,7 +50,7 @@ class TestOrganizations(TransactionTestCase):
 
     # pylint: disable=invalid-name
     def test__create_organization_get_form_authorized_user(self):
-        u"""Test getting form for creating organization as authorized"""
+        u"""Test getting form for creating organization as authorized."""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
@@ -68,7 +68,7 @@ class TestOrganizations(TransactionTestCase):
 
     # pylint: disable=invalid-name
     def test__create_organization_post_form_anonymous_user(self):
-        u"""Test posting form for creating organization as anonymous"""
+        u"""Test posting form for creating organization as anonymous."""
         # Disable for anonymous user
         response = self.client.post('/organizations/create')
 
@@ -82,7 +82,7 @@ class TestOrganizations(TransactionTestCase):
 
     # pylint: disable=invalid-name
     def test__create_empty_organization_post_form(self):
-        u"""Test posting form for creating empty (not filled) organization"""
+        u"""Test posting form for creating empty (not filled) organization."""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
@@ -139,7 +139,7 @@ class TestOrganizations(TransactionTestCase):
         )
 
     def test__create_valid_organization_form_post(self):
-        u"""Test posting valid form for creating organization"""
+        u"""Test posting valid form for creating organization."""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
