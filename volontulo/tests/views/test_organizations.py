@@ -3,6 +3,7 @@
 u"""
 .. module:: test_organizations
 """
+from django.core import mail
 from django.test import Client
 from django.test import TestCase
 
@@ -29,7 +30,7 @@ class TestOrganizations(TestCase):
 
     # pylint: disable=invalid-name
     def test__organization_list(self):
-        u"""Test getting organization list as anonymous"""
+        u"""Test getting organization list as anonymous."""
         response = self.client.get('/organizations', follow=True)
 
         self.assertEqual(response.status_code, 200)
@@ -40,7 +41,7 @@ class TestOrganizations(TestCase):
 
     # pylint: disable=invalid-name
     def test__create_organization_get_form_anonymous(self):
-        u"""Test getting form for creating organization as anonymous"""
+        u"""Test getting form for creating organization as anonymous."""
         # Disable for anonymous user
         response = self.client.get('/organizations/create')
 
@@ -54,7 +55,7 @@ class TestOrganizations(TestCase):
 
     # pylint: disable=invalid-name
     def test__create_organization_get_form_authorized(self):
-        u"""Test getting form for creating organization as authorized"""
+        u"""Test getting form for creating organization as authorized."""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
@@ -72,7 +73,7 @@ class TestOrganizations(TestCase):
 
     # pylint: disable=invalid-name
     def test__create_organization_post_form_anonymous(self):
-        u"""Test posting form for creating organization as anonymous"""
+        u"""Test posting form for creating organization as anonymous."""
         # Disable for anonymous user
         response = self.client.post('/organizations/create')
 
@@ -86,7 +87,7 @@ class TestOrganizations(TestCase):
 
     # pylint: disable=invalid-name
     def test__create_empty_organization_post_form(self):
-        u"""Test posting form for creating empty (not filled) organization"""
+        u"""Test posting form for creating empty (not filled) organization."""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
@@ -143,7 +144,7 @@ class TestOrganizations(TestCase):
         )
 
     def test__create_valid_organization_form_post(self):
-        u"""Test posting valid form for creating organization"""
+        u"""Test posting valid form for creating organization."""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
@@ -176,7 +177,7 @@ class TestOrganizations(TestCase):
         self.assertEqual(record.description, u'User unfriendly organization')
 
     def test__get_empty_organization_view_by_anonymous(self):
-        u"""Request for empty organization view by anonymous user"""
+        u"""Request for empty organization view by anonymous user."""
         response = self.client.get('/organizations/organization-1/1')
 
         self.assertEqual(response.status_code, 200)
@@ -202,7 +203,7 @@ class TestOrganizations(TestCase):
         self.assertContains(response, u'Wyślij')
 
     def test__get_filled_organization_view_by_anonymous(self):
-        u"""Request for filled organization view by anonymous user"""
+        u"""Request for filled organization view by anonymous user."""
         response = self.client.get('/organizations/organization-2/2')
 
         self.assertNotContains(
@@ -214,7 +215,7 @@ class TestOrganizations(TestCase):
         self.assertEqual(len(response.context['offers']), 4)
 
     def test__get_empty_organization_view_by_volunteer(self):
-        u"""Requesting for empty organization view by volunteer user"""
+        u"""Requesting for empty organization view by volunteer user."""
         self.client.post('/login', {
             'email': u'volunteer2@example.com',
             'password': 'volunteer2',
@@ -232,7 +233,7 @@ class TestOrganizations(TestCase):
         self.assertNotContains(response, u'Dodaj ofertę')
 
     def test__get_empty_organization_view_by_organization(self):
-        u"""Request for empty organization view by organization user"""
+        u"""Request for empty organization view by organization user."""
         self.client.post('/login', {
             'email': u'organization1@example.com',
             'password': 'organization1',
@@ -267,7 +268,7 @@ class TestOrganizations(TestCase):
         self.assertFalse(response.context['allow_offer_create'])
 
     def test__get_filled_organization_view_by_organization(self):
-        u"""Request for filled organization view by organization user"""
+        u"""Request for filled organization view by organization user."""
         self.client.post('/login', {
             'email': u'organization2@example.com',
             'password': 'organization2',
@@ -281,7 +282,7 @@ class TestOrganizations(TestCase):
         self.assertEqual(len(response.context['offers']), 4)
 
     def test__post_contact_form_on_organization_view_by_anonymous(self):
-        u"""Post contact form to organization view by anonymous user"""
+        u"""Post contact form to organization view by anonymous user."""
         form_params = {
             'name': u'',
             'email': u'',
@@ -327,9 +328,10 @@ class TestOrganizations(TestCase):
             follow=True
         )
         self.assertContains(response, u'Wiadomość dla organizacji')
+        self.assertEqual(len(mail.outbox), 0)
 
     def test__post_contact_form_on_organization_view_by_volunteer(self):
-        u"""Post contact form to organization view by volunteer user"""
+        u"""Post contact form to organization view by volunteer user."""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
@@ -359,13 +361,15 @@ class TestOrganizations(TestCase):
             '/organizations/organization-2/2',
             form_params
         )
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, u'Kontakt od wolontariusza')
         self.assertContains(
             response,
             u'Email został wysłany.'
         )
 
     def test__post_contact_form_on_organization_view_by_organization(self):
-        u"""Post contact form to organization view by organization user"""
+        u"""Post contact form to organization view by organization user."""
         self.client.post('/login', {
             'email': u'organization2@example.com',
             'password': 'organization2',
@@ -384,6 +388,8 @@ class TestOrganizations(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, u'Kontakt od wolontariusza')
         self.assertContains(
             response,
             u'Email został wysłany.'
