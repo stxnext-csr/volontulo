@@ -28,7 +28,7 @@ class TestUsersProfile(TestCase):
 
     # pylint: disable=invalid-name
     def test__logged_user_profile_anonymous(self):
-        u"""Testing user profile page for anonymous"""
+        u"""Testing user profile page for anonymous."""
         response = self.client.get('/me', follow=True)
 
         self.assertRedirects(
@@ -45,7 +45,7 @@ class TestUsersProfile(TestCase):
 
     # pylint: disable=invalid-name
     def test__logged_user_profile(self):
-        u"""Testing default views on user profile form"""
+        u"""Testing default views on user profile form."""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
@@ -61,7 +61,7 @@ class TestUsersProfile(TestCase):
 
     # pylint: disable=invalid-name
     def test__logged_user_profile_empty_volunteer(self):
-        u"""Testing user profile page for volunteers"""
+        u"""Testing user profile page for volunteers."""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
@@ -81,7 +81,7 @@ class TestUsersProfile(TestCase):
 
     # pylint: disable=invalid-name
     def test__logged_user_profile_filled_volunteer(self):
-        u"""Testing user profile page for volunteers"""
+        u"""Testing user profile page for volunteers."""
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
@@ -101,7 +101,7 @@ class TestUsersProfile(TestCase):
 
     # pylint: disable=invalid-name
     def test__logged_user_profile_empty_organization(self):
-        u"""Testing user profile page for empty organization"""
+        u"""Testing user profile page for empty organization."""
         self.client.post('/login', {
             'email': u'organization1@example.com',
             'password': 'organization1',
@@ -118,7 +118,7 @@ class TestUsersProfile(TestCase):
 
     # pylint: disable=invalid-name
     def test__logged_user_profile_filled_organization(self):
-        u"""Testing user profile page for filled organization"""
+        u"""Testing user profile page for filled organization."""
         self.client.post('/login', {
             'email': u'organization2@example.com',
             'password': 'organization2',
