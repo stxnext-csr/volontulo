@@ -27,7 +27,7 @@
         {% include 'offers/rewarding_volunteers.html' with volunteers=volunteers offer=offer %}
     {% endif %}
 
-    {% if user.is_administrator %}
+    {% if user.userprofile.is_administrator %}
         {% include 'offers/applied_volunteers.html' with volunteers=volunteers %}
     {% endif %}
 
