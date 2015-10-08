@@ -22,7 +22,7 @@ sys.path.insert(0, test_dir)
 def runtests():
     u"""Set up environment and run tests."""
     TestRunner = get_runner(settings)
-    test_runner = TestRunner(verbosity=1, interactive=True)
+    test_runner = TestRunner(verbosity=3, interactive=True)
     django.setup()
     call_command('makemigrations', 'volontulo')
     failures = test_runner.run_tests(['volontulo'])
