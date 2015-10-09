@@ -36,8 +36,8 @@ class TestPages(TestCase):
     def test__homepage_for_volunteer_and_organization(self):
         u"""Home page for volunteers and organizations.
 
-            There's currently no difference for anonymous
-            or volunteer/organization - for now.
+        There's currently no difference for anonymous
+        or volunteer/organization - for now.
         """
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
