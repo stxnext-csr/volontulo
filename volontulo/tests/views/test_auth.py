@@ -71,60 +71,18 @@ class TestRegister(TransactionTestCase):
         self.assertEqual(User.objects.all().count(), 1)
 
 
-class TestAuth(TestCase):
-    u"""Class responsible for testing users authentication view."""
+class TestLogin(TestCase):
+    u"""Class responsible for testing user login view."""
 
     @classmethod
     def setUpTestData(cls):
+        u"""Set up fixtures data for test."""
         # volunteer user
         Common.initialize_empty_volunteer()
 
     def setUp(self):
         u"""Set up each test."""
         self.client = Client()
-
-    # pylint: disable=invalid-name
-    def test__logged_out_anonymous_user(self):
-        u"""Testing logout view for anonymous user"""
-        response = self.client.get('/logout', follow=True)
-
-        self.assertRedirects(
-            response,
-            'http://testserver/login?next=/logout',
-            302,
-            200,
-        )
-        self.assertEqual(len(response.redirect_chain), 1)
-        self.assertEqual(
-            response.redirect_chain[0],
-            ('http://testserver/login?next=/logout', 302),
-        )
-        self.assertNotIn('_auth_user_id', self.client.session)
-
-    def test__logged_out_authenticated_user(self):
-        u"""Testing logout view for authenticated user."""
-        self.client.post('/login', {
-            'email': u'volunteer1@example.com',
-            'password': 'volunteer1',
-        })
-        response = self.client.get('/logout', follow=True)
-
-        self.assertRedirects(
-            response,
-            '/',
-            302,
-            200,
-        )
-        self.assertEqual(len(response.redirect_chain), 1)
-        self.assertEqual(
-            response.redirect_chain[0],
-            ('http://testserver/', 302),
-        )
-        self.assertContains(
-            response,
-            u"Użytkownik został wylogowany!"
-        )
-        self.assertNotIn('_auth_user_id', self.client.session)
 
     def test__get_login_by_anonymous(self):
         u"""Get login form by anonymous user"""
@@ -166,7 +124,9 @@ class TestAuth(TestCase):
             response.redirect_chain[0],
             ('http://testserver/me', 302),
         )
+        self.assertIn('_auth_user_id', self.client.session)
 
+    # pylint: disable=invalid-name
     def test__post_login_by_anonymous_user(self):
         u"""Post to login form by anonymous"""
         # incorrect email or password
@@ -234,6 +194,7 @@ class TestAuth(TestCase):
             ('http://testserver/', 302),
         )
 
+    # pylint: disable=invalid-name
     def test__post_login_by_authorized_user(self):
         u"""Post to login form by authorized"""
         self.client.post('/login', {
@@ -253,3 +214,60 @@ class TestAuth(TestCase):
             response.redirect_chain[0],
             ('http://testserver/me', 302),
         )
+
+
+class TestLogout(TestCase):
+    u"""Class responsible for testing user logout view."""
+
+    @classmethod
+    def setUpTestData(cls):
+        u"""Set up fixtures data for test."""
+        # volunteer user
+        Common.initialize_empty_volunteer()
+
+    def setUp(self):
+        u"""Set up each test."""
+        self.client = Client()
+
+    # pylint: disable=invalid-name
+    def test__logged_out_anonymous_user(self):
+        u"""Testing logout view for anonymous user"""
+        response = self.client.get('/logout', follow=True)
+
+        self.assertRedirects(
+            response,
+            'http://testserver/login?next=/logout',
+            302,
+            200,
+        )
+        self.assertEqual(len(response.redirect_chain), 1)
+        self.assertEqual(
+            response.redirect_chain[0],
+            ('http://testserver/login?next=/logout', 302),
+        )
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test__logged_out_authenticated_user(self):
+        u"""Testing logout view for authenticated user."""
+        self.client.post('/login', {
+            'email': u'volunteer1@example.com',
+            'password': 'volunteer1',
+        })
+        response = self.client.get('/logout', follow=True)
+
+        self.assertRedirects(
+            response,
+            '/',
+            302,
+            200,
+        )
+        self.assertEqual(len(response.redirect_chain), 1)
+        self.assertEqual(
+            response.redirect_chain[0],
+            ('http://testserver/', 302),
+        )
+        self.assertContains(
+            response,
+            u"Użytkownik został wylogowany!"
+        )
+        self.assertNotIn('_auth_user_id', self.client.session)

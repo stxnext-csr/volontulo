@@ -24,7 +24,7 @@ from volontulo.utils import yield_message_successful
 
 def login(request):
     u"""Login view."""
-    if '_auth_user_id' in request.session:
+    if request.user.is_authenticated():
         return redirect('/me')
 
     user_form = UserForm()
