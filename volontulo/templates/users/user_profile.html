@@ -4,7 +4,7 @@
 
 {% block content %}
     <h2>Strona użytkownika {{ user.email }}</h2>
-    <p><img src="http://placehold.it/150x150" alt="{{ user.username }}" /></p>
+    <p><img src="{{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}" alt="{{ user.username }}" class="img-circle" width="100" height="100" /></p>
     <p><strong>Real User ID:</strong> {{ user.id }} - <strong>UserProfile ID:</strong> {{ user.userprofile.id }}</p>
 
     {% if user.userprofile.organizations.count %}

@@ -3,21 +3,21 @@
 u"""
 .. module:: __init__
 """
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
-from volontulo.utils import yield_message_error
-from volontulo.utils import yield_message_successful
 from volontulo.forms import AdministratorContactForm
 from volontulo.forms import UserGalleryForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
+from volontulo.utils import yield_message_error
+from volontulo.utils import yield_message_successful
 
 
 def logged_as_admin(request):
@@ -68,29 +68,15 @@ def static_pages(request, template_name):
 @login_required
 def logged_user_profile(request):
     u"""View to display user profile page."""
-
     userprofile = UserProfile.objects.get(user=request.user)
     if request.method == 'POST' and request.FILES:
-        gallery_form = UserGalleryForm(request.POST, request.FILES)
-        if gallery_form.is_valid():
-            gallery = gallery_form.save(commit=False)
-            gallery.userprofile = userprofile
-            gallery.save()
-            yield_message_successful(request, u"Dodano grafikę")
-        else:
-            errors = '<br />'.join(gallery_form.errors)
-            yield_message_error(
-                request,
-                u"Problem w trakcie dodawania grafiki: {}".format(errors)
-            )
+        handle_file_upload(request, userprofile)
 
-    badges = UserBadges.objects\
-        .filter(userprofile=userprofile.id)\
-        .values('badge_id', 'badge__name', 'badge__priority')\
-        .annotate(badges=Count('badge_id'))\
-        .order_by('-badge__priority')
     ctx = {
-        'badges': badges,
+        'badges': UserBadges.get_user_badges(userprofile),
+        'image': UserGalleryForm(),
+        'userprofile': userprofile,
+        'MEDIA_URL': settings.MEDIA_URL
     }
 
     # Current user is organization
@@ -102,12 +88,25 @@ def logged_user_profile(request):
         # get offers that volunteer applied
         ctx['offers'] = Offer.objects.filter(volunteers=request.user)
 
-    ctx['image'] = UserGalleryForm()
-    return render(
-        request,
-        'users/user_profile.html',
-        ctx
-    )
+    return render(request, 'users/user_profile.html', ctx)
+
+
+def handle_file_upload(request, userprofile):
+    u"""Handle image upload for user profile page."""
+    gallery_form = UserGalleryForm(request.POST, request.FILES)
+    if gallery_form.is_valid():
+        # validate file extension (content type)
+        gallery = gallery_form.save(commit=False)
+        gallery.userprofile = userprofile
+        gallery.is_avatar = True if request.POST.get('is_avatar') else False
+        gallery.save()
+        yield_message_successful(request, u"Dodano grafikę")
+    else:
+        errors = '<br />'.join(gallery_form.errors)
+        yield_message_error(
+            request,
+            u"Problem w trakcie dodawania grafiki: {}".format(errors)
+        )
 
 
 @login_required

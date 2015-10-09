@@ -71,6 +71,13 @@ class UserProfile(models.Model):
         u"""Return True if current user is volunteer, else return False"""
         return not (self.is_administrator and self.organizations)
 
+    def get_avatar(self):
+        u"""Return avatar for current user."""
+        return UserGallery.objects.filter(
+            userprofile=self,
+            is_avatar=True
+        )
+
     def __str__(self):
         return self.user.email
 
@@ -86,6 +93,15 @@ class UserBadges(models.Model):
 
     def __str__(self):
         return self.description
+
+    @staticmethod
+    def get_user_badges(userprofile):
+        u"""Return User badges for selected user."""
+        return UserBadges.objects \
+            .filter(userprofile=userprofile.id) \
+            .values('badge_id', 'badge__name', 'badge__priority') \
+            .annotate(badges=models.Count('badge_id')) \
+            .order_by('-badge__priority')
 
     @staticmethod
     def apply_participant_badge(content_type, volunteer_user):
@@ -167,4 +183,5 @@ class UserBadges(models.Model):
 class UserGallery(models.Model):
     u"""Handling user images."""
     userprofile = models.ForeignKey(UserProfile, related_name='images')
-    image = models.FileField(upload_to='profile/')
+    image = models.ImageField(upload_to='profile/')
+    is_avatar = models.BooleanField(default=False)
