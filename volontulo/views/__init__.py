@@ -10,14 +10,15 @@ from django.http import Http404
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
-from volontulo.utils import yield_message_error
-from volontulo.utils import yield_message_successful
 from volontulo.forms import AdministratorContactForm
+from volontulo.forms import EditProfileForm
 from volontulo.forms import UserGalleryForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
+from volontulo.utils import yield_message_error
+from volontulo.utils import yield_message_successful
 
 
 def logged_as_admin(request):
@@ -68,21 +69,33 @@ def static_pages(request, template_name):
 @login_required
 def logged_user_profile(request):
     u"""View to display user profile page."""
-
+    profile_form = EditProfileForm(initial={'email': request.user.email})
     userprofile = UserProfile.objects.get(user=request.user)
-    if request.method == 'POST' and request.FILES:
-        gallery_form = UserGalleryForm(request.POST, request.FILES)
-        if gallery_form.is_valid():
-            gallery = gallery_form.save(commit=False)
-            gallery.userprofile = userprofile
-            gallery.save()
-            yield_message_successful(request, u"Dodano grafikę")
+
+    if request.method == 'POST':
+        if request.FILES:
+            gallery_form = UserGalleryForm(request.POST, request.FILES)
+            if gallery_form.is_valid():
+                gallery = gallery_form.save(commit=False)
+                gallery.userprofile = userprofile
+                gallery.save()
+                yield_message_successful(request, u"Dodano grafikę")
+            else:
+                errors = '<br />'.join(gallery_form.errors)
+                yield_message_error(
+                    request,
+                    u"Problem w trakcie dodawania grafiki: {}".format(errors)
+                )
         else:
-            errors = '<br />'.join(gallery_form.errors)
-            yield_message_error(
-                request,
-                u"Problem w trakcie dodawania grafiki: {}".format(errors)
-            )
+            profile_form = EditProfileForm(request.POST)
+            if profile_form.is_valid():
+                pass
+            else:
+                errors = '<br />'.join(profile_form.errors)
+                yield_message_error(
+                    request,
+                    u"Problem w trakcie zapisywania profilu: {}".format(errors)
+                )
 
     badges = UserBadges.objects\
         .filter(userprofile=userprofile.id)\
@@ -91,6 +104,7 @@ def logged_user_profile(request):
         .order_by('-badge__priority')
     ctx = {
         'badges': badges,
+        'profile_form': profile_form
     }
 
     # Current user is organization

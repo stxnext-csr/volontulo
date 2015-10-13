@@ -3,10 +3,13 @@
 u"""
 .. module:: forms
 """
+from __future__ import unicode_literals
 
 from django import forms
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
+# from volontulo.models import EditProfile
 from volontulo.models import Offer
 from volontulo.models import UserGallery
 from volontulo.utils import get_administrators_emails
@@ -19,6 +22,25 @@ class UserForm(forms.ModelForm):
     class Meta(object):
         model = User
         fields = ['email']
+
+
+class EditProfileForm(forms.Form):
+    u"""Form reposponsible for edit user details on profile page."""
+    email = forms.EmailField(label="Email")
+    current_password = forms.CharField(widget=forms.PasswordInput())
+    new_password = forms.CharField(widget=forms.PasswordInput())
+    confirm_new_password = forms.CharField(widget=forms.PasswordInput())
+
+    # class Meta(object):
+    #     model = EditProfile
+
+    def is_valid(self):
+        super(EditProfileForm, self).is_valid()
+        if self.current_password != User.objects.get(user=1):
+            raise ValidationError("Current password is incorrect.")
+
+        if self.new_password != self.confirm_new_password:
+            raise ValidationError("Confirmation password doesn't match.")
 
 
 class CreateOfferForm(forms.ModelForm):

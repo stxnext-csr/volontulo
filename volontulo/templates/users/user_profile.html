@@ -7,6 +7,15 @@
     <p><img src="http://placehold.it/150x150" alt="{{ user.username }}" /></p>
     <p><strong>Real User ID:</strong> {{ user.id }} - <strong>UserProfile ID:</strong> {{ user.userprofile.id }}</p>
 
+    <form action="{{ request.path }}" method="post">
+        {% csrf_token %}
+        {{ profile_form.as_p }}
+        <div class="btn-form">
+            <button type="submit" name="save_profile" value="save_profile" class="btn btn-primary">Zapisz zmiany</button>
+        </div>
+    </form>
+
+
     {% if user.userprofile.organizations.count %}
         <h2>Jako organizacja chciałbym ...</h2>
         <p><a href="{% url 'offers_create' %}">...dodać ofertę</a></p>
