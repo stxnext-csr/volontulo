@@ -1,4 +1,6 @@
 {% extends "emails/base.txt" %}
 {% block email_content %}
 Dziękujemy za rejestrację.
+Zweryfikuj swoje konto na Volontulo wchodząc w przeglądarce pod poniższy link:
+{{ protocol }}://{{ domain }}/activate/{{ uuid }}
 {% endblock %}

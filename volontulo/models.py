@@ -3,6 +3,8 @@
 u"""
 .. module:: models
 """
+# pylint: disable=unused-import
+import uuid
 
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -62,6 +64,7 @@ class UserProfile(models.Model):
         through='UserBadges',
         related_name='user_profile'
     )
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
     def is_admin(self):
         u"""Return True if current user is administrator, else return False"""
