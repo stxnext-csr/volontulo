@@ -22,12 +22,8 @@
                 {% include "common/messages.html" %}
             </div>
         </section>
-        <section class="content">
-            <div class="container">
-                {% block layout %}
-                {% endblock %}
-            </div>
-        </section>
+        {% block layout %}
+        {% endblock %}
         <section class="footer">
             <div class="container">
                 {% include "common/footer.html" %}

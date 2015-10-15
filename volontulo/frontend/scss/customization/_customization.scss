@@ -58,6 +58,20 @@ $darkgray-light:              #656D78 !default;
     }
 }
 
+// section content-heading
+.content-heading {
+    position: relative;
+    background: $lightgray-light;
+    &:after {
+        content: "";
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        height: 2em;
+        background: linear-gradient(to bottom, rgba($lightgray-dark, 0) 0px, $lightgray-dark 90%, $lightgray-dark 100%);
+    }
+}
 // section content
 .content {
     min-height: 60vh;
