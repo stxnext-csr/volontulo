@@ -16,12 +16,23 @@
     <body>
         <script>document.body.style += ' js';</script>
 
-        <div class="container">
-            {% include "common/header.html" %}
-            {% include "common/messages.html" %}
-            {% block layout %}
-            {% endblock %}
-        </div>
+        <section class="header">
+            <div class="container">
+                {% include "common/header.html" %}
+                {% include "common/messages.html" %}
+            </div>
+        </section>
+        <section class="content">
+            <div class="container">
+                {% block layout %}
+                {% endblock %}
+            </div>
+        </section>
+        <section class="footer">
+            <div class="container">
+                {% include "common/footer.html" %}
+            </div>
+        </section>
 
         {% block scripts %}
             <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
