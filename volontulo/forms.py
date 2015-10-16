@@ -9,7 +9,6 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-# from volontulo.models import EditProfile
 from volontulo.models import Offer
 from volontulo.models import UserGallery
 from volontulo.utils import get_administrators_emails
@@ -30,17 +29,28 @@ class EditProfileForm(forms.Form):
     current_password = forms.CharField(widget=forms.PasswordInput())
     new_password = forms.CharField(widget=forms.PasswordInput())
     confirm_new_password = forms.CharField(widget=forms.PasswordInput())
-
-    # class Meta(object):
-    #     model = EditProfile
+    user = forms.CharField(widget=forms.HiddenInput())
 
     def is_valid(self):
-        super(EditProfileForm, self).is_valid()
-        if self.current_password != User.objects.get(user=1):
-            raise ValidationError("Current password is incorrect.")
+        valid = super(EditProfileForm, self).is_valid()
+        if not valid:
+            return valid
 
-        if self.new_password != self.confirm_new_password:
-            raise ValidationError("Confirmation password doesn't match.")
+        current_password = self.cleaned_data['current_password']
+        user = User.objects.get(id=self.cleaned_data['user'])
+
+        if not user.check_password(current_password):
+            raise ValidationError(u"Aktualne hasło jest błędne")
+
+        new_password = self.cleaned_data['new_password']
+        confirm_new_password = self.cleaned_data['confirm_new_password']
+        if new_password:
+            if new_password != confirm_new_password:
+                raise ValidationError(u"Wprowadzone hasła różnią się")
+        else:
+            raise ValidationError(u"Nowe hasło nie może być puste.")
+
+        return True
 
 
 class CreateOfferForm(forms.ModelForm):

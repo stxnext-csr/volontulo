@@ -69,11 +69,16 @@ def static_pages(request, template_name):
 @login_required
 def logged_user_profile(request):
     u"""View to display user profile page."""
-    profile_form = EditProfileForm(initial={'email': request.user.email})
+    profile_form = EditProfileForm(
+        initial={
+            'email': request.user.email,
+            'user': request.user.id,
+        }
+    )
     userprofile = UserProfile.objects.get(user=request.user)
 
     if request.method == 'POST':
-        if request.FILES:
+        if request.POST.get('submit') == 'save_image' and request.FILES:
             gallery_form = UserGalleryForm(request.POST, request.FILES)
             if gallery_form.is_valid():
                 gallery = gallery_form.save(commit=False)
@@ -86,10 +91,16 @@ def logged_user_profile(request):
                     request,
                     u"Problem w trakcie dodawania grafiki: {}".format(errors)
                 )
-        else:
+        elif request.POST.get('submit') == 'save_profile':
             profile_form = EditProfileForm(request.POST)
             if profile_form.is_valid():
-                pass
+                user = User.objects.get(id=request.user.id)
+                user.set_password(profile_form.cleaned_data['new_password'])
+                user.save()
+                yield_message_successful(
+                    request,
+                    u"Zaktualizowano profil"
+                )
             else:
                 errors = '<br />'.join(profile_form.errors)
                 yield_message_error(

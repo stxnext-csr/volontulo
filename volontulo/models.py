@@ -49,18 +49,6 @@ class Badge(models.Model):
         return self.name
 
 
-# class EditProfile(object):
-#     u"""Edit Profile form representation."""
-#     email = models.EmailField(max_length=150)
-#     current_password = models.CharField(max_length=150)
-#     new_password = models.CharField(max_length=150)
-#     confirm_new_password = models.CharField(max_length=150)
-#
-#     def __str__(self):
-#         """Edit Profile form string representation."""
-#         return self.email
-
-
 class UserProfile(models.Model):
     u"""Model that handles users' profiles."""
     user = models.OneToOneField(User)
