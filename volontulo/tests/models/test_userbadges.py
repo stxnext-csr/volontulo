@@ -6,7 +6,6 @@ u"""
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
-from django.utils import timezone
 
 from volontulo.models import Badge
 from volontulo.models import UserBadges
@@ -19,7 +18,6 @@ class TestUserBadgesModel(TestCase):
     @classmethod
     def setUpTestData(cls):
         u"""Fixtures for all tests."""
-        cls.created_at = timezone.now()
         badge = Badge.objects.create(
             name=u'My Awesome Badge',
             slug=u'my-awesome-badge',
@@ -42,7 +40,6 @@ class TestUserBadgesModel(TestCase):
             badge=badge,
             description=u'Description of rules for badge assignment.',
             content_type=content_type,
-            created_at=cls.created_at,
         )
 
     def test__string_representation(self):
