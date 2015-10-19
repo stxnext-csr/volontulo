@@ -70,6 +70,35 @@ class TestRegister(TransactionTestCase):
         self.assertIn('_auth_user_id', self.client.session)
         self.assertEqual(User.objects.all().count(), 1)
 
+    # pylint: disable=invalid-name
+    def test__register_authenticated_user(self):
+        u"""Check if authenticated user can access register page."""
+        # volunteer user
+        Common.initialize_empty_volunteer()
+
+        self.client.post('/login', {
+            'email': 'volunteer1@example.com',
+            'password': 'volunteer1',
+        })
+        response = self.client.get('/login', follow=True)
+
+        self.assertRedirects(
+            response,
+            '/',
+            302,
+            200,
+        )
+        self.assertEqual(len(response.redirect_chain), 1)
+        self.assertEqual(
+            response.redirect_chain[0],
+            ('http://testserver/', 302),
+        )
+        self.assertIn('_auth_user_id', self.client.session)
+        self.assertContains(
+            response,
+            u'Jesteś już zalogowany.'
+        )
+
 
 class TestAuth(TestCase):
     u"""Class responsible for testing users authentication view."""
@@ -125,3 +154,28 @@ class TestAuth(TestCase):
             u"Użytkownik został wylogowany!"
         )
         self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test__login_authenticated_user(self):
+        u"""Check if authenticated user can access login page."""
+        self.client.post('/login', {
+            'email': 'volunteer1@example.com',
+            'password': 'volunteer1',
+        })
+        response = self.client.get('/login', follow=True)
+
+        self.assertRedirects(
+            response,
+            '/',
+            302,
+            200,
+        )
+        self.assertEqual(len(response.redirect_chain), 1)
+        self.assertEqual(
+            response.redirect_chain[0],
+            ('http://testserver/', 302),
+        )
+        self.assertIn('_auth_user_id', self.client.session)
+        self.assertContains(
+            response,
+            u'Jesteś już zalogowany.'
+        )
