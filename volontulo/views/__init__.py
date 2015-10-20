@@ -10,14 +10,15 @@ from django.http import Http404
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
+from volontulo.utils import yield_message_error
+from volontulo.utils import yield_message_successful
 from volontulo.forms import AdministratorContactForm
+from volontulo.forms import EditProfileForm
 from volontulo.forms import UserGalleryForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
-from volontulo.utils import yield_message_error
-from volontulo.utils import yield_message_successful
 
 
 def logged_as_admin(request):
@@ -67,12 +68,37 @@ def static_pages(request, template_name):
 @login_required
 def logged_user_profile(request):
     u"""View to display user profile page."""
+    profile_form = EditProfileForm(
+        initial={
+            'email': request.user.email,
+            'user': request.user.id,
+        }
+    )
     userprofile = UserProfile.objects.get(user=request.user)
-    if request.method == 'POST' and request.FILES:
-        handle_file_upload(request, userprofile)
+
+    if request.method == 'POST':
+        if request.POST.get('submit') == 'save_image' and request.FILES:
+            handle_file_upload(request, userprofile)
+        elif request.POST.get('submit') == 'save_profile':
+            profile_form = EditProfileForm(request.POST)
+            if profile_form.is_valid():
+                user = User.objects.get(id=request.user.id)
+                user.set_password(profile_form.cleaned_data['new_password'])
+                user.save()
+                yield_message_successful(
+                    request,
+                    u"Zaktualizowano profil"
+                )
+            else:
+                errors = '<br />'.join(profile_form.errors)
+                yield_message_error(
+                    request,
+                    u"Problem w trakcie zapisywania profilu: {}".format(errors)
+                )
 
     ctx = {
         'badges': UserBadges.get_user_badges(userprofile),
+        'profile_form': profile_form,
         'image': UserGalleryForm(),
         'userprofile': userprofile,
         'MEDIA_URL': settings.MEDIA_URL
@@ -87,7 +113,12 @@ def logged_user_profile(request):
         # get offers that volunteer applied
         ctx['offers'] = Offer.objects.filter(volunteers=request.user)
 
-    return render(request, 'users/user_profile.html', ctx)
+    ctx['image'] = UserGalleryForm()
+    return render(
+        request,
+        'users/user_profile.html',
+        ctx
+    )
 
 
 def handle_file_upload(request, userprofile):

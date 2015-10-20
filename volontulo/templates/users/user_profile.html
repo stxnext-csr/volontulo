@@ -19,22 +19,38 @@
 
 {% block content %}
     <h2>Strona użytkownika {{ user.email }}</h2>
-    <p><img src="{{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}" alt="{{ user.username }}" class="img-circle" width="100" height="100" /></p>
+    <fieldset>
+        <legend>Informacje o użytkowniku</legend>
+        <p><img src="{{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}" alt="{{ user.username }}" class="img-circle" width="100" height="100" /></p>
+    </fieldset>
+
+    <fieldset>
+        <legend>Edycja profilu użytkownika</legend>
+        <form action="{{ request.path }}" method="post" role="form">
+            {% csrf_token %}
+            {{ profile_form.as_p }}
+            <div class="btn-form">
+                <button type="submit" name="submit" value="save_profile" class="btn btn-success">Zapisz zmiany</button>
+            </div>
+        </form>
+    </fieldset>
 
     {% if user.userprofile.organizations.count %}
-        <h2>Jako organizacja chciałbym ...</h2>
-        <p><a href="{% url 'offers_create' %}">...dodać ofertę</a></p>
-        {% include 'organizations/organization_offers.html' with offers=offers %}
+        <fieldset>
+            <legend>Jako organizacja chciałbym...</legend>
+            <p><a href="{% url 'offers_create' %}">...dodać ofertę</a></p>
+            {% include 'organizations/organization_offers.html' with offers=offers %}
+        </fieldset>
     {% endif %}
 
     {% if not user.userprofile.organizations.count %}
-        <h2>Jako wolontariusz chciałbym ...</h2>
-        {% include 'common/badges.html' with badges=badges %}
-        {% include 'users/my_offers.html' with offers=offers %}
-
-        {% include 'users/gallery.html' with image=image %}
-
+        <fieldset>
+            <legend>Jako wolontariusz chciałbym...</legend>
+            {% include 'common/badges.html' with badges=badges %}
+            {% include 'users/my_offers.html' with offers=offers %}
+            {% include 'users/gallery.html' with image=image %}
+        </fieldset>
     {% endif %}
 
-    <p><a href="{% url 'logout' %}" class="btn btn-primary">Wyloguj</a></p>
+    <p><a href="{% url 'logout' %}" class="btn btn-default">Wyloguj</a></p>
 {% endblock %}
