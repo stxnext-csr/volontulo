@@ -24,6 +24,11 @@ urlpatterns = [  # pylint: disable=invalid-name
     url(r'^login$', auth_views.login, name='login'),
     url(r'^logout$', auth_views.logout, name='logout'),
     url(r'^register$', auth_views.Register.as_view(), name='register'),
+    url(
+        r'^activate/(?P<uuid>[-0-9A-Za-z]+)$',
+        auth_views.activate,
+        name='activate'
+    ),
     url(r'^password-reset$', auth_views.password_reset, name='password_reset'),
     url(
         r'^password-reset/(?P<uidb64>[0-9A-Za-z]+)/(?P<token>.+)$',
