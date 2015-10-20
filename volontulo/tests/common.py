@@ -12,6 +12,17 @@ from volontulo.models import Organization
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
 
+COMMON_OFFER_DATA = {
+    'organization': None,
+    'description': u'',
+    'requirements': u'',
+    'time_commitment': u'',
+    'benefits': u'',
+    'location': u'',
+    'title': u'volontulo offer',
+    'time_period': u''
+}
+
 
 class Common(object):
     u"""Handle helper methods used in many places."""
