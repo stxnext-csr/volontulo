@@ -81,6 +81,7 @@ class OrganizationsCreate(View):
         )
 
 
+@login_required
 @correct_slug(Organization, 'organization_form', 'name')
 # pylint: disable=unused-argument
 def organization_form(request, slug, id_):
@@ -100,7 +101,7 @@ def organization_form(request, slug, id_):
         org.address = request.POST.get('address')
         org.description = request.POST.get('description')
         org.save()
-        yield_message_successful(request, u'Oferta została dodana/zmnieniona.')
+        yield_message_successful(request, u'Oferta została dodana/zmieniona.')
         return redirect(
             reverse(
                 'organization_view',
