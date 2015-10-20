@@ -54,7 +54,9 @@ $darkgray-light:              #656D78 !default;
         }
     }
     .messages {
-        margin-top: $line-height-computed;
+        .alert:first-child {
+            margin-top: $line-height-computed;
+        }
     }
 }
 
