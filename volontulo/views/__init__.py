@@ -37,7 +37,6 @@ def homepage(request):  # pylint: disable=unused-argument
     We will display page with few step CTA links?
     """
     if logged_as_admin(request):
-        # implement ON/OFF statuses
         offers = Offer.objects.all().order_by('-status')
         return render(request, "admin/list_offers.html", context={
             'offers': offers,
@@ -149,4 +148,21 @@ def contact_form(request):
         {
             'contact_form': form,
         }
+    )
+
+
+def page_not_found(request):
+    u"""Page not found - 404 error handler."""
+    return render(
+        request,
+        '404.html',
+        status=404
+    )
+
+
+def server_error(request):
+    u"""Internal Server Error - 500 error handler."""
+    return render(
+        request,
+        '500.html',
     )

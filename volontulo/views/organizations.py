@@ -120,12 +120,23 @@ def organization_form(request, slug, id_):
 def organization_view(request, slug, id_):
     u"""View responsible for viewing organization."""
     org = get_object_or_404(Organization, id=id_)
-
     offers = Offer.objects.filter(organization_id=id_)
+    allow_contact = True
+    allow_edit = False
+    allow_offer_create = False
+    if (
+            request.user.is_authenticated() and
+            request.user.userprofile in org.userprofiles.all()
+    ):
+        allow_contact = False
+        allow_edit = True
+        allow_offer_create = True
+
     if request.method == 'POST':
         form = VolounteerToOrganizationContactForm(request.POST)
         if form.is_valid():
-            profile = UserProfile.objects.get(organization_id=id_)
+            # send email to first organization user (I assume it's main user)
+            profile = Organization.objects.get(id=id_).userprofiles.all()[0]
             send_mail(
                 request,
                 'volunteer_to_organisation',
@@ -148,15 +159,20 @@ def organization_view(request, slug, id_):
                     'organization': org,
                     'contact_form': form,
                     'offers': offers,
+                    'allow_contact': allow_contact,
+                    'allow_edit': allow_edit,
+                    'allow_offer_create': allow_offer_create,
                 },
             )
-    form = VolounteerToOrganizationContactForm()
     return render(
         request,
         "organizations/organization_view.html",
         {
             'organization': org,
-            'contact_form': form,
+            'contact_form': VolounteerToOrganizationContactForm(),
             'offers': offers,
-        },
+            'allow_contact': allow_contact,
+            'allow_edit': allow_edit,
+            'allow_offer_create': allow_offer_create,
+        }
     )

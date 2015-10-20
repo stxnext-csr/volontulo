@@ -1,17 +1,26 @@
 {% extends "common/base.html" %}
 
 {% block layout %}
-
-    <div class="row">
-        <div class="col-xs-3">
-            {% block sidebar %}Sidebar block{% endblock %}
-        </div>
-        <div class="col-xs-9">
-            {% block content %}
-                Content block
-            {% endblock %}
+<section class="content-heading">
+    <div class="container">
+    {% block content-heading %}
+    {% endblock %}
+    </div>
+</section>
+<section class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-3">
+                {% block sidebar %}
+                    Sidebar block
+                {% endblock %}
+            </div>
+            <div class="col-xs-9">
+                {% block content %}
+                    Content block
+                {% endblock %}
+            </div>
         </div>
     </div>
-
-    {% include "common/footer.html" %}
+</section>
 {% endblock %}

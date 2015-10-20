@@ -2,44 +2,35 @@
 
 {% block header %}
     {% block social_nav %}
-    <div class="row">
-        <div class="col-xs-12 text-right">
-        Additional nav elements, e.g. social links leading to other sites (probable, but not sure)
-        </div>
-    </div>
     {% endblock %}
 
     {% block navigations %}
     <div class="row">
         <div class="col-xs-12">
-            <h1 class="navbar-header">
-                <a href="{% url 'homepage' %}">
-                    <img src="{% static "volontulo/img/volo_logo.svg" %}" alt="Volontulo" />
-                </a>
-            </h1>
-            <ul class="nav navbar-nav navbar-right">
-                {% if user.is_anonymous and not user.is_authenticated  %}
-                <li>
-                    <a href="{% url 'login' %}">Zaloguj</a>
-                </li>
-                <li>
-                    <a href="{% url 'register' %}">Nowe konto</a>
-                </li>
-                {% else %}
-                <li class="dropdown">
-                    <a class="dropdown-toggle" href="{% url 'logged_user_profile' %}" aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown">
-                        Witaj, {{ user.email }}!
-                        <span class="caret"></span>
+            <nav class="container-fluid">
+                <h1 class="navbar-header">
+                    <a href="{% url 'homepage' %}">
+                        <img src="{% static "volontulo/img/volo_logo.svg" %}" alt="Volontulo" />
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{% url 'logged_user_profile' %}">Moje konto</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="{% url 'logout' %}">Wyloguj</a>
-                </li>
+                </h1>
+                <div class="navbar-right">
+                {% if user.is_anonymous and not user.is_authenticated %}
+                    <a class="btn btn-primary navbar-btn" href="{% url 'register' %}">Załóż konto</a>
+                    <span class="navbar-text">lub</span>
+                    <a class="btn btn-link navbar-btn" href="{% url 'login' %}">Zaloguj się</a>
+                {% else %}
+                    <div class="btn-group">
+                        <button aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" class="btn btn-link dropdown-toggle" type="button">Witaj, {{ user.email }}! <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{% url 'logged_user_profile' %}">Moje konto</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <a class="btn btn-info navbar-btn"href="{% url 'logout' %}">Wyloguj <span aria-hidden="true" class="glyphicon glyphicon-log-out"></span></a>
                 {% endif %}
-            </ul>
+                </div>
+            </nav>
         </div>
     </div>
     {% endblock %}
