@@ -26,7 +26,11 @@ from volontulo.utils import yield_message_successful
 def login(request):
     u"""Login view."""
     if request.user.is_authenticated():
-        return redirect('/me')
+        yield_message_successful(
+            request,
+            u'Jesteś już zalogowany.'
+        )
+        return redirect('homepage')
 
     user_form = UserForm()
     if request.method == 'POST':
@@ -79,6 +83,13 @@ class Register(View):
     @staticmethod
     def get(request, user_form=None):
         u"""Simple view to render register form."""
+        if request.user.is_authenticated():
+            yield_message_successful(
+                request,
+                u'Jesteś już zalogowany.'
+            )
+            return redirect('homepage')
+
         return render(
             request,
             'auth/register.html',
