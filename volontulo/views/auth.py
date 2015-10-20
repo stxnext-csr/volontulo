@@ -3,6 +3,7 @@
 u"""
 .. module:: auth
 """
+from __future__ import unicode_literals
 
 from django.contrib import auth
 from django.contrib import messages
@@ -24,6 +25,14 @@ from volontulo.utils import yield_message_successful
 
 def login(request):
     u"""Login view."""
+    if request.user.is_authenticated():
+        yield_message_successful(
+            request,
+            u'Jesteś już zalogowany.'
+        )
+        return redirect('homepage')
+
+    user_form = UserForm()
     if request.method == 'POST':
         username = request.POST.get('email')
         password = request.POST.get('password')
@@ -50,7 +59,9 @@ def login(request):
     return render(
         request,
         'auth/login.html',
-        {}
+        {
+            'user_form': user_form
+        }
     )
 
 
@@ -72,6 +83,13 @@ class Register(View):
     @staticmethod
     def get(request, user_form=None):
         u"""Simple view to render register form."""
+        if request.user.is_authenticated():
+            yield_message_successful(
+                request,
+                u'Jesteś już zalogowany.'
+            )
+            return redirect('homepage')
+
         return render(
             request,
             'auth/register.html',
@@ -83,7 +101,6 @@ class Register(View):
     @classmethod
     def post(cls, request):
         u"""Method handes creation of new user."""
-
         # validation of register form:
         user_form = UserForm(request.POST)
         if not user_form.is_valid():
@@ -96,6 +113,8 @@ class Register(View):
         username = request.POST.get('email')
         password = request.POST.get('password')
 
+        ctx = {}
+
         # attempt of new user creation:
         try:
             user = User.objects.create_user(
@@ -103,7 +122,10 @@ class Register(View):
                 email=username,
                 password=password,
             )
+            user.is_active = False
+            user.save()
             profile = UserProfile(user=user)
+            ctx['uuid'] = profile.uuid
             profile.save()
         except IntegrityError:
             # if attempt failed, because user already exists we need show
@@ -116,7 +138,7 @@ class Register(View):
             return cls.get(request, user_form)
 
         # sending email to user:
-        send_mail(request, 'registration', [user.email])
+        send_mail(request, 'registration', [user.email], context=ctx)
 
         # automatically login new user:
         user = auth.authenticate(username=username, password=password)
@@ -129,6 +151,24 @@ class Register(View):
             u'Rejestracja przebiegła pomyślnie'
         )
         return redirect('homepage')
+
+
+def activate(request, uuid):
+    """View responsible for activating user account."""
+    try:
+        profile = UserProfile.objects.get(uuid=uuid)
+        profile.user.is_active = 1
+        profile.save()
+        yield_message_successful(
+            request,
+            """Pomyślnie aktywowałeś użytkownika."""
+        )
+    except UserProfile.DoesNotExist:
+        yield_message_error(
+            request,
+            """Brak użytkownika spełniającego wymagane kryteria."""
+        )
+    return redirect('homepage')
 
 
 def password_reset(request):
