@@ -212,7 +212,7 @@ class TestOrganizations(TestCase):
         )
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
-        self.assertEqual(len(response.context['offers']), 4)
+        self.assertEqual(len(response.context['offers']), 14)
 
     def test__get_empty_organization_view_by_volunteer(self):
         u"""Requesting for empty organization view by volunteer user."""
@@ -252,6 +252,7 @@ class TestOrganizations(TestCase):
         self.assertContains(response, u'Edytuj organizację')
         self.assertContains(response, u'Dodaj ofertę')
 
+        self.client.get('/logout')
         self.client.post('/login', {
             'email': u'organization2@example.com',
             'password': 'organization2',
@@ -279,7 +280,7 @@ class TestOrganizations(TestCase):
         )
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
-        self.assertEqual(len(response.context['offers']), 4)
+        self.assertEqual(len(response.context['offers']), 14)
 
     def test__post_contact_form_on_organization_view_by_anonymous(self):
         u"""Post contact form to organization view by anonymous user."""

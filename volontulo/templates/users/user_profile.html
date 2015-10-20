@@ -18,6 +18,8 @@
 {% endblock %}
 
 {% block content %}
+    <h2>Strona użytkownika {{ user.email }}</h2>
+    <p><img src="{{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}" alt="{{ user.username }}" class="img-circle" width="100" height="100" /></p>
 
     {% if user.userprofile.organizations.count %}
         <h2>Jako organizacja chciałbym ...</h2>
