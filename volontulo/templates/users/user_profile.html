@@ -2,12 +2,26 @@
 
 {% block title %}Strona użytkownika {{ user.email }}{% endblock %}
 
+{% block content-heading %}
+    <div class="media">
+        <div class="media-left">
+            <img class="img-responsive" src="http://placehold.it/200x200" alt="{{ user.username }}" />
+        </div>
+        <div class="media-body media-middle">
+            <h2 class="media-heading">Użytkownik: {{ user.email }}</h2>
+            <ul class="list-unstyled">
+                <li><strong>Real User ID:</strong> <span class="badge">{{ user.id }}</span></li>
+                <li><strong>UserProfile ID:</strong> <span class="badge">{{ user.userprofile.id }}</span></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
 {% block content %}
     <h2>Strona użytkownika {{ user.email }}</h2>
     <fieldset>
         <legend>Informacje o użytkowniku</legend>
-        <p><img src="http://placehold.it/150x150" alt="{{ user.username }}" /></p>
-        <p><strong>Real User ID:</strong> {{ user.id }} - <strong>UserProfile ID:</strong> {{ user.userprofile.id }}</p>
+        <p><img src="{{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}" alt="{{ user.username }}" class="img-circle" width="100" height="100" /></p>
     </fieldset>
 
     <fieldset>

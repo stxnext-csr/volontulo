@@ -77,7 +77,11 @@ class CreateOfferForm(forms.ModelForm):
 
 class UserGalleryForm(forms.ModelForm):
     u"""Form used for changing user profile of user."""
-    image = forms.FileField(label=u"Wybierz grafikę")
+    image = forms.ImageField(label=u"Wybierz grafikę")
+    is_avatar = forms.BooleanField(
+        label=u"Użyć jako avatar?",
+        required=False,
+    )
 
     class Meta(object):
         model = UserGallery

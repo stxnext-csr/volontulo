@@ -3,13 +3,15 @@
 u"""
 .. module:: __init__
 """
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
+from volontulo.utils import yield_message_error
+from volontulo.utils import yield_message_successful
 from volontulo.forms import AdministratorContactForm
 from volontulo.forms import EditProfileForm
 from volontulo.forms import UserGalleryForm
@@ -17,8 +19,6 @@ from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
-from volontulo.utils import yield_message_error
-from volontulo.utils import yield_message_successful
 
 
 def logged_as_admin(request):
@@ -38,7 +38,6 @@ def homepage(request):  # pylint: disable=unused-argument
     We will display page with few step CTA links?
     """
     if logged_as_admin(request):
-        # implement ON/OFF statuses
         offers = Offer.objects.all().order_by('-status')
         return render(request, "admin/list_offers.html", context={
             'offers': offers,
@@ -79,18 +78,7 @@ def logged_user_profile(request):
 
     if request.method == 'POST':
         if request.POST.get('submit') == 'save_image' and request.FILES:
-            gallery_form = UserGalleryForm(request.POST, request.FILES)
-            if gallery_form.is_valid():
-                gallery = gallery_form.save(commit=False)
-                gallery.userprofile = userprofile
-                gallery.save()
-                yield_message_successful(request, u"Dodano grafikę")
-            else:
-                errors = '<br />'.join(gallery_form.errors)
-                yield_message_error(
-                    request,
-                    u"Problem w trakcie dodawania grafiki: {}".format(errors)
-                )
+            handle_file_upload(request, userprofile)
         elif request.POST.get('submit') == 'save_profile':
             profile_form = EditProfileForm(request.POST)
             if profile_form.is_valid():
@@ -108,14 +96,12 @@ def logged_user_profile(request):
                     u"Problem w trakcie zapisywania profilu: {}".format(errors)
                 )
 
-    badges = UserBadges.objects\
-        .filter(userprofile=userprofile.id)\
-        .values('badge_id', 'badge__name', 'badge__priority')\
-        .annotate(badges=Count('badge_id'))\
-        .order_by('-badge__priority')
     ctx = {
-        'badges': badges,
-        'profile_form': profile_form
+        'badges': UserBadges.get_user_badges(userprofile),
+        'profile_form': profile_form,
+        'image': UserGalleryForm(),
+        'userprofile': userprofile,
+        'MEDIA_URL': settings.MEDIA_URL
     }
 
     # Current user is organization
@@ -133,6 +119,24 @@ def logged_user_profile(request):
         'users/user_profile.html',
         ctx
     )
+
+
+def handle_file_upload(request, userprofile):
+    u"""Handle image upload for user profile page."""
+    gallery_form = UserGalleryForm(request.POST, request.FILES)
+    if gallery_form.is_valid():
+        # validate file extension (content type)
+        gallery = gallery_form.save(commit=False)
+        gallery.userprofile = userprofile
+        gallery.is_avatar = True if request.POST.get('is_avatar') else False
+        gallery.save()
+        yield_message_successful(request, u"Dodano grafikę")
+    else:
+        errors = '<br />'.join(gallery_form.errors)
+        yield_message_error(
+            request,
+            u"Problem w trakcie dodawania grafiki: {}".format(errors)
+        )
 
 
 @login_required
@@ -175,4 +179,21 @@ def contact_form(request):
         {
             'contact_form': form,
         }
+    )
+
+
+def page_not_found(request):
+    u"""Page not found - 404 error handler."""
+    return render(
+        request,
+        '404.html',
+        status=404
+    )
+
+
+def server_error(request):
+    u"""Internal Server Error - 500 error handler."""
+    return render(
+        request,
+        '500.html',
     )
