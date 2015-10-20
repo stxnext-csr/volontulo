@@ -11,6 +11,10 @@ from volontulo.views import auth as auth_views
 from volontulo.views import offers as offers_views
 from volontulo.views import organizations as orgs_views
 
+# pylint: disable=invalid-name
+handler404 = 'volontulo.views.page_not_found'
+handler500 = 'volontulo.views.server_error'
+
 
 urlpatterns = [  # pylint: disable=invalid-name
     # homepage:
