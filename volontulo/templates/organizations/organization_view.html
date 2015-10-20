@@ -25,12 +25,16 @@
 
     <div class="form-horizontal">
         <div class="col-xs-offset-2 col-xs-10">
+            {% if allow_edit %}
             <a href="{% url 'organization_form' organization.name|slugify organization.id %}" class="btn btn-primary">Edytuj organizację</a>
+            {% endif %}
+            {% if allow_offer_create %}
             <a href="{% url 'offers_create' %}" class="btn btn-primary">Dodaj ofertę</a>
+            {% endif %}
         </div>
     </div>
 
-    {% if not user.userprofile.organizations %}
+    {% if allow_contact %}
     <div class="form-horizontal">
         {% include 'contact_form.html' with contact_form=contact_form  %}
     </div>
