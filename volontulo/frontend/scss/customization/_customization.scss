@@ -130,15 +130,15 @@ $darkgray-light:              #656D78 !default;
             float: left;
             margin: 0 30px 0 0;
             .media-left {
-                line-height: .5;
-                font-size: 24px;
                 opacity: .92;
+                line-height: .5;
+                .glyphicon {
+                    font-size: 24px;
+                }
             }
             .media-body {
                 width: auto;
                 font-size: 16px;
-                padding-top: 10px;
-                padding-bottom: 10px;
                 background: rgba(white, .92);
             }
         }

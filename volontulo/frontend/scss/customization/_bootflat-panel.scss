@@ -98,10 +98,12 @@ $panel-background-color:        $white !default;
     > .panel-heading {
         @include border-left-radius(3px);
         @include border-right-radius(0);
+        padding: 10px 15px;
     }
     > .panel-body {
         @include border-left-radius(0);
         @include border-right-radius(3px);
         background: white;
+        padding: 10px 15px;
     }
 }
