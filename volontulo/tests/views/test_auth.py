@@ -67,6 +67,13 @@ class TestRegister(TransactionTestCase):
             response,
             u'Rejestracja przebiegła pomyślnie',
         )
+        self.assertContains(
+            response,
+            u'Na podany przy rejestracji email został wysłany link '
+            u'aktywacyjny. Aby w pełni wykorzystać konto należy je aktywować '
+            u'poprzez kliknięcie linku lub wklejenie go w przeglądarce.'
+        )
+
         self.assertIn('_auth_user_id', self.client.session)
         self.assertEqual(User.objects.all().count(), 1)
 

@@ -34,6 +34,16 @@ def yield_message_error(request, msg):
     return messages.add_message(request, messages.ERROR, msg)
 
 
+def yield_message_info(request, msg):
+    u"""Helper function yielding info message."""
+    return messages.add_message(request, messages.INFO, msg)
+
+
+def yield_message_warn(request, msg):
+    u"""Helper function yielding info message."""
+    return messages.add_message(request, messages.WARNING, msg)
+
+
 def get_administrators_emails():
     u"""Get all administrators emails or superuser email
 

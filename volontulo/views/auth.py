@@ -20,6 +20,7 @@ from volontulo.lib.email import FROM_ADDRESS
 from volontulo.lib.email import send_mail
 from volontulo.models import UserProfile
 from volontulo.utils import yield_message_error
+from volontulo.utils import yield_message_info
 from volontulo.utils import yield_message_successful
 
 
@@ -149,6 +150,12 @@ class Register(View):
         yield_message_successful(
             request,
             u'Rejestracja przebiegła pomyślnie'
+        )
+        yield_message_info(
+            request,
+            u'Na podany przy rejestracji email został wysłany link '
+            u'aktywacyjny. Aby w pełni wykorzystać konto należy je aktywować '
+            u'poprzez kliknięcie linku lub wklejenie go w przeglądarce.'
         )
         return redirect('homepage')
 
