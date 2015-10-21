@@ -41,7 +41,11 @@ class Common(object):
     @staticmethod
     def initialize_empty_organization():
         u"""Initialize empty organization."""
-        organization1 = Organization.objects.create(name=u'Organization 1')
+        organization1 = Organization.objects.create(
+            name=u'Organization 1',
+            address=u'Organization 1 address',
+            description=u'Organization 1 description',
+        )
         organization1.save()
         organization_user1 = User.objects.create_user(
             'organization1@example.com',
