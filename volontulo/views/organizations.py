@@ -82,6 +82,7 @@ class OrganizationsCreate(View):
 
 
 @correct_slug(Organization, 'organization_form', 'name')
+@login_required
 # pylint: disable=unused-argument
 def organization_form(request, slug, id_):
     u"""View responsible for editing organization.
@@ -89,6 +90,22 @@ def organization_form(request, slug, id_):
     Edition will only work, if logged user has been registered as organization.
     """
     org = Organization.objects.get(pk=id_)
+    users = [profile.user.email for profile in org.userprofiles.all()]
+    if (
+            request.user.is_authenticated() and
+            request.user.email not in users
+    ):
+        yield_message_error(
+            request,
+            u'Nie masz uprawnień do edycji tej organizacji.'
+        )
+        return redirect(
+            reverse(
+                'organization_view',
+                args=[slugify(org.name), org.id]
+            )
+        )
+
     if not (
             request.user.is_authenticated() and
             UserProfile.objects.get(user=request.user).organizations
@@ -96,17 +113,30 @@ def organization_form(request, slug, id_):
         return redirect('homepage')
 
     if request.method == 'POST':
-        org.name = request.POST.get('name')
-        org.address = request.POST.get('address')
-        org.description = request.POST.get('description')
-        org.save()
-        yield_message_successful(request, u'Oferta została dodana/zmnieniona.')
-        return redirect(
-            reverse(
-                'organization_view',
-                args=[slugify(org.name), org.id]
+        if (
+                request.POST.get('name') and
+                request.POST.get('address') and
+                request.POST.get('description')
+        ):
+            org.name = request.POST.get('name')
+            org.address = request.POST.get('address')
+            org.description = request.POST.get('description')
+            org.save()
+            yield_message_successful(
+                request,
+                u'Oferta została dodana/zmieniona.'
             )
-        )
+            return redirect(
+                reverse(
+                    'organization_view',
+                    args=[slugify(org.name), org.id]
+                )
+            )
+        else:
+            yield_message_error(
+                request,
+                u"Należy wypełnić wszystkie pola formularza."
+            )
 
     return render(
         request,
