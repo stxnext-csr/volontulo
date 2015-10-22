@@ -42,6 +42,11 @@ $mediumgray-light:            #CCD1D9 !default;
 $darkgray-dark:               #434A54 !default;
 $darkgray-light:              #656D78 !default;
 
+th,
+label {
+    font-weight: 600;
+}
+
 // section header
 .header {
     .navbar-header {
@@ -91,7 +96,7 @@ $darkgray-light:              #656D78 !default;
     background-color: $darkgray-dark;
     color: $mediumgray-dark;
     .nav-title {
-        font-weight: 700;
+        font-weight: 600;
         font-size: 15px;
         text-transform: uppercase;
         color: $lightgray-dark;

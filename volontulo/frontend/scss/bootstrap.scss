@@ -59,3 +59,17 @@
 @import "customization/customization";
 @import "customization/extended-media";
 @import "customization/bootflat-panel";
+
+// Open Sans webfont
+@import "open-sans/variables";
+@import "open-sans/mixins";
+@import "open-sans/Light";
+//@import "open-sans/LightItalic";
+@import "open-sans/Regular";
+@import "open-sans/Italic";
+@import "open-sans/Semibold";
+//@import "open-sans/SemiboldItalic";
+@import "open-sans/Bold";
+@import "open-sans/BoldItalic";
+//@import "open-sans/ExtraBold";
+//@import "open-sans/ExtraBoldItalic";
