@@ -19,7 +19,7 @@
                 <a href="{% url 'offers_view' o.title|slugify o.id %}" class="btn btn-primary btn-sm">Pomóż</a>
                 <a href="{% url 'offers_edit' o.title|slugify o.id %}" class="btn btn-info btn-sm">Edytuj</a>
             {% else %}
-                <form class="is-inline-block" id="offer_{{ o.id }}_activate" method="post" action="{% url 'offers_edit' o.title|slugify o.id %}" enctype="multipart/form-data">
+                <form class="is-inline_block" id="offer_{{ o.id }}_activate" method="post" action="{% url 'offers_edit' o.title|slugify o.id %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="hidden" value="status_change" name="edit_type" />
                     <input type="hidden" value="ACTIVE" name="status" />
