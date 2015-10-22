@@ -23,12 +23,15 @@
 
     {% if offers %}
         <h2>Lista ofert</h2>
-        <div class="row">
+        <div class="row offer-thumbnails">
         {% for o in offers %}
             <div class="col-sm-6 col-md-3">
                 <div class="thumbnail">
-                    <img src="http://placehold.it/260x260?text=fota+mobilizująca" />
+                    <div class="heading-image" style="background-image:url(http://placehold.it/300x190?text=fota+mobilizująca)"></div>
                     <div class="caption">
+                        <div class="text-right">
+                            <a role="button" class="btn btn-warning" href="{% url 'offers_view' o.title|slugify o.id %}">Pomóż</a>
+                        </div>
                         <div class="media panel-default">
                             <div class="media-left panel-heading">
                                 <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
@@ -45,9 +48,8 @@
                                 {{ o.time_period }}
                             </div>
                         </div>
-                        <h3><a href="{% url 'offers_view' o.title|slugify o.id %}">{{ o.title }}</a></h3>
-                        <p>Organizator:<a href="{% url 'organization_view' slug=o.organization.name|slugify id_=o.organization.id %}">{{ o.organization.name }}</a></p>
-                        <p class="text-right"><a role="button" class="btn btn-warning" href="{% url 'offers_view' o.title|slugify o.id %}">Pomóż</a></p>
+                        <h3><a class="text-warning" href="{% url 'offers_view' o.title|slugify o.id %}">{{ o.title }}</a></h3>
+                        <div class="text-right">Organizator:<a class="text-warning" href="{% url 'organization_view' slug=o.organization.name|slugify id_=o.organization.id %}">{{ o.organization.name }}</a></div>
                     </div>
                 </div>
             </div>
