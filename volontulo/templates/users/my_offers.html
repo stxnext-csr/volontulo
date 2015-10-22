@@ -6,15 +6,15 @@
             <th>Tytuł oferty</th>
             <th>Rozpoczęcie akcji</th>
             <th>Czas trwania</th>
-            <th>Organizacja</th>
+            <th>Organizator</th>
         </tr>
     {% for offer in offers %}
         <tr>
             <th>{{ offer.id }}</th>
-            <th><a href="{% url 'offers_view' offer.title|slugify offer.id %}" class="btn btn-link">{{ offer.title }}</a></th>
+            <th><a href="{% url 'offers_view' offer.title|slugify offer.id %}" class="btn btn-link btn-sm">{{ offer.title }}</a></th>
             <th>{{ offer.time_commitment }}</th>
             <th>{{ offer.time_period }}</th>
-            <th><a href="{% url 'organization_view' offer.organization.name|slugify offer.organization.id %}" class="btn btn-link">{{ offer.organization.name }}</a></th>
+            <th><a href="{% url 'organization_view' offer.organization.name|slugify offer.organization.id %}" class="btn btn-link btn-sm">{{ offer.organization.name }}</a></th>
         </tr>
     {% endfor %}
     </table>
