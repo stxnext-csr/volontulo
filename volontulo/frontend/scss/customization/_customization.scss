@@ -6,6 +6,11 @@
     display: inline-block;
 }
 
+th,
+label {
+    font-weight: 600;
+}
+
 // section header
 .header {
     .navbar-header {
@@ -55,7 +60,7 @@
     background-color: $darkgray-dark;
     color: $mediumgray-dark;
     .nav-title {
-        font-weight: 700;
+        font-weight: 600;
         font-size: 15px;
         text-transform: uppercase;
         color: $lightgray-dark;
