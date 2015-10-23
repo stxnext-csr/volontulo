@@ -1,38 +1,106 @@
-{% extends "common/col2.html" %}
+{% extends "common/col1.html" %}
 
-{% block title %}Lista ofert Volontulo{% endblock %}
+{% block title %}Oferta {{ offer.title }}{% endblock %}
 
-{% block sidebar %}
-    <div>
-        <a href="{% url "offers_join" offer.title|slugify offer.id %}" class="btn btn-primary btn-lg">Zgłoś się do wolontariatu</a>
+{% block content-heading %}
+<div class="offer_view">
+    <img class="img-responsive center-block" src="http://placehold.it/900x260?text=duży+banner+oferty" />
+    {% if user.is_administrator %}
+        <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
+    {% endif %}
+    <div class="panels">
+        <div class="media panel-default">
+            <div class="media-left panel-heading">
+                <span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>
+            </div>
+            <div class="media-body panel-body">
+                {{ offer.location }}
+            </div>
+        </div>
+        <div class="media panel-default">
+            <div class="media-left panel-heading">
+                <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
+            </div>
+            <div class="media-body panel-body">
+                {{ offer.time_period }}
+            </div>
+        </div>
     </div>
+    FB | share
+</div>
+{% endblock %}
+{% block sidebar %}
 {% endblock %}
 
 
 {% block content %}
-    <h2>Szczegóły wybranej oferty</h2>
-    <table class="table table-stripped">
-        <tr><th>Tytuł</th><td>{{ offer.title }}</td></tr>
-        <tr><th>Miejsce</th><td>{{ offer.location }}</td></tr>
-        <tr><th>Czas obowiązywania</th><td>{{ offer.time_period }}</td></tr>
-        <tr><th>Organizacja</th><td>{{ offer.organization.name }}</td></tr>
-        <tr><th>Opis szczegółowy</th><td>{{ offer.description }}</td></tr>
-        <tr><th>Wymogi względem wolontariusza</th><td>{{ offer.requirements }}</td></tr>
-        <tr><th>Wymagania zaangażowania czasowego</th><td>{{ offer.time_commitment }}</td></tr>
-        <tr><th>Korzyści dla wolontariusza</th><td>{{ offer.benefits }}</td></tr>
-    </table>
+    <h2>{{ offer.title }}</h2>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-8">
+            <div class="media row">
+                <div class="media-body">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            {{ offer.description }}
+                        </div>
+                    </div>
+                </div>
+                <div class="media-right media-bottom col-xs-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Korzyści dla wolontariusza</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ offer.benefits }}</p>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Wymagania wobec wolontariusza</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ offer.requirements }}</p>
+                        </div>
+                        <div class="panel-heading">
+                            <p>Zaangażowanie czasowe</p>
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ offer.time_commitment }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    {# User jest organizacją i oferta jest zamknięta. #}
-    {% if offer.status == 'CLOSED' and user.organization %}
-        {% include 'offers/rewarding_volunteers.html' with volunteers=volunteers offer=offer %}
-    {% endif %}
+            {# User jest organizacją i oferta jest zamknięta. #}
+            {% if offer.status == 'CLOSED' and user.organization %}
+                {% include 'offers/rewarding_volunteers.html' with volunteers=volunteers offer=offer %}
+            {% endif %}
 
-    {% if user.userprofile.is_administrator %}
-        {% include 'offers/applied_volunteers.html' with volunteers=volunteers %}
-    {% endif %}
+            {% if user.userprofile.is_administrator %}
+                {% include 'offers/applied_volunteers.html' with volunteers=volunteers %}
+            {% endif %}
 
-    {% if user.is_administrator %}
-        <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
-    {% endif %}
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="panel panel-danger text-center">
+                <div class="panel-heading">
+                    <h3>Możesz pomóc?</h3>
+                    <p>Twoja pomoc jest ważna. <strong>Potrzebujemy Ciebie!</strong></p>
+                    <a href="{% url "offers_join" offer.title|slugify offer.id %}" class="btn btn-default btn-lg">Zgłoś się na ten wolontariat</a>
+                </div>
+                <div class="panel-footer">
+                    <p>Rekrutacja trwa do <strong>{data końca zgłoszeń}</strong></p>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Organizator</h3>
+                </div>
+                <div class="panel-body">
+                    <p>{{ offer.organization.name }}</p>
+                </div>
+            </div>
+         </div>
+    </div>
 
 {% endblock %}
