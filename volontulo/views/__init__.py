@@ -14,9 +14,10 @@ from volontulo.utils import yield_message_error
 from volontulo.utils import yield_message_successful
 from volontulo.forms import AdministratorContactForm
 from volontulo.forms import EditProfileForm
+from volontulo.forms import OrganizationGalleryForm
 from volontulo.forms import UserGalleryForm
 from volontulo.lib.email import send_mail
-from volontulo.models import Offer
+from volontulo.models import Offer, Organization
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
 
@@ -68,75 +69,117 @@ def static_pages(request, template_name):
 @login_required
 def logged_user_profile(request):
     u"""View to display user profile page."""
-    profile_form = EditProfileForm(
-        initial={
-            'email': request.user.email,
-            'user': request.user.id,
-        }
-    )
+    def _init_edit_profile_form():
+        u"""Initialize EditProfileForm - helper method."""
+        return EditProfileForm(
+            initial={
+                'email': request.user.email,
+                'user': request.user.id,
+            }
+        )
+
+    def _populate_offers():
+        u"""..."""
+        if userprofile.organizations.count():
+            # Current user is organization
+            return Offer.objects.filter(
+                organization__userprofiles__user=request.user
+            )
+        else:
+            # get offers that volunteer applied
+            return Offer.objects.filter(volunteers=request.user)
+
+    def _is_saving_user_avatar():
+        u"""."""
+        return request.POST.get('submit') == 'save_image' and request.FILES
+
+    def _is_saving_organization_image():
+        u"""."""
+        submit_value = request.POST.get('submit')
+        return submit_value == 'save_organization_image' and request.FILES
+
+    def _is_saving_profile():
+        u"""."""
+        return request.POST.get('submit') == 'save_profile'
+
+    def _save_userprofile():
+        u"""."""
+        form = EditProfileForm(request.POST)
+        if form.is_valid():
+            user = User.objects.get(id=request.user.id)
+            user.set_password(profile_form.cleaned_data['new_password'])
+            user.save()
+            yield_message_successful(
+                request,
+                u"Zaktualizowano profil"
+            )
+        else:
+            errors = '<br />'.join(profile_form.errors)
+            yield_message_error(
+                request,
+                u"Problem w trakcie zapisywania profilu: {}".format(errors)
+            )
+        return form
+
+    def _handle_user_avatar_upload():
+        u"""Handle image upload for user profile page."""
+        gallery_form = UserGalleryForm(request.POST, request.FILES)
+        if gallery_form.is_valid():
+            userprofile.clean_images()
+            gallery = gallery_form.save(commit=False)
+            gallery.userprofile = userprofile
+            # User can only change his avatar
+            gallery.is_avatar = True
+            gallery.save()
+            yield_message_successful(request, u"Dodano grafikę")
+        else:
+            errors = '<br />'.join(gallery_form.errors)
+            yield_message_error(
+                request,
+                u"Problem w trakcie dodawania grafiki: {}".format(errors)
+            )
+
+    # pylint: disable=invalid-name
+    def _handle_organization_image_upload():
+        u"""Handle image upload for user profile page."""
+        gallery_form = OrganizationGalleryForm(
+            userprofile,
+            request.POST,
+            request.FILES
+        )
+        if gallery_form.is_valid():
+            gallery = gallery_form.save(commit=False)
+            gallery.published_by = userprofile
+            gallery.save()
+            yield_message_successful(request, u"Dodano zdjęcie do galerii.")
+        else:
+            errors = '<br />'.join(gallery_form.errors)
+            yield_message_error(
+                request,
+                u"Problem w trakcie dodawania grafiki: {}".format(errors)
+            )
+
+    profile_form = _init_edit_profile_form()
     userprofile = UserProfile.objects.get(user=request.user)
 
     if request.method == 'POST':
-        if request.POST.get('submit') == 'save_image' and request.FILES:
-            handle_file_upload(request, userprofile)
-        elif request.POST.get('submit') == 'save_profile':
-            profile_form = EditProfileForm(request.POST)
-            if profile_form.is_valid():
-                user = User.objects.get(id=request.user.id)
-                user.set_password(profile_form.cleaned_data['new_password'])
-                user.save()
-                yield_message_successful(
-                    request,
-                    u"Zaktualizowano profil"
-                )
-            else:
-                errors = '<br />'.join(profile_form.errors)
-                yield_message_error(
-                    request,
-                    u"Problem w trakcie zapisywania profilu: {}".format(errors)
-                )
+        if _is_saving_user_avatar():
+            _handle_user_avatar_upload()
+        elif _is_saving_organization_image():
+            _handle_organization_image_upload()
+        elif _is_saving_profile():
+            profile_form = _save_userprofile()
 
-    ctx = {
-        'badges': UserBadges.get_user_badges(userprofile),
-        'profile_form': profile_form,
-        'image': UserGalleryForm(),
-        'userprofile': userprofile,
-        'MEDIA_URL': settings.MEDIA_URL
-    }
-
-    # Current user is organization
-    if userprofile.organizations.count():
-        ctx['offers'] = Offer.objects.filter(
-            organization__userprofiles__user=request.user
-        )
-    else:
-        # get offers that volunteer applied
-        ctx['offers'] = Offer.objects.filter(volunteers=request.user)
-
-    ctx['image'] = UserGalleryForm()
-    return render(
-        request,
-        'users/user_profile.html',
-        ctx
+    ctx = dict(
+        badges=UserBadges.get_user_badges(userprofile),
+        profile_form=profile_form,
+        user_avatar_form=UserGalleryForm(),
+        organization_image_form=OrganizationGalleryForm(userprofile),
+        userprofile=userprofile,
+        MEDIA_URL=settings.MEDIA_URL
     )
-
-
-def handle_file_upload(request, userprofile):
-    u"""Handle image upload for user profile page."""
-    gallery_form = UserGalleryForm(request.POST, request.FILES)
-    if gallery_form.is_valid():
-        # validate file extension (content type)
-        gallery = gallery_form.save(commit=False)
-        gallery.userprofile = userprofile
-        gallery.is_avatar = True if request.POST.get('is_avatar') else False
-        gallery.save()
-        yield_message_successful(request, u"Dodano grafikę")
-    else:
-        errors = '<br />'.join(gallery_form.errors)
-        yield_message_error(
-            request,
-            u"Problem w trakcie dodawania grafiki: {}".format(errors)
-        )
+    ctx['offers'] = _populate_offers()
+    return render(request, 'users/user_profile.html', ctx)
 
 
 @login_required

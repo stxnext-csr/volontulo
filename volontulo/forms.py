@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 from volontulo.models import Offer
+from volontulo.models import Organization
+from volontulo.models import OrganizationGallery
 from volontulo.models import UserGallery
 from volontulo.utils import get_administrators_emails
 
@@ -88,6 +90,34 @@ class UserGalleryForm(forms.ModelForm):
         fields = [
             'image',
         ]
+
+
+class OrganizationGalleryForm(forms.ModelForm):
+    u"""Form used for changing organization profiel."""
+    path = forms.ImageField(label=u"Wybierz grafikę")
+    organization = forms.ModelChoiceField(
+        label=u"Dodaj do organizacji",
+        queryset=Organization.objects.all()
+    )
+    is_main = forms.BooleanField(
+        label=u"Użyj jako zdjęcie główne? ",
+        required=False,
+    )
+
+    class Meta(object):
+        model = OrganizationGallery
+        fields = ['path', 'organization']
+
+    def __init__(self, userprofile, *args, **kwargs):
+        u"""Initialize OrganizationGalleryForm object."""
+        super(OrganizationGalleryForm, self).__init__(*args, **kwargs)
+        self._set_user_organizations(userprofile)
+
+    def _set_user_organizations(self, userprofile):
+        u"""Get current user organizations."""
+        self.fields['organization'].queryset = Organization.objects.filter(
+            userprofiles=userprofile
+        )
 
 
 class OfferApplyForm(forms.Form):

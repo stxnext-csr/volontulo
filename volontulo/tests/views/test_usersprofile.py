@@ -68,7 +68,6 @@ class TestUsersProfile(TestCase):
         })
         response = self.client.get('/me')
 
-        self.assertContains(response, u'Jako wolontariusz chciałbym')
         # pylint: disable=no-member
         self.assertIn('badges', response.context)
         self.assertContains(response, u'Nie masz jeszcze żadnych odznak')
@@ -88,7 +87,6 @@ class TestUsersProfile(TestCase):
         })
         response = self.client.get('/me')
 
-        self.assertContains(response, u'Jako wolontariusz chciałbym')
         # pylint: disable=no-member
         self.assertIn('badges', response.context)
         self.assertContains(response, u'Nie masz jeszcze żadnych odznak')
@@ -108,7 +106,6 @@ class TestUsersProfile(TestCase):
         })
         response = self.client.get('/me')
 
-        self.assertContains(response, u'Jako organizacja chciałbym')
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertContains(
@@ -125,7 +122,6 @@ class TestUsersProfile(TestCase):
         })
         response = self.client.get('/me')
 
-        self.assertContains(response, u'Jako organizacja chciałbym')
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertEqual(
