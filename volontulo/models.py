@@ -4,12 +4,18 @@ u"""
 .. module:: models
 """
 # pylint: disable=unused-import
+import logging
+import os
 import uuid
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils import timezone
+
+# pylint: disable=invalid-name
+logger = logging.getLogger('volontulo.models')
 
 
 class Organization(models.Model):
@@ -80,6 +86,17 @@ class UserProfile(models.Model):
             userprofile=self,
             is_avatar=True
         )
+
+    def clean_images(self):
+        u"""Clean user images."""
+        images = UserGallery.objects.filter(userprofile=self)
+        for image in images:
+            try:
+                os.remove(os.path.join(settings.MEDIA_ROOT, str(image.image)))
+            except OSError as ex:
+                logger.error(ex)
+
+            image.delete()
 
     def __str__(self):
         return self.user.email
@@ -188,3 +205,28 @@ class UserGallery(models.Model):
     userprofile = models.ForeignKey(UserProfile, related_name='images')
     image = models.ImageField(upload_to='profile/')
     is_avatar = models.BooleanField(default=False)
+
+    def __str__(self):
+        u"""String representation of an image."""
+        return str(self.image)
+
+
+class OrganizationGallery(models.Model):
+    u"""Handling organizations gallery."""
+    organization = models.ForeignKey(Organization, related_name='images')
+    published_by = models.ForeignKey(UserProfile, related_name='gallery')
+    path = models.ImageField(upload_to='gallery/')
+    is_main = models.BooleanField(default=False, blank=True)
+
+    def __str__(self):
+        u"""String representation of an image."""
+        return str(self.path)
+
+    def remove(self):
+        u"""Remove image."""
+        self.remove()
+
+    def set_as_main(self):
+        u"""Save image as main."""
+        self.is_main = True
+        self.save()
