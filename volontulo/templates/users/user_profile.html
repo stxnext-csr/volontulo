@@ -1,56 +1,64 @@
 {% extends "common/col1.html" %}
+{% load bootstrap3 %}
 
 {% block title %}Strona użytkownika {{ user.email }}{% endblock %}
 
 {% block content-heading %}
-    <div class="media">
-        <div class="media-left">
-            <img class="img-responsive" src="http://placehold.it/200x200" alt="{{ user.username }}" />
-        </div>
-        <div class="media-body media-middle">
-            <h2 class="media-heading">Użytkownik: {{ user.email }}</h2>
-            <ul class="list-unstyled">
-                <li><strong>Real User ID:</strong> <span class="badge">{{ user.id }}</span></li>
-                <li><strong>UserProfile ID:</strong> <span class="badge">{{ user.userprofile.id }}</span></li>
-            </ul>
+    <div class="media panel panel-default">
+        <div class="panel-heading media-heading lead">Użytkownik: {{ user.email }}</div>
+        <div class="panel-body">
+            <div class="media-left">
+                <p><img src="{{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}" alt="{{ user.username }}" class="img-circle" width="100" height="100" /></p>
+            </div>
+            <div class="media-body media-middle">
+                <ul class="list-unstyled">
+                    <li><strong>Real User ID:</strong> <span class="badge">{{ user.id }}</span></li>
+                    <li><strong>UserProfile ID:</strong> <span class="badge">{{ user.userprofile.id }}</span></li>
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}
 
 {% block content %}
-    <h2>Strona użytkownika {{ user.email }}</h2>
-    <fieldset>
-        <legend>Informacje o użytkowniku</legend>
-        <p><img src="{{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}" alt="{{ user.username }}" class="img-circle" width="100" height="100" /></p>
-    </fieldset>
+    <div class="panel panel-default">
+        <div class="panel-heading lead">Edycja profilu użytkownika</div>
+        <div class="panel-body">
+            <form action="{{ request.path }}" method="post" role="form">
+                {% csrf_token %}
+                {% bootstrap_form profile_form %}
+                <div class="btn-form">
+                    <button type="submit" name="submit" value="save_profile" class="btn btn-success">Zapisz zmiany</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <fieldset>
-        <legend>Edycja profilu użytkownika</legend>
-        <form action="{{ request.path }}" method="post" role="form">
-            {% csrf_token %}
-            {{ profile_form.as_p }}
-            <div class="btn-form">
-                <button type="submit" name="submit" value="save_profile" class="btn btn-success">Zapisz zmiany</button>
-            </div>
-        </form>
-    </fieldset>
+    <div class="panel panel-default">
+        <div class="panel-heading lead">Avatar użytkownika</div>
+        <div class="panel-body">
+            {% include 'users/gallery.html' with image=image %}
+        </div>
+    </div>
 
-    {% if user.userprofile.organizations.count %}
-        <fieldset>
-            <legend>Jako organizacja chciałbym...</legend>
+    <div class="panel panel-default">
+        <div class="panel-heading lead">Szczegóły użytkownika</div>
+        <div class="panel-body">
             <p><a href="{% url 'offers_create' %}">...dodać ofertę</a></p>
             {% include 'organizations/organization_offers.html' with offers=offers %}
-        </fieldset>
-    {% endif %}
-
-    {% if not user.userprofile.organizations.count %}
-        <fieldset>
-            <legend>Jako wolontariusz chciałbym...</legend>
+            <hr />
             {% include 'common/badges.html' with badges=badges %}
+            <hr />
             {% include 'users/my_offers.html' with offers=offers %}
-            {% include 'users/gallery.html' with image=image %}
-        </fieldset>
-    {% endif %}
+        </div>
+    </div>
 
-    <p><a href="{% url 'logout' %}" class="btn btn-default">Wyloguj</a></p>
+    <div class="panel panel-default">
+        <div class="panel-heading lead">Galeria organizacji</div>
+        <div class="panel-body">
+            {% include 'organizations/gallery.html' with image_form=image_form gallery=gallery %}
+        </div>
+    </div>
+
+    <p class="pull-right"><a href="{% url 'logout' %}" class="btn btn-default">Wyloguj</a></p>
 {% endblock %}

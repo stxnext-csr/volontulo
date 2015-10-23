@@ -56,9 +56,11 @@
 @import "bootstrap/responsive-utilities";
 
 // Volontulo customization overwrites
-@import "customization/customization";
+@import "customization/customization-variables";
 @import "customization/extended-media";
+@import "customization/extended-thumbnail";
 @import "customization/bootflat-panel";
+@import "customization/customization";
 
 // Open Sans webfont
 @import "open-sans/variables";
