@@ -10,6 +10,17 @@
         <button type="submit" name="submit" value="save_organization_image" class="btn btn-primary">Zapisz grafikę</button>
     </div>
 </form>
+    {% if galleries.items|length %}
+        {% for organization, gallery in galleries.items  %}
+            <h3>{{ organization }}</h3>
+            {% for image in gallery %}
+                <a href="{{ MEDIA_URL }}{{ image }}"><img src="{{ MEDIA_URL }}{{ image }}" alt="{{ image }}" class="img-thumbnail img-responsive" width="128" height="90"/></a>
+            {% endfor %}
+        {% endfor %}
+    </section>
+    {% else %}
+        <p>Żadna z organizacji do których należysz nie ma jeszcze dodanego zdjęcia.</p>
+    {% endif %}
 {% else %}
 <p>Aby dodawać zdjęcia do organizacji należy być członkiem przynajmniej jednej z nich.</p>
 {% endif %}

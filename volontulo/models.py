@@ -152,7 +152,6 @@ class UserBadges(models.Model):
     # pylint: disable=invalid-name
     def apply_prominent_participant_badge(content_type, volunteer_user):
         u"""Helper function to apply particpant badge to specified user."""
-
         badge = Badge.objects.get(slug='prominent-participant')
         try:
             usersbadge = UserBadges.objects.get(
@@ -226,7 +225,16 @@ class OrganizationGallery(models.Model):
         u"""Remove image."""
         self.remove()
 
-    def set_as_main(self):
+    def set_as_main(self, organization):
         u"""Save image as main."""
+        Organization.objects.get(id=organization.id)
         self.is_main = True
         self.save()
+
+    @staticmethod
+    def get_organizations_galleries(userprofile):
+        u"""Get images grouped by organizations"""
+        organizations = Organization.objects.filter(
+            userprofiles=userprofile
+        ).all()
+        return {o.name: o.images.all() for o in organizations}
