@@ -4,29 +4,29 @@
     <h2>Lista ofert w tej organizacji</h2>
     <table class="table table-striped">
         <tr>
-            <th>Miejsce</th>
             <th>Tytuł</th>
+            <th>Miejsce</th>
             <th>Czas obowiązywania</th>
             <th>Akcje</th>
         </tr>
     {% for o in offers %}
         <tr>
-            <td>{{ o.location }}</td>
             <td>{{ o.title }}</td>
+            <td>{{ o.location }}</td>
             <td>{{ o.time_period }}</td>
             <td>
             {% if o.status == 'STAGED' %}
-                <a href="{% url 'offers_view' o.title|slugify o.id %}">Pomóż</a>
+                <a href="{% url 'offers_view' o.title|slugify o.id %}" class="btn btn-primary btn-sm">Pomóż</a>
+                <a href="{% url 'offers_edit' o.title|slugify o.id %}" class="btn btn-info btn-sm">Edytuj</a>
             {% else %}
-                <form id="offer_{{ o.id }}_activate" method="post" action="{% url 'offers_edit' o.title|slugify o.id %}" enctype="multipart/form-data">
+                <form class="is-inline_block" id="offer_{{ o.id }}_activate" method="post" action="{% url 'offers_edit' o.title|slugify o.id %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="hidden" value="status_change" name="edit_type" />
                     <input type="hidden" value="ACTIVE" name="status" />
-                    <button type="submit" name="submit" class="btn btn-primary">Aktywuj</button>
+                    <button type="submit" name="submit" class="btn btn-primary btn-sm">Aktywuj</button>
                 </form>
-                <a href="{% url 'offers_edit' o.title|slugify o.id %}" class="btn btn-primary">Edytuj</a>
+                <a href="{% url 'offers_edit' o.title|slugify o.id %}" class="btn btn-info btn-sm">Edytuj</a>
             {% endif %}
-                <a href="{% url 'offers_edit' o.title|slugify o.id %}">Edytuj</a>
             </td>
         </tr>
     {% endfor %}

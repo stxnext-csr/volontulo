@@ -95,6 +95,10 @@ $panel-background-color:        $white !default;
 // Panel media
 //------------------------------------------------------
 .media {
+    > .panel-body,
+    > .panel-heading {
+        padding: 10px 15px;
+    }
     > .panel-heading {
         @include border-left-radius(3px);
         @include border-right-radius(0);
