@@ -1,9 +1,9 @@
 {% if badges %}
-    <h2>Odznaki użytkownika</h2>
-    <ul class="badges">
+    <h2 class="lead">Odznaki</h2>
+    <ul class="badges list-unstyled">
         {% for badge in badges %}
             <li>
-                <span class="name priority-{{ badge.badge__priority }}">{{ badge.badge__name }}</span> x <span class="badge">{{ badge.badges }}</span>
+                <b class="name priority-{{ badge.badge__priority }}">{{ badge.badge__name }}</b> <span class="badge">{{ badge.badges }}</span>
             </li>
         {% endfor %}
     </ul>

@@ -6,7 +6,7 @@
     display: inline-block;
 }
 
-b,
+b, // strong is 700
 th,
 label {
     font-weight: 600;
@@ -34,7 +34,7 @@ label {
 .content-heading {
     position: relative;
     background: $lightgray-light;
-    &:after {
+    &:before {
         content: "";
         position: absolute;
         bottom: 0px;
@@ -46,6 +46,9 @@ label {
                     rgba(black, 0) 0%, 
                     rgba(black, .06) 80%, 
                     rgba(black, .1) 100%);
+    }
+    > .container {
+        position: relative;
     }
 }
 // section content
