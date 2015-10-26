@@ -227,7 +227,10 @@ class OrganizationGallery(models.Model):
 
     def set_as_main(self, organization):
         u"""Save image as main."""
-        Organization.objects.get(id=organization.id)
+        OrganizationGallery.objects.filter(organization_id=organization.id)\
+            .update(
+                is_main=False
+            )
         self.is_main = True
         self.save()
 

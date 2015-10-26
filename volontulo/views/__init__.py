@@ -157,7 +157,8 @@ def logged_user_profile(request):
         if gallery_form.is_valid():
             gallery = gallery_form.save(commit=False)
             gallery.published_by = userprofile
-            gallery.is_main = _is_main(gallery_form)
+            if _is_main(gallery_form):
+                gallery.set_as_main(gallery.organization)
             gallery.save()
             yield_message_successful(request, u"Dodano zdjęcie do galerii.")
         else:
