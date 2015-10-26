@@ -22,40 +22,58 @@
 {% endblock %}
 
 {% block content %}
-    <div class="panel panel-default">
-        <div class="panel-heading lead">Edycja profilu użytkownika</div>
-        <div class="panel-body">
-            <form action="{{ request.path }}" method="post" role="form">
-                {% csrf_token %}
-                {% bootstrap_form profile_form %}
-                <div class="btn-form">
-                    <button type="submit" name="submit" value="save_profile" class="btn btn-success">Zapisz zmiany</button>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <div class="panel panel-default">
+                <h3 class="panel-heading lead">
+                    <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                    Zdjęcie profilowe
+                </h3>
+                <div class="panel-body">
+                    {% include 'users/gallery.html' with image=image %}
                 </div>
-            </form>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="panel panel-default">
+                <h3 class="panel-heading lead">
+                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    Profil
+                </h3>
+                <div class="panel-body">
+                    <form action="{{ request.path }}" method="post" role="form">
+                        {% csrf_token %}
+                        {% bootstrap_form profile_form %}
+                        <div class="btn-form">
+                            <button type="submit" name="submit" value="save_profile" class="btn btn-success">Zapisz zmiany</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading lead">Avatar użytkownika</div>
+        <h3 class="panel-heading lead">
+            <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+            Aktywność
+        </h3>
         <div class="panel-body">
-            {% include 'users/gallery.html' with image=image %}
-        </div>
-    </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading lead">Szczegóły użytkownika</div>
-        <div class="panel-body">
-            <p><a href="{% url 'offers_create' %}">...dodać ofertę</a></p>
-            {% include 'organizations/organization_offers.html' with offers=offers %}
-            <hr />
             {% include 'users/my_offers.html' with offers=offers %}
         </div>
     </div>
 
     <div class="panel panel-default">
-        <div class="panel-heading lead">Galeria organizacji</div>
+        <h3 class="panel-heading lead">
+            <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+            Działania w instytucji czy organizacji
+        </h3>
         <div class="panel-body">
             {% include 'organizations/gallery.html' with image_form=image_form gallery=gallery %}
+            <hr />
+            <p><a href="{% url 'offers_create' %}" class="btn btn-primary">Utwórz ofertę</a></p>
+            {% include 'organizations/organization_offers.html' with offers=offers %}
         </div>
     </div>
 

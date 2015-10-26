@@ -55,6 +55,9 @@ label {
 .content {
     min-height: 60vh;
     background: $lightgray-light;
+    .container:before {
+        margin-bottom: 20px;
+    }
 }
 
 // section footer
