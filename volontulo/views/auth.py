@@ -50,7 +50,7 @@ def login(request):
                 messages.add_message(
                     request,
                     messages.INFO,
-                    u"Konto zostało wyłączone!"
+                    u"Konto jest wyłączone!"
                 )
         else:
             yield_message_error(

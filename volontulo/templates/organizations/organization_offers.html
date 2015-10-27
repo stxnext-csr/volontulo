@@ -1,7 +1,6 @@
 {% load staticfiles %}
 
 {% if offers %}
-    <h2>Lista ofert w tej organizacji</h2>
     <table class="table table-striped">
         <tr>
             <th>Tytuł</th>
@@ -32,5 +31,5 @@
     {% endfor %}
     </table>
 {% else %}
-    <p>Ta organizacja nie ma jeszcze żadnych ofert.</p>
+    <p>Ta organizacja nie utworzyła jeszcze żadnych ofert.</p>
 {% endif %}

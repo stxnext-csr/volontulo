@@ -16,6 +16,7 @@
             </ul>
         </div>
         <div class="media-body media-top">
+            <h2 class="lead">Odznaki</h2>
             {% include 'common/badges.html' with badges=badges %}
         </div>
     </div>
@@ -60,7 +61,10 @@
             Aktywność
         </h3>
         <div class="panel-body">
-            {% include 'users/my_offers.html' with offers=offers %}
+        {% if offers %}
+            <h4>Oferty w których zamierzasz wziąć udział</h4>
+            {% endif %}
+            {% include 'users/my_offers.html' with offers=offers%}
         </div>
     </div>
 
@@ -72,7 +76,10 @@
         <div class="panel-body">
             {% include 'organizations/gallery.html' with image_form=image_form gallery=gallery %}
             <hr />
-            <p><a href="{% url 'offers_create' %}" class="btn btn-primary">Utwórz ofertę</a></p>
+            <h4>
+                Organizowane oferty
+                <a href="{% url 'offers_create' %}" class="btn btn-primary btn-sm">Utwórz ofertę</a>
+            </h4>
             {% include 'organizations/organization_offers.html' with offers=offers %}
         </div>
     </div>
