@@ -19,15 +19,12 @@ from volontulo.forms import UserForm
 from volontulo.lib.email import FROM_ADDRESS
 from volontulo.lib.email import send_mail
 from volontulo.models import UserProfile
-from volontulo.utils import yield_message_error
-from volontulo.utils import yield_message_info
-from volontulo.utils import yield_message_successful
 
 
 def login(request):
     u"""Login view."""
     if request.user.is_authenticated():
-        yield_message_successful(
+        messages.success(
             request,
             u'Jesteś już zalogowany.'
         )
@@ -41,19 +38,18 @@ def login(request):
         if user is not None:
             if user.is_active:
                 auth.login(request, user)
-                yield_message_successful(
+                messages.success(
                     request,
                     u"Poprawnie zalogowano"
                 )
                 return redirect('homepage')
             else:
-                messages.add_message(
+                messages.info(
                     request,
-                    messages.INFO,
                     u"Konto zostało wyłączone!"
                 )
         else:
-            yield_message_error(
+            messages.error(
                 request,
                 u"Nieprawidłowy email lub hasło!"
             )
@@ -70,9 +66,8 @@ def login(request):
 def logout(request):
     u"""Logout view."""
     auth.logout(request)
-    messages.add_message(
+    messages.info(
         request,
-        messages.INFO,
         u"Użytkownik został wylogowany!"
     )
     return redirect('homepage')
@@ -85,7 +80,7 @@ class Register(View):
     def get(request, user_form=None):
         u"""Simple view to render register form."""
         if request.user.is_authenticated():
-            yield_message_successful(
+            messages.success(
                 request,
                 u'Jesteś już zalogowany.'
             )
@@ -105,7 +100,7 @@ class Register(View):
         # validation of register form:
         user_form = UserForm(request.POST)
         if not user_form.is_valid():
-            yield_message_error(
+            messages.error(
                 request,
                 u'Wprowadzono nieprawidłowy email lub hasło'
             )
@@ -131,9 +126,8 @@ class Register(View):
         except IntegrityError:
             # if attempt failed, because user already exists we need show
             # error message:
-            messages.add_message(
+            messages.info(
                 request,
-                messages.INFO,
                 u'Użytkownik o podanym emailu już istnieje'
             )
             return cls.get(request, user_form)
@@ -147,11 +141,11 @@ class Register(View):
 
         # show info about successful creation of new user and redirect to
         # homepage:
-        yield_message_successful(
+        messages.success(
             request,
             u'Rejestracja przebiegła pomyślnie'
         )
-        yield_message_info(
+        messages.info(
             request,
             u'Na podany przy rejestracji email został wysłany link '
             u'aktywacyjny. Aby w pełni wykorzystać konto należy je aktywować '
@@ -166,12 +160,12 @@ def activate(request, uuid):
         profile = UserProfile.objects.get(uuid=uuid)
         profile.user.is_active = 1
         profile.save()
-        yield_message_successful(
+        messages.success(
             request,
             """Pomyślnie aktywowałeś użytkownika."""
         )
     except UserProfile.DoesNotExist:
-        yield_message_error(
+        messages.error(
             request,
             """Brak użytkownika spełniającego wymagane kryteria."""
         )

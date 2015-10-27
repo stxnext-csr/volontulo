@@ -3,6 +3,7 @@
 u"""
 .. module:: organizations
 """
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
@@ -17,8 +18,6 @@ from volontulo.models import Offer
 from volontulo.models import Organization
 from volontulo.models import UserProfile
 from volontulo.utils import correct_slug
-from volontulo.views import yield_message_error
-from volontulo.views import yield_message_successful
 
 
 def organizations_list(request):
@@ -53,7 +52,7 @@ class OrganizationsCreate(View):
                 request.POST.get('address') and
                 request.POST.get('description')
         ):
-            yield_message_error(
+            messages.error(
                 request,
                 u"Należy wypełnić wszystkie pola formularza."
             )
@@ -70,7 +69,7 @@ class OrganizationsCreate(View):
         )
         organization.save()
         request.user.userprofile.organizations.add(organization)
-        yield_message_successful(
+        messages.success(
             request,
             u"Organizacja została dodana."
         )
@@ -95,7 +94,7 @@ def organization_form(request, slug, id_):
             request.user.is_authenticated() and
             request.user.email not in users
     ):
-        yield_message_error(
+        messages.error(
             request,
             u'Nie masz uprawnień do edycji tej organizacji.'
         )
@@ -122,7 +121,7 @@ def organization_form(request, slug, id_):
             org.address = request.POST.get('address')
             org.description = request.POST.get('description')
             org.save()
-            yield_message_successful(
+            messages.success(
                 request,
                 u'Oferta została dodana/zmieniona.'
             )
@@ -133,7 +132,7 @@ def organization_form(request, slug, id_):
                 )
             )
         else:
-            yield_message_error(
+            messages.error(
                 request,
                 u"Należy wypełnić wszystkie pola formularza."
             )
@@ -176,9 +175,9 @@ def organization_view(request, slug, id_):
                 ],
                 {k: v for k, v in request.POST.items()},
             )
-            yield_message_successful(request, u'Email został wysłany.')
+            messages.success(request, u'Email został wysłany.')
         else:
-            yield_message_error(
+            messages.error(
                 request,
                 u"Formularz zawiera nieprawidłowe dane: {}".format(form.errors)
             )

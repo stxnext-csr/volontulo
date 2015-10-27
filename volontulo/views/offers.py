@@ -4,6 +4,7 @@ u"""
 .. module:: offers
 """
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION
 from django.contrib.admin.models import CHANGE
@@ -19,15 +20,15 @@ from django.views.generic import View
 
 from volontulo.forms import CreateOfferForm
 from volontulo.forms import OfferApplyForm
+from volontulo.forms import OfferImageForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
+from volontulo.models import OfferImage
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
 from volontulo.utils import correct_slug
 from volontulo.utils import OFFERS_STATUSES
 from volontulo.utils import save_history
-from volontulo.utils import yield_message_error
-from volontulo.utils import yield_message_successful
 from volontulo.views import logged_as_admin
 
 
@@ -53,10 +54,12 @@ class OffersCreate(View):
     def get(request):
         u"""Method responsible for rendering form for new offer."""
         form = CreateOfferForm()
+        offer_image_form = OfferImageForm()
         context = {
             'offer_form': form,
             'statuses': OFFERS_STATUSES,
             'offer': Offer(),
+            'offer_image_form': offer_image_form,
         }
 
         return render(
@@ -69,6 +72,7 @@ class OffersCreate(View):
     def post(request):
         u"""Method resposible for saving new offer."""
         form = CreateOfferForm(request.POST)
+        images = []
 
         if form.is_valid():
             offer = form.save()
@@ -80,7 +84,7 @@ class OffersCreate(View):
                 ['administrators@volontuloapp.org'],
                 ctx
             )
-            yield_message_successful(
+            messages.success(
                 request,
                 u"Dziękujemy za dodanie oferty."
             )
@@ -89,7 +93,7 @@ class OffersCreate(View):
                 slug=slugify(offer.title),
                 id_=offer.id,
             )
-        yield_message_error(
+        messages.error(
             request,
             u"Formularz zawiera niepoprawnie wypełnione pola"
         )
@@ -99,7 +103,8 @@ class OffersCreate(View):
             {
                 'offer_form': form,
                 'statuses': OFFERS_STATUSES,
-                'offer': Offer()
+                'offer': Offer(),
+                'images': images,
             }
         )
 
@@ -114,12 +119,17 @@ class OffersEdit(View):
         offer = Offer.objects.get(id=id_)
         organization = offer.organization
         form = CreateOfferForm()
+        offer_image_form = OfferImageForm()
+        images = OfferImage.objects.filter(offer=offer).all()
 
         context = {
             'offer_form': form,
             'organization': organization,
             'statuses': OFFERS_STATUSES,
             'offer': offer,
+            'offer_image_form': offer_image_form,
+            'images': images,
+            'MEDIA_URL': settings.MEDIA_URL
         }
 
         return render(
@@ -131,10 +141,41 @@ class OffersEdit(View):
     @staticmethod
     def post(request, slug, id_):  # pylint: disable=unused-argument
         u"""Method resposible for saving changed offer."""
-        offer = Offer.objects.get(id=id_)
+        def _set_main_image(offer, gallery_form):
+            u"""Set main image flag unsetting other offers images."""
+            if gallery_form.cleaned_data["is_main"]:
+                OfferImage.objects.filter(offer=offer).update(is_main=False)
+                return True
+            return False
 
-        # is it really required?
-        if request.POST.get('close_offer') == 'close':
+        def _save_offer_image(offer, userprofile):
+            u"""Handle image upload for user profile page."""
+            gallery_form = OfferImageForm(
+                request.POST,
+                request.FILES
+            )
+            if gallery_form.is_valid():
+                gallery = gallery_form.save(commit=False)
+                gallery.offer = offer
+                gallery.userprofile = userprofile
+                gallery.is_main = _set_main_image(offer, gallery_form)
+                gallery.save()
+                messages.success(request, u"Dodano zdjęcie do galerii.")
+            else:
+                errors = '<br />'.join(gallery_form.errors)
+                messages.error(
+                    request,
+                    u"Problem w trakcie dodawania grafiki: {}".format(errors)
+                )
+            return redirect(
+                reverse(
+                    'offers_edit',
+                    args=[slugify(offer.title), offer.id]
+                )
+            )
+
+        def _close_offer(offer):
+            u"""Change offer status to close."""
             offer.status = 'CLOSED'
             offer.save()
             return redirect(
@@ -144,22 +185,30 @@ class OffersEdit(View):
                 )
             )
 
-        if request.POST['edit_type'] == 'status_change':
+        def _change_status(offer):
+            u"""Change offer status."""
             offer.status = request.POST['status']
             offer.save()
             return redirect('offers_list')
 
-        form = CreateOfferForm(request.POST, instance=offer)
+        offer = Offer.objects.get(id=id_)
+        if request.POST.get('submit') == 'save_image' and request.FILES:
+            return _save_offer_image(offer, request.user.userprofile)
+        elif request.POST.get('close_offer') == 'close':
+            return _close_offer(offer)
+        elif request.POST.get('edit_type') == 'status_change':
+            return _change_status(offer)
 
+        form = CreateOfferForm(request.POST, instance=offer)
         if form.is_valid():
             offer = form.save()
             save_history(request, offer, action=CHANGE)
-            yield_message_successful(
+            messages.success(
                 request,
                 u"Oferta została zmieniona."
             )
         else:
-            yield_message_error(
+            messages.error(
                 request,
                 u"Formularz zawiera niepoprawnie wypełnione pola"
             )
@@ -238,7 +287,7 @@ class OffersJoin(View):
                 volunteers__offer=id_,
             ).count()
             if has_applied:
-                yield_message_error(
+                messages.error(
                     request,
                     u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
                 )
@@ -281,9 +330,8 @@ class OffersJoin(View):
                     profile = UserProfile(user=user)
                     profile.save()
                 except IntegrityError:
-                    messages.add_message(
+                    messages.info(
                         request,
-                        messages.INFO,
                         u'Użytkownik o podanym emailu już istnieje.'
                         u' Zaloguj się.'
                     )
@@ -302,7 +350,7 @@ class OffersJoin(View):
                 volunteers__offer=id_,
             ).count()
             if has_applied:
-                yield_message_error(
+                messages.error(
                     request,
                     u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
                 )
@@ -335,7 +383,7 @@ class OffersJoin(View):
                     offer=offer,
                 )
             )
-            yield_message_successful(
+            messages.success(
                 request,
                 u'Zgłoszenie chęci uczestnictwa zostało wysłane.'
             )
@@ -346,7 +394,7 @@ class OffersJoin(View):
             )
         else:
             errors = '<br />'.join(form.errors)
-            yield_message_error(
+            messages.error(
                 request,
                 u'Formularz zawiera nieprawidłowe dane' + errors
             )

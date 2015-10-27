@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 from volontulo.models import Offer
+from volontulo.models import OfferImage
 from volontulo.models import Organization
 from volontulo.models import OrganizationGallery
 from volontulo.models import UserGallery
@@ -118,6 +119,21 @@ class OrganizationGalleryForm(forms.ModelForm):
         self.fields['organization'].queryset = Organization.objects.filter(
             userprofiles=userprofile
         )
+
+
+class OfferImageForm(forms.ModelForm):
+    u"""Form used for upload offer image."""
+    path = forms.ImageField(label=u"Dodaj zdjęcie")
+    is_main = forms.BooleanField(
+        label=u"Użyj jako zdjęcie główne? ",
+        required=False,
+    )
+
+    class Meta(object):
+        model = OfferImage
+        fields = [
+            'path',
+        ]
 
 
 class OfferApplyForm(forms.Form):

@@ -86,4 +86,8 @@
             </div>
         </div>
     </form>
+
+    {% if offer.id %}
+    {% include "offers/gallery.html" with offer_image_form=offer_image_form images=images MEDIA_URL=MEDIA_URL %}
+    {% endif %}
 {% endblock %}
