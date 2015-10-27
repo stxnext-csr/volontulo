@@ -54,12 +54,10 @@ class OffersCreate(View):
     def get(request):
         u"""Method responsible for rendering form for new offer."""
         form = CreateOfferForm()
-        offer_image_form = OfferImageForm()
         context = {
             'offer_form': form,
             'statuses': OFFERS_STATUSES,
             'offer': Offer(),
-            'offer_image_form': offer_image_form,
         }
 
         return render(
@@ -231,9 +229,16 @@ class OffersView(View):
     def get(request, slug, id_):  # pylint: disable=unused-argument
         u"""View responsible for showing details of particular offer."""
         offer = get_object_or_404(Offer, id=id_)
+        try:
+            main_image = OfferImage.objects.get(offer=offer, is_main=True)
+        except OfferImage.DoesNotExist:
+            main_image = ''
+
         context = {
             'offer': offer,
             'volunteers': offer.volunteers.all(),
+            'MEDIA_URL': settings.MEDIA_URL,
+            'main_image': main_image,
         }
         return render(request, "offers/show_offer.html", context=context)
 
