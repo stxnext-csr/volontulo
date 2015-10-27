@@ -70,12 +70,12 @@ class TestUsersProfile(TestCase):
 
         # pylint: disable=no-member
         self.assertIn('badges', response.context)
-        self.assertContains(response, u'Nie masz jeszcze żadnych odznak')
+        self.assertContains(response, u'Nie masz jeszcze odznak')
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertContains(
             response,
-            u'Nie wyraziłeś chęci udziału w żadnej z dostępnych ofert.'
+            u'Zgłoś się w jednej z dostępnych ofert wolontariuatu i zapełnij to miejsce.'
         )
 
     # pylint: disable=invalid-name
@@ -89,12 +89,12 @@ class TestUsersProfile(TestCase):
 
         # pylint: disable=no-member
         self.assertIn('badges', response.context)
-        self.assertContains(response, u'Nie masz jeszcze żadnych odznak')
+        self.assertContains(response, u'Nie masz jeszcze odznak')
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertContains(
             response,
-            u'Nie wyraziłeś chęci udziału w żadnej z dostępnych ofert.'
+            u'Zgłoś się w jednej z dostępnych ofert wolontariuatu i zapełnij to miejsce.'
         )
 
     # pylint: disable=invalid-name
@@ -110,7 +110,7 @@ class TestUsersProfile(TestCase):
         self.assertIn('offers', response.context)
         self.assertContains(
             response,
-            u'Ta organizacja nie ma jeszcze żadnych ofert.'
+            u'Ta organizacja nie utworzyła jeszcze żadnych ofert.'
         )
 
     # pylint: disable=invalid-name
@@ -130,5 +130,5 @@ class TestUsersProfile(TestCase):
         )
         self.assertNotContains(
             response,
-            u'Ta organizacja nie ma jeszcze żadnych ofert.'
+            u'Ta organizacja nie utworzyła jeszcze żadnych ofert.'
         )
