@@ -6,23 +6,8 @@
     <img class="img-responsive center-block" src="http://placehold.it/1140x260?text=Albo+jeden+duży+banner" />
 {% endblock %}
 {% block content %}
-    <div class="row">
-        <div class="col-xs-4 text-center">
-            <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Załóż+konto" />
-            <p><a href="{% url 'register' %}">Załóż konto</a></p>
-        </div>
-        <div class="col-xs-4 text-center">
-            <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Wybierz ofertę" />
-            <p><a href="{% url 'offers_list' %}">Wybierz ofertę</a></p>
-        </div>
-        <div class="col-xs-4 text-center">
-            <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Podziel+się" />
-            <p><a href="#">Podziel się...</a></p>
-        </div>
-    </div>
-
     {% if offers %}
-        <h2>Lista ofert</h2>
+        <h2>Pomóż w jednej z ofert:</h2>
         <div class="row offer-thumbnails">
         {% for o in offers %}
             <div class="col-sm-6 col-md-3">
@@ -49,14 +34,44 @@
                             </div>
                         </div>
                         <h3><a class="text-warning" href="{% url 'offers_view' o.title|slugify o.id %}">{{ o.title }}</a></h3>
-                        <div class="text-right">Organizator:<a class="text-warning" href="{% url 'organization_view' slug=o.organization.name|slugify id_=o.organization.id %}">{{ o.organization.name }}</a></div>
+                        <div class="text-right">Organizator: <a class="text-warning" href="{% url 'organization_view' slug=o.organization.name|slugify id_=o.organization.id %}">{{ o.organization.name }}</a></div>
                     </div>
                 </div>
             </div>
         {% endfor %}
         </div>
     {% else %}
-        <p>Brak ofert spełniających podane kryteria</p>
+        <p class="lead">Zgłoś swoją ofertę aby znaleźć wolontariuszy do pomocy w akcji!</p>
+        {% if user.is_anonymous and not user.is_authenticated %}
+        <div class="media">
+            <div class="media-left media-middle">
+                <a class="btn btn-primary" href="{% url 'register' %}">Załóż konto</a>
+            </div>
+            <div class="media-left media-middle">
+                <span class="control-label">lub</span>
+            </div>
+            <div class="media-left media-middle">
+                <a class="btn btn-primary" href="{% url 'login' %}">Zaloguj się</a>
+            </div>
+        </div>
+        {% else %}
+            <a class="btn btn-primary" href="{% url 'offers_create' %}">Zgłoś ofertę</a>
+        {% endif %}
     {% endif %}
+
+    <div class="row">
+        <div class="col-xs-4 text-center">
+            <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Załóż+konto" />
+            <p><a href="{% url 'register' %}">Załóż konto</a></p>
+        </div>
+        <div class="col-xs-4 text-center">
+            <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Wybierz ofertę" />
+            <p><a href="{% url 'offers_list' %}">Wybierz ofertę</a></p>
+        </div>
+        <div class="col-xs-4 text-center">
+            <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Podziel+się" />
+            <p><a href="#">Podziel się...</a></p>
+        </div>
+    </div>
 
 {% endblock %}
