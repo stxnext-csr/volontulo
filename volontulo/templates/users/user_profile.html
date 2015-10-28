@@ -4,9 +4,9 @@
 {% block title %}Strona użytkownika {{ user.email }}{% endblock %}
 
 {% block content-heading %}
-    <div class="media">
+    <div class="media user-heading">
         <div class="media-left">
-            <img class="img-responsive" src="{{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}" alt="{{ user.username }}" />
+            <div class="cover-image" style="background-image:url({{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}"></div>
         </div>
         <div class="media-body media-top">
             <h2 class="lead">Użytkownik: {{ user.username }}</h2>
@@ -76,10 +76,10 @@
         <div class="panel-body">
             {% include 'organizations/gallery.html' with image_form=image_form gallery=gallery %}
             <hr />
-            <h4>
-                Organizowane oferty
+            <div class="h4">
+                <h4>Organizowane oferty</h4>
                 <a href="{% url 'offers_create' %}" class="btn btn-primary btn-sm">Utwórz ofertę</a>
-            </h4>
+            </div>
             {% include 'organizations/organization_offers.html' with offers=offers %}
         </div>
     </div>

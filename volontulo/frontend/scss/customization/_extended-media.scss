@@ -3,6 +3,13 @@
 // --------------------------------------------------
 
 .media {
+    display: table;
+    height: 100%;
+    .media-left,
+    .media-right,
+    .media-body {
+        height: 100%;
+    }
     &.row {
         .media-left,
         .media-right,
