@@ -6,7 +6,7 @@
     display: inline-block;
 }
 
-b,
+b, // strong is 700
 th,
 label {
     font-weight: 600;
@@ -34,7 +34,7 @@ label {
 .content-heading {
     position: relative;
     background: $lightgray-light;
-    &:after {
+    &:before {
         content: "";
         position: absolute;
         bottom: 0px;
@@ -47,11 +47,17 @@ label {
                     rgba(black, .06) 80%, 
                     rgba(black, .1) 100%);
     }
+    > .container {
+        position: relative;
+    }
 }
 // section content
 .content {
     min-height: 60vh;
     background: $lightgray-light;
+    .container:before {
+        margin-bottom: 20px;
+    }
 }
 
 // section footer

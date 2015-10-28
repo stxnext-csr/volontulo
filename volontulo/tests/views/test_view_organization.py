@@ -29,7 +29,7 @@ class TestCreateOrganization(TestOrganizations):
         self.assertContains(response, u'Formularz kontaktowy')
         self.assertContains(
             response,
-            u'Ta organizacja nie ma jeszcze żadnych ofert.'
+            u'Ta organizacja nie utworzyła jeszcze żadnych ofert.'
         )
         self.assertTemplateUsed(
             response,
@@ -45,7 +45,7 @@ class TestCreateOrganization(TestOrganizations):
 
         self.assertNotContains(
             response,
-            u'Ta organizacja nie ma jeszcze żadnych ofert.'
+            u'Ta organizacja nie utworzyła jeszcze żadnych ofert.'
         )
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
