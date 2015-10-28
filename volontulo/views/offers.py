@@ -362,3 +362,15 @@ class OffersJoin(View):
                     'volunteer_user': volunteer_user,
                 }
             )
+
+
+class OffersArchived(View):
+    u"""Class view to list archived items."""
+
+    @staticmethod
+    def get(request):
+        u"""GET request for offer archive page."""
+        ctx = dict(
+            offers=Offer.objects.get_archived()
+        )
+        return render(request, 'offers/archived.html', ctx)

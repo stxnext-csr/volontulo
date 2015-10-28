@@ -637,3 +637,64 @@ class TestOffersJoin(TestCase):
             response,
             u'Użytkownik o podanym emailu już istnieje. Zaloguj się.',
         )
+
+
+class TestOffersArchived(TestCase):
+    u"""Class responsible for testing offer's join page."""
+
+    @classmethod
+    def setUpTestData(cls):
+        u"""Set up data for all tests."""
+        # 3. Create 15 Offers (1 - 1 organization, 2 - 2 organization, ...)
+
+        for i in range(1, 6):
+            Organization.objects.create(
+                name=u'Organization {0} name'.format(i),
+                address=u'Organization {0} address'.format(i),
+                description=u'Organization {0} description'.format(i),
+            )
+
+        organizations = Organization.objects.all()
+        for idx, org in enumerate(organizations):
+            for i in range(1, 6):
+                user = User.objects.create_user(
+                    u'volunteer{0}{1}@example.com'.format(idx + 1, i),
+                    u'volunteer{0}{1}@example.com'.format(idx + 1, i),
+                    u'password',
+                )
+                userprofile = UserProfile(user=user)
+                userprofile.save()
+                userprofile.organizations.add(org)
+                userprofile.save()
+
+        for idx, org in enumerate(organizations):
+            for i in range(0, idx + 1):
+                Offer.objects.create(
+                    organization=org,
+                    benefits=u'Offer {0}-{1} benefits'.format(idx + 1, i),
+                    location=u'Offer {0}-{1} location'.format(idx + 1, i),
+                    title=u'Offer {0}-{1} title'.format(idx + 1, i),
+                    time_period=u'',
+                    description=u'',
+                    requirements=u'',
+                    time_commitment=u'',
+                    status='NEW',
+                )
+
+    def setUp(self):
+        u"""Set up each test."""
+        self.client = Client()
+
+    def test_offers_archived_page(self):
+        u"""Offers archive page."""
+        response = self.client.get('/offers/archived')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'offers/archived.html')
+        # pylint: disable=no-member
+        self.assertIn('offers', response.context)
+        self.assertEqual(len(response.context['offers']), 15)
+        self.assertNotContains(
+            response,
+            u'Brak ofert w archiwum.',
+        )

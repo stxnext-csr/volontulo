@@ -28,8 +28,19 @@ class Organization(models.Model):
         return self.name
 
 
+# pylint: disable=too-few-public-methods
+class OfferManager(models.Manager):
+    u"""Offer Manager for custom queries."""
+
+    def get_archived(self):
+        u"""Return archived offers."""
+        return self.all()
+
+
 class Offer(models.Model):
     u"""Model that hadles offers."""
+
+    objects = OfferManager()
     organization = models.ForeignKey(Organization)
     volunteers = models.ManyToManyField(User)
     description = models.TextField()
@@ -43,6 +54,7 @@ class Offer(models.Model):
     votes = models.BooleanField(default=0)
 
     def __str__(self):
+        u"""Offer string representation."""
         return self.title
 
 
@@ -59,6 +71,7 @@ class Badge(models.Model):
 
 class UserProfile(models.Model):
     u"""Model that handles users' profiles."""
+
     user = models.OneToOneField(User)
     organizations = models.ManyToManyField(
         Organization,
