@@ -6,6 +6,12 @@
     display: inline-block;
 }
 
+b, // strong is 700
+th,
+label {
+    font-weight: 600;
+}
+
 // section header
 .header {
     .navbar-header {
@@ -28,7 +34,7 @@
 .content-heading {
     position: relative;
     background: $lightgray-light;
-    &:after {
+    &:before {
         content: "";
         position: absolute;
         bottom: 0px;
@@ -41,11 +47,17 @@
                     rgba(black, .06) 80%, 
                     rgba(black, .1) 100%);
     }
+    > .container {
+        position: relative;
+    }
 }
 // section content
 .content {
     min-height: 60vh;
     background: $lightgray-light;
+    .container:before {
+        margin-bottom: 20px;
+    }
 }
 
 // section footer
@@ -55,7 +67,7 @@
     background-color: $darkgray-dark;
     color: $mediumgray-dark;
     .nav-title {
-        font-weight: 700;
+        font-weight: 600;
         font-size: 15px;
         text-transform: uppercase;
         color: $lightgray-dark;

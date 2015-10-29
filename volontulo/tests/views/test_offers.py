@@ -38,12 +38,12 @@ class TestOffersList(TestCase):
         }
 
         cls.inactive_offer = Offer.objects.create(
-            status='NEW',
+            status_old='NEW',
             **common_offer_data
         )
         cls.inactive_offer.save()
         cls.active_offer = Offer.objects.create(
-            status='ACTIVE',
+            status_old='ACTIVE',
             **common_offer_data
         )
         cls.active_offer.save()
@@ -100,9 +100,9 @@ class TestOffersList(TestCase):
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         # pylint: disable=no-member
-        self.assertEqual(len(response.context['offers']), 1)
+        self.assertEqual(len(response.context['offers']), 2)
         # pylint: disable=no-member
-        self.assertEqual(response.context['offers'][0].status, 'ACTIVE')
+        self.assertEqual(response.context['offers'][0].status_old, 'NEW')
 
     def test_offer_list_for_anonymous_user(self):
         u"""Test offers' list for anonymus user."""
@@ -265,7 +265,7 @@ class TestOffersEdit(TestCase):
             location=u'',
             title=u'volontulo offer',
             time_period=u'',
-            status='NEW',
+            status_old='NEW',
         )
         cls.offer.save()
 
@@ -384,7 +384,7 @@ class TestOffersEdit(TestCase):
         })
         response = self.client.post('/offers/volontulo-offer/1/edit', {
             'edit_type': 'status_change',
-            'status': 'ACTIVE'
+            'status_old': 'ACTIVE'
         })
         self.assertRedirects(
             response,
@@ -393,7 +393,7 @@ class TestOffersEdit(TestCase):
             200,
         )
         offer = Offer.objects.get(id=1)
-        self.assertEqual(offer.status, u'ACTIVE')
+        self.assertEqual(offer.status_old, u'ACTIVE')
 
 
 class TestOffersView(TestCase):
@@ -428,7 +428,7 @@ class TestOffersView(TestCase):
             location=u'',
             title=u'volontulo offer',
             time_period=u'',
-            status='NEW',
+            status_old='NEW',
         )
         cls.offer.save()
 
@@ -499,7 +499,7 @@ class TestOffersJoin(TestCase):
             location=u'',
             title=u'volontulo offer',
             time_period=u'',
-            status='NEW',
+            status_old='NEW',
         )
         offer.save()
 

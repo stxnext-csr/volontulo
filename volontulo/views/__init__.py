@@ -41,12 +41,12 @@ def homepage(request):  # pylint: disable=unused-argument
     We will display page with few step CTA links?
     """
     if logged_as_admin(request):
-        offers = Offer.objects.all().order_by('-status')
+        offers = Offer.objects.all().order_by('-status_old')
         return render(request, "admin/list_offers.html", context={
             'offers': offers,
         })
     else:
-        offers = Offer.objects.filter(status='ACTIVE')
+        offers = Offer.objects.filter(status_old='ACTIVE')
 
     return render(
         request,

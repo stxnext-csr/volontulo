@@ -3,7 +3,7 @@
 {% block title %}Zgłoś chęć uczestnictwa w wolontariacie{% endblock %}
 
 {% block content %}
-    <h2>Zgłoś chęć uczestnictwa w wolontariacie oferty <strong>"{{ offer.title }}"</strong></h2>
+    <h2>Zgłoś chęć uczestnictwa w wolontariacie oferty <b>"{{ offer.title }}"</b></h2>
 
     <form class="form-horizontal" action="{{ request.get_full_path }}" method="post" role="form">
         {% csrf_token %}

@@ -111,7 +111,7 @@ class Common(object):
                 benefits=u'Benefits {}'.format(i),
                 location=u'Location {}'.format(i),
                 time_period=u'Time period {}'.format(i),
-                status=u'ACTIVE',
+                status_old=u'ACTIVE',
                 votes=True,
                 organization=organization2,
             )
@@ -128,7 +128,7 @@ class Common(object):
                 benefits=u'Benefits {}'.format(i),
                 location=u'Location {}'.format(i),
                 time_period=u'Time period {}'.format(i),
-                status=u'SUSPENDED' if i % 2 == 0 else u'NEW',
+                status_old=u'SUSPENDED' if i % 2 == 0 else u'NEW',
                 votes=True,
                 organization=organization2,
             )

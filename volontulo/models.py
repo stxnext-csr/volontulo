@@ -39,7 +39,7 @@ class Offer(models.Model):
     location = models.CharField(max_length=150)
     title = models.CharField(max_length=150)
     time_period = models.CharField(max_length=150)
-    status = models.CharField(max_length=30, default='NEW')
+    status_old = models.CharField(max_length=30, default='NEW')
     votes = models.BooleanField(default=0)
 
     def __str__(self):

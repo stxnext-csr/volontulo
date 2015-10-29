@@ -10,9 +10,9 @@
         <div class="form-group form-group-sm">
             <label class="col-xs-offset-6 col-xs-2 control-label" for="{{ offer_form.status.id_for_label }}">Status</label>
             <div class="col-xs-4">
-                <select name="status" class="form-control" id="{{ offer_form.status.id_for_label }}">
+                <select name="status_old" class="form-control" id="{{ offer_form.status_old.id_for_label }}">
                     {% for status, label in statuses.items %}
-                        {% if status == request.POST.offer|default:offer.status %}
+                        {% if status == request.POST.offer|default:offer.status_old %}
                         <option selected="selected" value="{{ status }}">{{ label }}</option>
                         {% else %}
                         <option value="{{ status }}">{{ label }}</option>
