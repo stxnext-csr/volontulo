@@ -128,7 +128,7 @@ class TestUsersProfile(TestCase):
         self.assertIn('offers', response.context)
         self.assertEqual(
             4,
-            Offer.objects.all().filter(status=u'ACTIVE').count()
+            Offer.objects.all().filter(status_old=u'ACTIVE').count()
         )
         self.assertNotContains(
             response,

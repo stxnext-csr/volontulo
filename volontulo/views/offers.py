@@ -40,7 +40,7 @@ def offers_list(request):
     if logged_as_admin(request):
         offers = Offer.objects.all()
     else:
-        offers = Offer.objects.filter(status='ACTIVE')
+        offers = Offer.objects.filter()
     return render(request, "offers/offers_list.html", context={
         'offers': offers,
     })
@@ -145,7 +145,7 @@ class OffersEdit(View):
             )
 
         if request.POST['edit_type'] == 'status_change':
-            offer.status = request.POST['status']
+            offer.status_old = request.POST['status_old']
             offer.save()
             return redirect('offers_list')
 

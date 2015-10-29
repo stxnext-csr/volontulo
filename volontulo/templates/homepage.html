@@ -45,7 +45,7 @@
                                 <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
                             </div>
                             <div class="media-body panel-body">
-                                {{ o.time_period }}
+                                {{ o.started_at }} - {{ o.finished_at }}
                             </div>
                         </div>
                         <h3><a class="text-warning" href="{% url 'offers_view' o.title|slugify o.id %}">{{ o.title }}</a></h3>
