@@ -160,11 +160,11 @@ label {
     }
     .panels {
         position: absolute;
-        bottom: 30px;
-        left: 30px;
+        bottom: 20px;
+        left: 20px;
         .media {
             float: left;
-            margin: 0 30px 0 0;
+            margin: 15px 30px 0 0;
             .media-left {
                 opacity: .92;
                 line-height: .5;
@@ -178,6 +178,23 @@ label {
                 width: auto;
                 font-size: 16px;
                 background: rgba(white, .92);
+            }
+        }
+        $share-height: 45px;
+        .addthis_sharing_toolbox {
+            float: left;
+            margin-top: 15px;
+            height: $share-height;
+            .at-share-btn {
+                max-height: $share-height;
+                max-width: $share-height;
+                border-radius: 3px;
+                .at4-icon {
+                    height: $share-height;
+                    line-height: $share-height;
+                    width: $share-height;
+                    background-size: $share-height auto !important;
+                }
             }
         }
     }

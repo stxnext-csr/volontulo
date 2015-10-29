@@ -17,6 +17,7 @@
                 {{ offer.location }}
             </div>
         </div>
+        <div class="clearfix hidden-sm hidden-md hidden-lg"></div>
         <div class="media panel-default">
             <div class="media-left panel-heading">
                 <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
@@ -25,8 +26,9 @@
                 {{ offer.time_period }}
             </div>
         </div>
+        <div class="clearfix hidden-sm hidden-md hidden-lg"></div>
+        <div class="addthis_sharing_toolbox"></div>
     </div>
-    FB | share
 </div>
 {% endblock %}
 
@@ -99,5 +101,9 @@
             </div>
          </div>
     </div>
+{% endblock %}
 
+{% block scripts %}
+    <!-- Go to www.addthis.com/dashboard to customize your tools -->
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-563108a02fc94ff9" async="async"></script>
 {% endblock %}
