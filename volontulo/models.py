@@ -210,6 +210,19 @@ class UserGallery(models.Model):
         return str(self.image)
 
 
+class OfferImage(models.Model):
+    u"""Handling offer image."""
+    userprofile = models.ForeignKey(UserProfile, related_name='offerimages')
+    offer = models.ForeignKey(Offer)
+    path = models.ImageField(upload_to='offers/')
+    is_main = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        u"""String representation of an image."""
+        return str(self.path)
+
+
 class OrganizationGallery(models.Model):
     u"""Handling organizations gallery."""
     organization = models.ForeignKey(Organization, related_name='images')

@@ -4,6 +4,7 @@ u"""
 .. module:: __init__
 """
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import Http404
@@ -11,14 +12,13 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
-from volontulo.utils import yield_message_error
-from volontulo.utils import yield_message_successful
 from volontulo.forms import AdministratorContactForm
 from volontulo.forms import EditProfileForm
 from volontulo.forms import OrganizationGalleryForm
 from volontulo.forms import UserGalleryForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
+from volontulo.models import Organization
 from volontulo.models import OrganizationGallery
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
@@ -111,13 +111,13 @@ def logged_user_profile(request):
             user = User.objects.get(id=request.user.id)
             user.set_password(profile_form.cleaned_data['new_password'])
             user.save()
-            yield_message_successful(
+            messages.success(
                 request,
                 u"Zaktualizowano profil"
             )
         else:
             errors = '<br />'.join(profile_form.errors)
-            yield_message_error(
+            messages.error(
                 request,
                 u"Problem w trakcie zapisywania profilu: {}".format(errors)
             )
@@ -133,10 +133,10 @@ def logged_user_profile(request):
             # User can only change his avatar
             gallery.is_avatar = True
             gallery.save()
-            yield_message_successful(request, u"Dodano grafikę")
+            messages.success(request, u"Dodano grafikę")
         else:
             errors = '<br />'.join(gallery_form.errors)
-            yield_message_error(
+            messages.error(
                 request,
                 u"Problem w trakcie dodawania grafiki: {}".format(errors)
             )
@@ -160,10 +160,10 @@ def logged_user_profile(request):
             if _is_main(gallery_form):
                 gallery.set_as_main(gallery.organization)
             gallery.save()
-            yield_message_successful(request, u"Dodano zdjęcie do galerii.")
+            messages.success(request, u"Dodano zdjęcie do galerii.")
         else:
             errors = '<br />'.join(gallery_form.errors)
-            yield_message_error(
+            messages.error(
                 request,
                 u"Problem w trakcie dodawania grafiki: {}".format(errors)
             )
@@ -214,10 +214,10 @@ def contact_form(request):
                 ],
                 {k: v for k, v in request.POST.items()},
             )
-            yield_message_successful(request, u'Email został wysłany.')
+            messages.success(request, u'Email został wysłany.')
         else:
             errors = u'<br />'.join(form.errors)
-            yield_message_error(
+            messages.error(
                 request,
                 u'Proszę poprawić błędy w formularzu: ' + errors
             )

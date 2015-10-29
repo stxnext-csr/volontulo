@@ -100,9 +100,9 @@ class TestOffersList(TestCase):
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         # pylint: disable=no-member
-        self.assertEqual(len(response.context['offers']), 2)
+        self.assertEqual(len(response.context['offers']), 1)
         # pylint: disable=no-member
-        self.assertEqual(response.context['offers'][0].status_old, 'NEW')
+        self.assertEqual(response.context['offers'][0].status_old, 'ACTIVE')
 
     def test_offer_list_for_anonymous_user(self):
         u"""Test offers' list for anonymus user."""
