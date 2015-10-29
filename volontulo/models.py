@@ -39,7 +39,7 @@ class Offer(models.Model):
     location = models.CharField(max_length=150)
     title = models.CharField(max_length=150)
     time_period = models.CharField(max_length=150)
-    status = models.CharField(max_length=30, default='NEW')
+    status_old = models.CharField(max_length=30, default='NEW')
     votes = models.BooleanField(default=0)
 
     def __str__(self):
@@ -152,7 +152,6 @@ class UserBadges(models.Model):
     # pylint: disable=invalid-name
     def apply_prominent_participant_badge(content_type, volunteer_user):
         u"""Helper function to apply particpant badge to specified user."""
-
         badge = Badge.objects.get(slug='prominent-participant')
         try:
             usersbadge = UserBadges.objects.get(
@@ -239,7 +238,19 @@ class OrganizationGallery(models.Model):
         u"""Remove image."""
         self.remove()
 
-    def set_as_main(self):
+    def set_as_main(self, organization):
         u"""Save image as main."""
+        OrganizationGallery.objects.filter(organization_id=organization.id)\
+            .update(
+                is_main=False
+            )
         self.is_main = True
         self.save()
+
+    @staticmethod
+    def get_organizations_galleries(userprofile):
+        u"""Get images grouped by organizations"""
+        organizations = Organization.objects.filter(
+            userprofiles=userprofile
+        ).all()
+        return {o.name: o.images.all() for o in organizations}

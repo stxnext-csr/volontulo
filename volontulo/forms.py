@@ -61,7 +61,7 @@ class CreateOfferForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CreateOfferForm, self).__init__(*args, **kwargs)
-        self.fields['status'].required = False
+        self.fields['status_old'].required = False
 
     class Meta(object):
         model = Offer
@@ -74,7 +74,7 @@ class CreateOfferForm(forms.ModelForm):
             'location',
             'title',
             'time_period',
-            'status',
+            'status_old',
         ]
 
 

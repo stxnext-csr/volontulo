@@ -64,7 +64,7 @@ class TestPages(TestCase):
 
         offers = {u'NEW': 0, u'ACTIVE': 0, u'SUSPENDED': 0}
         for offer in response.context['offers']:
-            offers[offer.status] += 1
+            offers[offer.status_old] += 1
 
         self.assertEqual(offers[u'ACTIVE'], 4)
         self.assertEqual(offers[u'NEW'], 5)

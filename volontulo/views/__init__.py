@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import Http404
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
@@ -17,6 +18,8 @@ from volontulo.forms import OrganizationGalleryForm
 from volontulo.forms import UserGalleryForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
+from volontulo.models import Organization
+from volontulo.models import OrganizationGallery
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
 
@@ -38,12 +41,12 @@ def homepage(request):  # pylint: disable=unused-argument
     We will display page with few step CTA links?
     """
     if logged_as_admin(request):
-        offers = Offer.objects.all().order_by('-status')
+        offers = Offer.objects.all().order_by('-status_old')
         return render(request, "admin/list_offers.html", context={
             'offers': offers,
         })
     else:
-        offers = Offer.objects.filter(status='ACTIVE')
+        offers = Offer.objects.filter(status_old='ACTIVE')
 
     return render(
         request,
@@ -141,6 +144,11 @@ def logged_user_profile(request):
     # pylint: disable=invalid-name
     def _handle_organization_image_upload():
         u"""Handle image upload for user profile page."""
+
+        def _is_main(form):
+            u"""Return True if is_main image was selected."""
+            return True if form.cleaned_data['is_main'] else False
+
         gallery_form = OrganizationGalleryForm(
             userprofile,
             request.POST,
@@ -149,6 +157,8 @@ def logged_user_profile(request):
         if gallery_form.is_valid():
             gallery = gallery_form.save(commit=False)
             gallery.published_by = userprofile
+            if _is_main(gallery_form):
+                gallery.set_as_main(gallery.organization)
             gallery.save()
             messages.success(request, u"Dodano zdjęcie do galerii.")
         else:
@@ -160,12 +170,16 @@ def logged_user_profile(request):
 
     profile_form = _init_edit_profile_form()
     userprofile = UserProfile.objects.get(user=request.user)
+    galleries = OrganizationGallery.get_organizations_galleries(
+        userprofile
+    )
 
     if request.method == 'POST':
         if _is_saving_user_avatar():
             _handle_user_avatar_upload()
         elif _is_saving_organization_image():
             _handle_organization_image_upload()
+            return redirect('logged_user_profile')
         elif _is_saving_profile():
             profile_form = _save_userprofile()
 
@@ -174,6 +188,7 @@ def logged_user_profile(request):
         profile_form=profile_form,
         user_avatar_form=UserGalleryForm(),
         organization_image_form=OrganizationGalleryForm(userprofile),
+        galleries=galleries,
         userprofile=userprofile,
         MEDIA_URL=settings.MEDIA_URL
     )

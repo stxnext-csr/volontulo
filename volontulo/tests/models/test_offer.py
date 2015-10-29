@@ -93,7 +93,7 @@ class OfferTestCase(TestCase):
             location=u"Polska, Poznań",
             title=u"Zwięzły tytuł oferty",
             time_period=u"Od 23.09.2015 do 25.12.2016",
-            status='ACTIVE'
+            status_old='ACTIVE'
         )
 
     def test__organization_name(self):
@@ -148,6 +148,6 @@ class OfferTestCase(TestCase):
     def test__offer_status_field(self):
         u"""Testing offer status field"""
         self.assertEqual(
-            self.offer.status,
+            self.offer.status_old,
             'ACTIVE'
         )
