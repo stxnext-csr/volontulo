@@ -60,8 +60,8 @@ target/
 .idea/
 
 # npm and gulp
-volontulo/node_modules/
-volontulo/static/
+apps/volontulo/node_modules/
+apps/volontulo/static/
 
 # Development directories / files
 .ropeproject
