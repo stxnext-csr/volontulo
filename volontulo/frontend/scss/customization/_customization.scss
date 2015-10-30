@@ -158,6 +158,14 @@ label {
         right: 0px;
         left: 0px;
     }
+    .offer-title {
+        color: $lightgray-light;
+        float: left;
+        font-size: 25px;
+        font-weight: 700;
+        margin: 0 0 0px 0;
+        text-shadow: 0 0 12px rgba(black, 0.4), 0 1px 1px black;
+    }
     .panels {
         position: absolute;
         bottom: 20px;

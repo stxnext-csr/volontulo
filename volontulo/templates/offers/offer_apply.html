@@ -9,6 +9,8 @@
         <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
     {% endif %}
     <div class="panels">
+        <h2 class="offer-title">{{ offer.title }}</h2>
+        <div class="clearfix"></div>
         <div class="media panel-default">
             <div class="media-left panel-heading">
                 <span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>
@@ -34,13 +36,13 @@
 
 
 {% block content %}
-    <h2>Zgłoś chęć uczestnictwa w wolontariacie oferty <b>"{{ offer.title }}"</b></h2>
-
+    <h3>Zgłoś swoją pomoc w tej akcji</h3>
+    <p>Twoje zgłoszenie zostanie wysłane jako wiadomość e-mail do organizatora. W każdej chwili możesz się z nim komunikować według własnego uznania.</p>
     <form class="form-horizontal" action="{{ request.get_full_path }}" method="post" role="form">
         {% csrf_token %}
         <div class="form-group form-group-sm">
             <label class="col-xs-2 control-label" for="{{ form.fullname.id_for_label }}">Imię i nazwisko:</label>
-            <div class="col-xs-5">
+            <div class="col-xs-4">
                <input type="text" value="{{ request.POST.fullname|default:volunteer_user.user.username }}" name="fullname" class="form-control" id="{{form.fullname.id_for_label }}" />
             </div>
             <label class="col-xs-1 control-label" for="{{ form.email.id_for_label }}">Email:</label>
@@ -49,14 +51,14 @@
             </div>
         </div>
         <div class="form-group form-group-sm">
-            <label class="col-xs-offset-7 col-xs-1 control-label" for="{{ form.phone_no.id_for_label }}">Telefon:</label>
+            <label class="col-xs-offset-6 col-xs-1 control-label" for="{{ form.phone_no.id_for_label }}">Telefon:</label>
             <div class="col-xs-4">
                <input type="text" value="{{ request.POST.phone_no|default:'' }}" name="phone_no" class="form-control" id="{{form.phone_no.id_for_label }}" />
             </div>
         </div>
         <div class="form-group form-group-sm">
             <label class="col-xs-2 control-label" for="{{ form.comments.id_for_label }}">Treść</label>
-            <div class="col-xs-10">
+            <div class="col-xs-9">
                 <textarea name="comments" class="form-control" rows="3" id="{{ form.comments.id_for_label }}">{{ request.POST.comments|default:'' }}</textarea>
             </div>
         </div>
