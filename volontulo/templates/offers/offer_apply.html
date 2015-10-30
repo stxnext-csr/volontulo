@@ -2,6 +2,37 @@
 
 {% block title %}Zgłoś chęć uczestnictwa w wolontariacie{% endblock %}
 
+{% block content-heading %}
+<div class="offer_view">
+    <img class="img-responsive center-block" src="{{ MEDIA_URL }}{{ main_image|default:'' }}" alt="{{ offer.title|safe }}" />
+    {% if user.is_administrator %}
+        <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
+    {% endif %}
+    <div class="panels">
+        <div class="media panel-default">
+            <div class="media-left panel-heading">
+                <span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>
+            </div>
+            <div class="media-body panel-body">
+                {{ offer.location }}
+            </div>
+        </div>
+        <div class="clearfix hidden-sm hidden-md hidden-lg"></div>
+        <div class="media panel-default">
+            <div class="media-left panel-heading">
+                <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
+            </div>
+            <div class="media-body panel-body">
+                {{ offer.time_period }}
+            </div>
+        </div>
+        <div class="clearfix hidden-sm hidden-md hidden-lg"></div>
+        <div class="addthis_sharing_toolbox"></div>
+    </div>
+</div>
+{% endblock %}
+
+
 {% block content %}
     <h2>Zgłoś chęć uczestnictwa w wolontariacie oferty <b>"{{ offer.title }}"</b></h2>
 

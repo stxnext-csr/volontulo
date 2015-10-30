@@ -165,6 +165,7 @@ label {
         .media {
             float: left;
             margin: 15px 30px 0 0;
+            @include box-shadow(0 0 1px rgba(black, .4));
             .media-left {
                 opacity: .92;
                 line-height: .5;
