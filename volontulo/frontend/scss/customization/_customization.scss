@@ -158,6 +158,14 @@ label {
         right: 0px;
         left: 0px;
     }
+    .offer-title {
+        color: $lightgray-light;
+        float: left;
+        font-size: 25px;
+        font-weight: 700;
+        margin: 0 0 0px 0;
+        text-shadow: 0 0 12px rgba(black, 0.4), 0 1px 1px black;
+    }
     .panels {
         position: absolute;
         bottom: 20px;
@@ -165,6 +173,7 @@ label {
         .media {
             float: left;
             margin: 15px 30px 0 0;
+            @include box-shadow(0 0 1px rgba(black, .4));
             .media-left {
                 opacity: .92;
                 line-height: .5;
