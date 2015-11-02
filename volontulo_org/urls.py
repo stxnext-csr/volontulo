@@ -8,7 +8,7 @@ from django.contrib import admin
 PROJECT_ROOT = path.dirname(path.dirname(__file__))
 
 urlpatterns = [
-    url(r'^volontulo/', include('volontulo.urls')),
+    url(r'^volontulo/', include('apps.volontulo.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(
         r'^static/(?P<path>.*)$',
