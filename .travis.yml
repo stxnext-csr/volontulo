@@ -2,7 +2,7 @@ language: python
 python:
   - "3.4"
 install:
-  - "pip install -r requirements/production.txt"
+  - "pip install -r requirements/travis.txt"
 script:
   - "pep8 --exclude='apps/volontulo/migrations/*,node_modules,.ropeproject' ."
   - "pylint --load-plugins pylint_django --min-similarity-lines=10 volontulo"
