@@ -1,4 +1,5 @@
--r jenkins.txt  # includes jenkins.txt requirements file
+-r travis.txt  # includes travis.txt requirements file
 
 colorama==0.3.3
+django-extensions==1.5
 ipdb==0.8.1
