@@ -4,6 +4,8 @@ python:
 install:
   - "pip install -r requirements/travis.txt"
 script:
+  - "cp local_config.yaml.sample local_config.yaml"
+  - "sed -i 's/secret_key:.*/secret_key: classified_secret_key/g' local_config.yaml"
   - "pep8 --exclude='apps/volontulo/migrations/*,node_modules,.ropeproject' ."
   - "pylint --load-plugins pylint_django --min-similarity-lines=10 volontulo"
   - "coverage run --source='.' manage.py test --settings=volontulo_org.settings.test_settings -v 3"
