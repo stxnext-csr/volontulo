@@ -8,6 +8,32 @@
 
 Web portal for collaboration of community volunteers with organizations and institutions. 
 
+## Project Set Up
+
+Usage of virtualenv is recommended. Assuming you use Virtualenvwrapper:
+```
+mkvirtualenv --no-site-packages venv_name
+```
+To install project dependencies use pip and choose the correct file (production, development, etc.)
+```
+pip install -r requirements/development.txt
+```
+
+Copy the Local Configuration file:
+```
+cp local_config.yaml.sample local_config.yaml
+```
+
+Fill the Local Configuration Values.
+To generate "secret_key", you can use ```head -c 64 /dev/urandom | base64 -w 0```
+
+If the site is supposed to served under different domain than volontulo.org or volontuloapp.org
+and you are not in development environment, fiil the "allowed_host" value. Otherwise
+it can be left blank.
+```
+vim local_config.yaml
+```
+
 ## Gulp Instalation
 
 Gulp is used to prepare and serve all static files into `/volontulo_org/volontulo/volontulo/static/volontulo` so Django can use them
@@ -20,6 +46,17 @@ Windows can have problems with unix paths, so it is practical to install Gulp gl
 npm install -g gulp
 ```
 ### Using Gulp
+In development
 ```
 gulp watch
+```
+Otherwise
+```
+gulp build
+```
+
+### Running the App in development mode
+Choose the appriopriate settings file
+```
+python manage runserver --settings=volontulo_org.settings.dev
 ```
