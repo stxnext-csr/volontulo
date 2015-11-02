@@ -3,6 +3,6 @@ Production Settings File
 """
 # pylint: skip=file
 
-from base import *
+from .base import *
 
 # Extra settings go here:

@@ -42,7 +42,6 @@ setup(
     description='Simple Django app connecting organizations with volonteers.',
     long_description=README,
     cmdclass=dict(install=install_with_gulp),
-    test_suite='runtests.runtests',
     url='http://volontuloapp.org/',
     author='Tomasz Magulski',
     author_email='tomasz.magulski@stxnext.pl',
