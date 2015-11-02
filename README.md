@@ -60,8 +60,7 @@ Choose the appriopriate settings file
 python manage runserver --settings=volontulo_org.settings.dev
 ```
 Now you able to access the development site:
-`http://localhost:8000
-<http://localhost:8000>`_
+`<http://localhost:8000/>`_
 
 ### Running tests
 To run the project tests:
