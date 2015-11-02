@@ -13,7 +13,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS += (
     'debug_toolbar',
     'django_coverage',
-    'django_nose',
+    'django_nose'
 )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

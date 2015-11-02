@@ -12,12 +12,23 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import yaml
 from unipath import Path
+
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).ancestor(3)
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ds-tqsbfo!bf_@9^69tq=!cs#jtu$_*+p$xi(50msg&l14yh8c'
+LOCAL_CONFIG_FILEPATH = os.path.join(
+    BASE_DIR, 'local_config.yaml'
+)
+
+with open(LOCAL_CONFIG_FILEPATH, 'r') as f:
+    LOCAL_CONFIG = yaml.load(f)
+
+SECRET_KEY = LOCAL_CONFIG.get('secret_key')
+if not SECRET_KEY:
+    raise ImproperlyConfigured
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -26,6 +37,8 @@ ALLOWED_HOSTS = [
     'volontulo.org',
     'volontuloapp.org'
 ]
+if LOCAL_CONFIG.get('allowed_host'):
+    ALLOWED_HOSTS.append(LOCAL_CONFIG['allowed_host'])
 
 # Application definition
 
