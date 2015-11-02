@@ -1,7 +1,6 @@
 """
 Development Settings Module
 """
-# pylint: skip-file
 
 from .base import *
 
