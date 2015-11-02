@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.utils.text import slugify
 
-from volontulo.models import UserProfile
+from apps.volontulo.models import UserProfile
 
 
 # Offers statuses dictionary with meaningful names.

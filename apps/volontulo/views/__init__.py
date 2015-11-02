@@ -12,16 +12,16 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template import TemplateDoesNotExist
 
-from volontulo.forms import AdministratorContactForm
-from volontulo.forms import EditProfileForm
-from volontulo.forms import OrganizationGalleryForm
-from volontulo.forms import UserGalleryForm
-from volontulo.lib.email import send_mail
-from volontulo.models import Offer
-from volontulo.models import Organization
-from volontulo.models import OrganizationGallery
-from volontulo.models import UserBadges
-from volontulo.models import UserProfile
+from apps.volontulo.forms import AdministratorContactForm
+from apps.volontulo.forms import EditProfileForm
+from apps.volontulo.forms import OrganizationGalleryForm
+from apps.volontulo.forms import UserGalleryForm
+from apps.volontulo.lib.email import send_mail
+from apps.volontulo.models import Offer
+from apps.volontulo.models import Organization
+from apps.volontulo.models import OrganizationGallery
+from apps.volontulo.models import UserBadges
+from apps.volontulo.models import UserProfile
 
 
 def logged_as_admin(request):

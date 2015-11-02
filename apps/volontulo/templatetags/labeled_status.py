@@ -6,7 +6,7 @@ u"""
 
 from django import template
 
-from volontulo.utils import OFFERS_STATUSES
+from apps.volontulo.utils import OFFERS_STATUSES
 
 
 register = template.Library()  # pylint: disable=invalid-name

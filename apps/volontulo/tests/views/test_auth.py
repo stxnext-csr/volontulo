@@ -8,7 +8,7 @@ from django.test import Client
 from django.test import TestCase
 from django.test import TransactionTestCase
 
-from volontulo.tests.common import Common
+from apps.volontulo.tests.common import Common
 
 
 class TestRegister(TransactionTestCase):

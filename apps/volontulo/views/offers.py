@@ -18,18 +18,18 @@ from django.shortcuts import render
 from django.utils.text import slugify
 from django.views.generic import View
 
-from volontulo.forms import CreateOfferForm
-from volontulo.forms import OfferApplyForm
-from volontulo.forms import OfferImageForm
-from volontulo.lib.email import send_mail
-from volontulo.models import Offer
-from volontulo.models import OfferImage
-from volontulo.models import UserBadges
-from volontulo.models import UserProfile
-from volontulo.utils import correct_slug
-from volontulo.utils import OFFERS_STATUSES
-from volontulo.utils import save_history
-from volontulo.views import logged_as_admin
+from apps.volontulo.forms import CreateOfferForm
+from apps.volontulo.forms import OfferApplyForm
+from apps.volontulo.forms import OfferImageForm
+from apps.volontulo.lib.email import send_mail
+from apps.volontulo.models import Offer
+from apps.volontulo.models import OfferImage
+from apps.volontulo.models import UserBadges
+from apps.volontulo.models import UserProfile
+from apps.volontulo.utils import correct_slug
+from apps.volontulo.utils import OFFERS_STATUSES
+from apps.volontulo.utils import save_history
+from apps.volontulo.views import logged_as_admin
 
 
 def offers_list(request):

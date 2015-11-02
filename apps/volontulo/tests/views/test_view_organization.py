@@ -5,7 +5,7 @@ u"""
 """
 from django.core import mail
 
-from volontulo.tests.views.test_organizations import TestOrganizations
+from apps.volontulo.tests.views.test_organizations import TestOrganizations
 
 
 class TestCreateOrganization(TestOrganizations):

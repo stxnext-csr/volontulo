@@ -3,9 +3,9 @@
 u"""
 .. module:: test_create_organization
 """
-from volontulo.tests.views.test_organizations import TestOrganizations
+from apps.volontulo.tests.views.test_organizations import TestOrganizations
 
-from volontulo.models import Organization
+from apps.volontulo.models import Organization
 
 
 class TestCreateOrganization(TestOrganizations):

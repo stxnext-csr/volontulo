@@ -8,9 +8,9 @@ from django.contrib.auth.models import User
 from django.test import Client
 from django.test import TestCase
 
-from volontulo.models import Offer
-from volontulo.models import Organization
-from volontulo.models import UserProfile
+from apps.volontulo.models import Offer
+from apps.volontulo.models import Organization
+from apps.volontulo.models import UserProfile
 
 
 class TestOffersList(TestCase):

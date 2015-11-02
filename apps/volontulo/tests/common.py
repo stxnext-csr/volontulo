@@ -6,11 +6,11 @@ u"""
 
 from django.contrib.auth.models import User
 
-from volontulo.models import Badge
-from volontulo.models import Offer
-from volontulo.models import Organization
-from volontulo.models import UserBadges
-from volontulo.models import UserProfile
+from apps.volontulo.models import Badge
+from apps.volontulo.models import Offer
+from apps.volontulo.models import Organization
+from apps.volontulo.models import UserBadges
+from apps.volontulo.models import UserProfile
 
 COMMON_OFFER_DATA = {
     'organization': None,

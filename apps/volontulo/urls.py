@@ -6,14 +6,14 @@ u"""
 
 from django.conf.urls import url
 
-from volontulo import views
-from volontulo.views import auth as auth_views
-from volontulo.views import offers as offers_views
-from volontulo.views import organizations as orgs_views
+from apps.volontulo import views
+from apps.volontulo.views import auth as auth_views
+from apps.volontulo.views import offers as offers_views
+from apps.volontulo.views import organizations as orgs_views
 
 # pylint: disable=invalid-name
-handler404 = 'volontulo.views.page_not_found'
-handler500 = 'volontulo.views.server_error'
+handler404 = 'apps.volontulo.views.page_not_found'
+handler500 = 'apps.volontulo.views.server_error'
 
 
 urlpatterns = [  # pylint: disable=invalid-name

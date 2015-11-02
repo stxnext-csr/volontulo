@@ -9,12 +9,12 @@ from django import forms
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-from volontulo.models import Offer
-from volontulo.models import OfferImage
-from volontulo.models import Organization
-from volontulo.models import OrganizationGallery
-from volontulo.models import UserGallery
-from volontulo.utils import get_administrators_emails
+from apps.volontulo.models import Offer
+from apps.volontulo.models import OfferImage
+from apps.volontulo.models import Organization
+from apps.volontulo.models import OrganizationGallery
+from apps.volontulo.models import UserGallery
+from apps.volontulo.utils import get_administrators_emails
 
 
 class UserForm(forms.ModelForm):

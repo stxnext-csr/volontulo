@@ -7,9 +7,9 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 
-from volontulo.models import Badge
-from volontulo.models import UserBadges
-from volontulo.models import UserProfile
+from apps.volontulo.models import Badge
+from apps.volontulo.models import UserBadges
+from apps.volontulo.models import UserProfile
 
 
 class TestUserBadgesModel(TestCase):

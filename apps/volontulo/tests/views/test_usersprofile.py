@@ -6,8 +6,8 @@ u"""
 from django.test import Client
 from django.test import TestCase
 
-from volontulo.tests.common import Common
-from volontulo.models import Offer
+from apps.volontulo.tests.common import Common
+from apps.volontulo.models import Offer
 
 
 class TestUsersProfile(TestCase):

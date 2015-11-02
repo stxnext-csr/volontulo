@@ -12,12 +12,12 @@ from django.shortcuts import render
 from django.utils.text import slugify
 from django.views.generic import View
 
-from volontulo.forms import VolounteerToOrganizationContactForm
-from volontulo.lib.email import send_mail
-from volontulo.models import Offer
-from volontulo.models import Organization
-from volontulo.models import UserProfile
-from volontulo.utils import correct_slug
+from apps.volontulo.forms import VolounteerToOrganizationContactForm
+from apps.volontulo.lib.email import send_mail
+from apps.volontulo.models import Offer
+from apps.volontulo.models import Organization
+from apps.volontulo.models import UserProfile
+from apps.volontulo.utils import correct_slug
 
 
 def organizations_list(request):

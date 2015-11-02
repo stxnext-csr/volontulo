@@ -10,7 +10,7 @@ from django.core.mail import get_connection
 from django.template import Context
 from django.template.loader import get_template
 
-from volontulo.utils import get_administrators_emails
+from apps.volontulo.utils import get_administrators_emails
 
 FROM_ADDRESS = 'support@volontuloapp.org'
 FAIL_SILENTLY = False

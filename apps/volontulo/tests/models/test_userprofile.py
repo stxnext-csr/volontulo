@@ -6,9 +6,9 @@ u"""
 from __future__ import unicode_literals
 from django.test import TestCase
 
-from volontulo.models import Organization
-from volontulo.models import User
-from volontulo.models import UserProfile
+from apps.volontulo.models import Organization
+from apps.volontulo.models import User
+from apps.volontulo.models import UserProfile
 
 
 class TestUserProfile(TestCase):

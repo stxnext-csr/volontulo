@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 
 from django.test import TestCase
 
-from volontulo.models import Badge
+from apps.volontulo.models import Badge
 
 
 class TestBadge(TestCase):

@@ -15,10 +15,10 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.views.generic import View
 
-from volontulo.forms import UserForm
-from volontulo.lib.email import FROM_ADDRESS
-from volontulo.lib.email import send_mail
-from volontulo.models import UserProfile
+from apps.volontulo.forms import UserForm
+from apps.volontulo.lib.email import FROM_ADDRESS
+from apps.volontulo.lib.email import send_mail
+from apps.volontulo.models import UserProfile
 
 
 def login(request):

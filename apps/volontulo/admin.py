@@ -6,7 +6,7 @@ u"""
 
 from django.contrib import admin
 
-from volontulo.models import UserProfile
+from apps.volontulo.models import UserProfile
 
 
 admin.site.register(UserProfile)

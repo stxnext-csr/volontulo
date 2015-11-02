@@ -7,7 +7,7 @@ from django.core import mail
 from django.test import Client
 from django.test import TestCase
 
-from volontulo.tests.common import Common
+from apps.volontulo.tests.common import Common
 
 
 class TestPages(TestCase):

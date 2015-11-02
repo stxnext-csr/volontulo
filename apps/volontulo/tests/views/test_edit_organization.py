@@ -3,7 +3,7 @@
 u"""
 .. module:: test_edit_organization
 """
-from volontulo.tests.views.test_organizations import TestOrganizations
+from apps.volontulo.tests.views.test_organizations import TestOrganizations
 
 
 class TestEditOrganization(TestOrganizations):
