@@ -33,11 +33,11 @@ If the site is supposed to be served under different domain than volontulo.org o
 and you are not in development environment, fiil the "allowed_host" value. Otherwise
 it can be left blank.
 
-## Gulp Instalation
+### Gulp Instalation
 
 Gulp is used to prepare and serve all static files into `/volontulo_org/volontulo/volontulo/static/volontulo` so Django can use them
 ```
-cd /volontulo_org/volontulo/volontulo
+cd /apps/volontulo
 npm install
 ```
 Windows can have problems with unix paths, so it is practical to install Gulp globally (with `sudo` on linux)
