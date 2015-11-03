@@ -21,7 +21,10 @@ from volontulo.utils import correct_slug
 
 
 def organizations_list(request):
-    u"""View responsible for listing all organizations."""
+    u"""View responsible for listing all organizations.
+
+    :param request: WSGIRequest instance
+    """
     organizations = Organization.objects.all()
     return render(
         request,

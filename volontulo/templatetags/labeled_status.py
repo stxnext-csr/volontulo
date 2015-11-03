@@ -14,5 +14,8 @@ register = template.Library()  # pylint: disable=invalid-name
 
 @register.filter(name='human')
 def human(status):
-    u"""Get offer status description."""
+    u"""Get offer status description.
+
+    :param status: string Status key
+    """
     return OFFERS_STATUSES.get(status, status)

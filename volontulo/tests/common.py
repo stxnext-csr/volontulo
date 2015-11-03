@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 
 from volontulo.models import Badge
 from volontulo.models import Offer
+from volontulo.models import OfferStatus
 from volontulo.models import Organization
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
@@ -115,6 +116,13 @@ class Common(object):
                 votes=True,
                 organization=organization2,
             )
+            status = OfferStatus.create(
+                'published',
+                'open',
+                'ongoing',
+            )
+            status.save()
+            offer.status = status
             offer.volunteers.add(volunteer_user2)
             offer.save()
 
@@ -132,6 +140,13 @@ class Common(object):
                 votes=True,
                 organization=organization2,
             )
+            status = OfferStatus.create(
+                'unpublished',
+                'open',
+                'ongoing',
+            )
+            status.save()
+            offer2.status = status
             offer2.save()
 
     @staticmethod

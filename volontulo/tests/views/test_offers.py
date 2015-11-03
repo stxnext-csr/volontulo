@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.test import Client
 from django.test import TestCase
 
-from volontulo.models import Offer
+from volontulo.models import Offer, OfferStatus
 from volontulo.models import Organization
 from volontulo.models import UserProfile
 
@@ -41,6 +41,13 @@ class TestOffersList(TestCase):
             status_old='NEW',
             **common_offer_data
         )
+        status = OfferStatus.create(
+            'unpublished',
+            'open',
+            'ongoing',
+        )
+        status.save()
+        cls.inactive_offer = status
         cls.inactive_offer.save()
         cls.active_offer = Offer.objects.create(
             status_old='ACTIVE',
@@ -208,6 +215,8 @@ class TestOffersCreate(TestCase):
                 'location': u'required location',
                 'title': u'volontulo offer',
                 'time_period': u'required time_period',
+                'started_at': '2015-11-01 11:11:11',
+                'finished_at': '2015-11-01 11:11:11',
             }, follow=True)
             self.assertRedirects(
                 response,
@@ -430,6 +439,13 @@ class TestOffersView(TestCase):
             time_period=u'',
             status_old='NEW',
         )
+        status = OfferStatus.create(
+            'unpublished',
+            'open',
+            'ongoing',
+        )
+        status.save()
+        cls.offer.status = status
         cls.offer.save()
 
         volunteers = [User.objects.create_user(

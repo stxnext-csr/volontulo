@@ -18,6 +18,156 @@ from django.utils import timezone
 logger = logging.getLogger('volontulo.models')
 
 
+class OfferStatus(models.Model):
+    u"""Offer complex statuses."""
+
+    OFFER_STATUSES = (
+        ('unpublished', u'Unpublished'),
+        ('published', u'Published'),
+        ('rejected', u'Rejected'),
+    )
+    RECRUITMENT_STATUSES = (
+        ('open', u'Open'),
+        ('supplemental', u'Supplemental'),
+        ('closed', u'Closed'),
+    )
+    ACTION_STATUSES = (
+        ('future', u'Future'),
+        ('ongoing', u'Ongoing'),
+        ('finished', u'Finished'),
+    )
+
+    VISIBILITY_MATRIX = {
+        ('unpublished', 'open', 'future'): 0,
+        ('unpublished', 'open', 'ongoing'): 0,
+        ('unpublished', 'open', 'finished'): 0,
+        ('unpublished', 'supplemental', 'future'): 0,
+        ('unpublished', 'supplemental', 'ongoing'): 0,
+        ('unpublished', 'supplemental', 'finished'): 0,
+        ('unpublished', 'closed', 'future'): 0,
+        ('unpublished', 'closed', 'ongoing'): 0,
+        ('unpublished', 'closed', 'finished'): 0,
+        ('published', 'open', 'future'): 1,
+        ('published', 'open', 'ongoing'): 1,
+        ('published', 'open', 'finished'): 0,
+        ('published', 'supplemental', 'future'): 1,
+        ('published', 'supplemental', 'ongoing'): 1,
+        ('published', 'supplemental', 'finished'): 0,
+        ('published', 'closed', 'future'): 1,
+        ('published', 'closed', 'ongoing'): 0,
+        ('published', 'closed', 'finished'): 1,
+        ('rejected', 'open', 'future'): 1,
+        ('rejected', 'open', 'ongoing'): 1,
+        ('rejected', 'open', 'finished'): 1,
+        ('rejected', 'supplemental', 'future'): 1,
+        ('rejected', 'supplemental', 'ongoing'): 1,
+        ('rejected', 'supplemental', 'finished'): 0,
+        ('rejected', 'closed', 'future'): 0,
+        ('rejected', 'closed', 'ongoing'): 0,
+        ('rejected', 'closed', 'finished'): 0,
+    }
+
+    offer_status = models.CharField(max_length=16, choices=OFFER_STATUSES)
+    recruitment_status = models.CharField(
+        max_length=16,
+        choices=RECRUITMENT_STATUSES
+    )
+    recruitment_start_date = models.DateTimeField(blank=True, null=True)
+    recruitment_end_date = models.DateTimeField(blank=True, null=True)
+    action_status = models.CharField(max_length=16, choices=ACTION_STATUSES)
+    action_start_date = models.DateTimeField(blank=True, null=True)
+    action_end_date = models.DateTimeField(blank=True, null=True)
+    volunteers_limit = models.IntegerField(default=0, null=True, blank=True)
+
+    @classmethod
+    def create(cls, status, recruitment, action):
+        u"""Helper creating OfferStatus object.
+
+        :param status: string Offer status
+        :param recruitment: string Recruitment status
+        :param action: string Datetime determined action status
+        """
+        return cls(
+            offer_status=status,
+            recruitment_status=recruitment,
+            action_status=action,
+        )
+
+    def __str__(self):
+        u"""Offer status string representation."""
+        def as_dict(tuples_tuple):
+            u"""Return dictionary from tuples tuple.
+
+            :param tuples_tuple: tuple with tuples
+            """
+            return {item[0]: item[1] for item in tuples_tuple}
+
+        offer_statuses = as_dict(OfferStatus.OFFER_STATUSES)
+        recruitment_statuses = as_dict(OfferStatus.RECRUITMENT_STATUSES)
+        action_statuses = as_dict(OfferStatus.ACTION_STATUSES)
+
+        return u"{}, {}, {} -> {}".format(
+            offer_statuses[self.offer_status],
+            recruitment_statuses[self.recruitment_status],
+            action_statuses[self.action_status],
+            'VISIBLE' if self.is_visible() else 'HIDDEN'
+        )
+
+    def is_visible(self):
+        u"""Determine offer visibility for specified user type."""
+        statuses_keys = (
+            self.offer_status,
+            self.recruitment_status,
+            self.action_status
+        )
+        return True if OfferStatus.VISIBILITY_MATRIX[statuses_keys] else False
+
+    def publish(self):
+        u"""Change state of current offer to published."""
+        self.offer_status = 'published'
+        return self
+
+    def unpublish(self):
+        u"""Change state of current offer to unpublished."""
+        self.offer_status = 'unpublished'
+        return self
+
+    def reject(self):
+        u"""Change state of current offer to rejected."""
+        self.offer_status = 'rejected'
+        return self
+
+    def open_recruitment(self):
+        u"""Change recruitation status of current offer open."""
+        self.recruitment_status = 'open'
+        return self
+
+    def close_recruitment(self):
+        u"""Change recruitation status of current offer closed."""
+        self.recruitment_status = 'closed'
+        return self
+
+    def supplement_recruitment(self):
+        u"""Change recruitation status of current offer supplemental."""
+        self.recruitment_status = 'supplemental'
+        return self
+
+    def futured_action(self):
+        u"""Change state of current offer to publish."""
+        self.action_status = 'future'
+        return self
+
+    def ongoing_action(self):
+        u"""Change state of current offer to unpublished."""
+        self.action_status = 'ongoing'
+        return self
+
+    def finished_action(self):
+        u"""Change state of current offer to rejected."""
+        self.action_status = 'finished'
+        return self
+
+
 class Organization(models.Model):
     u"""Model that handles ogranizations/institutions."""
     name = models.CharField(max_length=150)
@@ -28,8 +178,22 @@ class Organization(models.Model):
         return self.name
 
 
+class OffersManager(models.Manager):
+    u"""Offers Manager."""
+
+    def get_active(self):
+        u"""Return active offers."""
+        return self.all()
+
+    def get_archived(self):
+        u"""Return archived offers."""
+        return self.all()
+
+
 class Offer(models.Model):
-    u"""Model that hadles offers."""
+    u"""Offer model."""
+
+    objects = OffersManager()
     organization = models.ForeignKey(Organization)
     volunteers = models.ManyToManyField(User)
     description = models.TextField()
@@ -38,12 +202,44 @@ class Offer(models.Model):
     benefits = models.TextField()
     location = models.CharField(max_length=150)
     title = models.CharField(max_length=150)
-    time_period = models.CharField(max_length=150)
-    status_old = models.CharField(max_length=30, default='NEW')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    started_at = models.DateTimeField(blank=True, null=True)
+    finished_at = models.DateTimeField(blank=True, null=True)
+    status = models.OneToOneField(
+        OfferStatus,
+        related_name='offer',
+        null=True
+    )
+    time_period = models.CharField(max_length=150, default='', blank=True)
+    status_old = models.CharField(
+        max_length=30,
+        default='NEW',
+        null=True,
+        unique=False
+    )
     votes = models.BooleanField(default=0)
 
     def __str__(self):
         return self.title
+
+    def determine_action_status(self):
+        u"""Determine action status by dates."""
+        if (
+                (
+                    self.finished_at and
+                    self.started_at < timezone.now() < self.finished_at
+                ) or
+                (
+                    self.started_at < timezone.now() and
+                    not self.finished_at
+                )
+        ):
+            return 'ongoing'
+        elif self.started_at > timezone.now():
+            return 'future'
+        else:
+            return 'finished'
 
 
 class Badge(models.Model):
@@ -152,6 +348,7 @@ class UserBadges(models.Model):
     # pylint: disable=invalid-name
     def apply_prominent_participant_badge(content_type, volunteer_user):
         u"""Helper function to apply particpant badge to specified user."""
+
         badge = Badge.objects.get(slug='prominent-participant')
         try:
             usersbadge = UserBadges.objects.get(

@@ -24,6 +24,7 @@ from volontulo.forms import OfferImageForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
 from volontulo.models import OfferImage
+from volontulo.models import OfferStatus
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
 from volontulo.utils import correct_slug
@@ -37,6 +38,8 @@ def offers_list(request):
 
     It's used for volunteers to show active ones and for admins to show
     all of them.
+
+    :param request: WSGIRequest instance
     """
     if logged_as_admin(request):
         offers = Offer.objects.all()
@@ -52,11 +55,12 @@ class OffersCreate(View):
 
     @staticmethod
     def get(request):
-        u"""Method responsible for rendering form for new offer."""
-        form = CreateOfferForm()
+        u"""Method responsible for rendering form for new offer.
+
+        :param request: WSGIRequest instance
+        """
         context = {
-            'offer_form': form,
-            'statuses': OFFERS_STATUSES,
+            'form': CreateOfferForm(),
             'offer': Offer(),
         }
 
@@ -68,12 +72,21 @@ class OffersCreate(View):
 
     @staticmethod
     def post(request):
-        u"""Method resposible for saving new offer."""
-        form = CreateOfferForm(request.POST)
-        images = []
+        u"""Method responsible for saving new offer.
 
+        :param request: WSGIRequest instance
+        """
+        form = CreateOfferForm(request.POST)
         if form.is_valid():
             offer = form.save()
+            status = OfferStatus.create(
+                'unpublished',
+                'open',
+                offer.determine_action_status()
+            )
+            status.save()
+            offer.status = status
+            offer.save()
             save_history(request, offer, action=ADDITION)
             ctx = {'offer': offer}
             send_mail(
@@ -93,16 +106,16 @@ class OffersCreate(View):
             )
         messages.error(
             request,
-            u"Formularz zawiera niepoprawnie wypełnione pola"
+            u"Formularz zawiera niepoprawnie wypełnione pola <br />{0}"
+            .format('<br />'.join(form.errors)),
         )
         return render(
             request,
             'offers/offer_form.html',
             {
-                'offer_form': form,
+                'form': form,
                 'statuses': OFFERS_STATUSES,
                 'offer': Offer(),
-                'images': images,
             }
         )
 
@@ -113,7 +126,12 @@ class OffersEdit(View):
     @staticmethod
     @correct_slug(Offer, 'offers_edit', 'title')
     def get(request, slug, id_):  # pylint: disable=unused-argument
-        u"""Method responsible for rendering form for offer to be changed."""
+        u"""Method responsible for rendering form for offer to be changed.
+
+        :param request: WSGIRequest instance
+        :param slug: string Offer title slugified
+        :param id_: int Offer database unique identifier (primary key)
+        """
         offer = Offer.objects.get(id=id_)
         organization = offer.organization
         form = CreateOfferForm()
@@ -248,9 +266,9 @@ class OffersView(View):
         u"""View responsible for submitting volunteers awarding."""
         offer = get_object_or_404(Offer, id=id_)
         post_data = request.POST
-        if post_data.get('csrfmiddlewaretoken'):
+        if request.POST.get('csrfmiddlewaretoken'):
             del post_data['csrfmiddlewaretoken']
-        if post_data.get('submit'):
+        if request.POST.get('submit'):
             del post_data['submit']
 
         offer_content_type = ContentType.objects.get(

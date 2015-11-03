@@ -18,7 +18,6 @@ from volontulo.forms import OrganizationGalleryForm
 from volontulo.forms import UserGalleryForm
 from volontulo.lib.email import send_mail
 from volontulo.models import Offer
-from volontulo.models import Organization
 from volontulo.models import OrganizationGallery
 from volontulo.models import UserBadges
 from volontulo.models import UserProfile
@@ -28,6 +27,8 @@ def logged_as_admin(request):
     u""""Helper function that provide information is user has admin privilege.
 
     It is used in separate modules.
+
+    :param request: WSGIRequest instance
     """
     return (
         request.user.is_authenticated() and
@@ -39,6 +40,8 @@ def homepage(request):  # pylint: disable=unused-argument
     u"""Main view of app.
 
     We will display page with few step CTA links?
+
+    :param request: WSGIRequest instance
     """
     if logged_as_admin(request):
         offers = Offer.objects.all().order_by('-status_old')
@@ -58,7 +61,11 @@ def homepage(request):  # pylint: disable=unused-argument
 
 
 def static_pages(request, template_name):
-    u"""Generic view used for rendering static pages."""
+    u"""Generic view used for rendering static pages.
+
+    :param request: WSGIRequest instance
+    :param template_name: string Template name to display
+    """
     try:
         return render(
             request,
@@ -70,7 +77,10 @@ def static_pages(request, template_name):
 
 @login_required
 def logged_user_profile(request):
-    u"""View to display user profile page."""
+    u"""View to display user profile page.
+
+    :param request: WSGIRequest instance
+    """
     def _init_edit_profile_form():
         u"""Initialize EditProfileForm - helper method."""
         return EditProfileForm(
@@ -81,7 +91,7 @@ def logged_user_profile(request):
         )
 
     def _populate_offers():
-        u"""..."""
+        u"""Helper method."""
         if userprofile.organizations.count():
             # Current user is organization
             return Offer.objects.filter(

@@ -69,7 +69,7 @@
             </div>
 
             {# User jest organizacją i oferta jest zamknięta. #}
-            {% if offer.status == 'CLOSED' and user.organization %}
+            {% if offer.status_old == 'CLOSED' and user.organization %}
                 {% include 'offers/rewarding_volunteers.html' with volunteers=volunteers offer=offer %}
             {% endif %}
 

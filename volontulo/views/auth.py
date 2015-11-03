@@ -22,7 +22,10 @@ from volontulo.models import UserProfile
 
 
 def login(request):
-    u"""Login view."""
+    u"""Login view.
+
+    :param request: WSGIRequest instance
+    """
     if request.user.is_authenticated():
         messages.success(
             request,
@@ -64,7 +67,10 @@ def login(request):
 
 @login_required
 def logout(request):
-    u"""Logout view."""
+    u"""Logout view.
+
+    :param request: WSGIRequest instance
+    """
     auth.logout(request)
     messages.info(
         request,
@@ -78,7 +84,11 @@ class Register(View):
 
     @staticmethod
     def get(request, user_form=None):
-        u"""Simple view to render register form."""
+        u"""Simple view to render register form.
+
+        :param request: WSGIRequest instance
+        :param user_form: UserForm instance
+        """
         if request.user.is_authenticated():
             messages.success(
                 request,
@@ -96,7 +106,10 @@ class Register(View):
 
     @classmethod
     def post(cls, request):
-        u"""Method handes creation of new user."""
+        u"""Method handes creation of new user.
+
+        :param request: WSGIRequest instance
+        """
         # validation of register form:
         user_form = UserForm(request.POST)
         if not user_form.is_valid():
