@@ -2,11 +2,13 @@ language: python
 python:
   - "3.4"
 install:
-  - "pip install -r requirements.txt"
+  - "pip install -r requirements/travis.txt"
 script:
-  - "pep8 --exclude='volontulo/migrations/*' ."
-  - "pylint --load-plugins pylint_django --min-similarity-lines=10 volontulo"
-  - "coverage run --source=volontulo setup.py test"
-  - "cd volontulo && npm install && gulp build && cd .."
+  - "cp local_config.yaml.sample local_config.yaml"
+  - "sed -i 's/secret_key:.*/secret_key: classified_secret_key/g' local_config.yaml"
+  - "pep8 --exclude='apps/volontulo/migrations/*,node_modules,.ropeproject' ."
+  - "pylint --load-plugins pylint_django --min-similarity-lines=10 apps"
+  - "coverage run --source='.' manage.py test --settings=volontulo_org.settings.test_settings -v 3"
+  - "cd apps/volontulo && npm install && gulp build && cd ../.."
 after_success:
   - "codecov"

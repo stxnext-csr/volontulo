@@ -1,3 +1,6 @@
+# Configuration files
+local_config.yaml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -60,5 +63,10 @@ target/
 .idea/
 
 # npm and gulp
-volontulo/node_modules/
-volontulo/static/
+apps/volontulo/node_modules/
+apps/volontulo/static/
+media
+static
+
+# Development directories / files
+.ropeproject
