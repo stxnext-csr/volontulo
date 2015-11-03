@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/stxnext-csr/volontulo.svg)](https://travis-ci.org/stxnext-csr/volontulo)
 [![codecov.io](http://codecov.io/github/stxnext-csr/volontulo/coverage.svg?branch=master)](http://codecov.io/github/stxnext-csr/volontulo?branch=master)
 
-![Volontulo logo](/volontulo/frontend/img/volo_logo.png)
+![Volontulo logo](/apps/volontulo/frontend/img/volo_logo.png)
 
 Web portal for collaboration of community volunteers with organizations and institutions. 
 

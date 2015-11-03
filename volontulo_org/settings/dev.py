@@ -8,6 +8,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+
 INSTALLED_APPS += (
     'debug_toolbar',
     'django_coverage',
