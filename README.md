@@ -65,6 +65,6 @@ Now you able to access the development site:
 ### Running tests
 To run the project tests:
 ```
-coverage run --source='.' manage.py test --settings=volontulo_org.settings.test_settings -v 3
+python manage.py test --settings=volontulo_org.settings.test_settings -v 3
 ```
 
