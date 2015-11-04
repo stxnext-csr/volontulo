@@ -34,7 +34,7 @@ python -c "import uuid; print str(uuid.uuid4()).replace('-', '')"
 ```
 
 If the site is supposed to be served under different domain than volontulo.org or volontuloapp.org
-and you are not in development environment, fiil the "allowed_host" value. Otherwise
+and you are not in development environment, fill the "allowed_host" value. Otherwise
 it can be left blank.
 
 ### Gulp Instalation
