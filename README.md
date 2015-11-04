@@ -28,6 +28,10 @@ vim local_config.yaml
 Fill the Local Configuration Values.
 To generate "secret_key", you can use
 ```head -c 64 /dev/urandom | base64 -w 0```
+For Windows users may be used simple:
+```
+python -c "import uuid; print str(uuid.uuid4()).replace('-', '')"
+```
 
 If the site is supposed to be served under different domain than volontulo.org or volontuloapp.org
 and you are not in development environment, fiil the "allowed_host" value. Otherwise
