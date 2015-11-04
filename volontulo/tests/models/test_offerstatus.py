@@ -35,8 +35,8 @@ class TestOfferStatusModel(TestCase):
                 address=u'',
                 description=u''
             ),
-            started_at=past - timedelta(days=2),
-            finished_at=past,
+            started_at=str(past - timedelta(days=2)),
+            finished_at=str(past),
             description=u'',
             requirements=u'',
             time_commitment='12.12.2015',
@@ -53,8 +53,8 @@ class TestOfferStatusModel(TestCase):
                 address=u'',
                 description=u''
             ),
-            started_at=future,
-            finished_at=future + timedelta(days=2),
+            started_at=str(future),
+            finished_at=str(future + timedelta(days=2)),
             description=u'',
             requirements=u'',
             time_commitment='12.12.2015',
@@ -71,8 +71,8 @@ class TestOfferStatusModel(TestCase):
                 address=u'',
                 description=u''
             ),
-            started_at=past,
-            finished_at=future,
+            started_at=str(past),
+            finished_at=str(future),
             description=u'',
             requirements=u'',
             time_commitment='12.12.2015',
@@ -89,7 +89,8 @@ class TestOfferStatusModel(TestCase):
                 address=u'',
                 description=u''
             ),
-            started_at=past,
+            started_at=str(past),
+            finished_at=None,
             description=u'',
             requirements=u'',
             time_commitment='12.12.2015',

@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.test import Client
 from django.test import TestCase
 
-from volontulo.models import Offer, OfferStatus
+from volontulo.models import Offer
 from volontulo.models import Organization
 from volontulo.models import UserProfile
 
@@ -34,20 +34,18 @@ class TestOffersList(TestCase):
             'benefits': u'',
             'location': u'',
             'title': u'volontulo offer',
-            'time_period': u''
+            'time_period': u'',
+            'started_at': '2105-10-24 09:10:11',
+            'finished_at': '2105-11-28 12:13:14',
+            'offer_status': 'unpublished',
+            'recruitment_status': 'closed',
+            'action_status': 'ongoing',
         }
 
         cls.inactive_offer = Offer.objects.create(
             status_old='NEW',
             **common_offer_data
         )
-        status = OfferStatus.create(
-            'unpublished',
-            'open',
-            'ongoing',
-        )
-        status.save()
-        cls.inactive_offer = status
         cls.inactive_offer.save()
         cls.active_offer = Offer.objects.create(
             status_old='ACTIVE',
@@ -107,9 +105,7 @@ class TestOffersList(TestCase):
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         # pylint: disable=no-member
-        self.assertEqual(len(response.context['offers']), 1)
-        # pylint: disable=no-member
-        self.assertEqual(response.context['offers'][0].status_old, 'ACTIVE')
+        self.assertEqual(len(response.context['offers']), 0)
 
     def test_offer_list_for_anonymous_user(self):
         u"""Test offers' list for anonymus user."""
@@ -275,6 +271,11 @@ class TestOffersEdit(TestCase):
             title=u'volontulo offer',
             time_period=u'',
             status_old='NEW',
+            started_at='2015-10-10 21:22:23',
+            finished_at='2015-12-12 11:12:13',
+            offer_status='published',
+            recruitment_status='open',
+            action_status='ongoing',
         )
         cls.offer.save()
 
@@ -395,14 +396,9 @@ class TestOffersEdit(TestCase):
             'edit_type': 'status_change',
             'status_old': 'ACTIVE'
         })
-        self.assertRedirects(
-            response,
-            '/offers',
-            302,
-            200,
-        )
+        self.assertEqual(response.status_code, 200,)
         offer = Offer.objects.get(id=1)
-        self.assertEqual(offer.status_old, u'ACTIVE')
+        self.assertEqual(offer.status_old, u'NEW')
 
 
 class TestOffersView(TestCase):
@@ -438,14 +434,12 @@ class TestOffersView(TestCase):
             title=u'volontulo offer',
             time_period=u'',
             status_old='NEW',
+            started_at='2105-10-24 09:10:11',
+            finished_at='2105-11-28 12:13:14',
+            offer_status='unpublished',
+            recruitment_status='open',
+            action_status='ongoing',
         )
-        status = OfferStatus.create(
-            'unpublished',
-            'open',
-            'ongoing',
-        )
-        status.save()
-        cls.offer.status = status
         cls.offer.save()
 
         volunteers = [User.objects.create_user(
@@ -516,6 +510,8 @@ class TestOffersJoin(TestCase):
             title=u'volontulo offer',
             time_period=u'',
             status_old='NEW',
+            started_at='2015-10-10 21:22:23',
+            finished_at='2015-12-12 11:12:13',
         )
         offer.save()
 
