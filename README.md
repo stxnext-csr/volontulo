@@ -21,7 +21,7 @@ pip install -r requirements/development.txt
 
 Copy the Local Configuration file:
 ```
-cp local_config.yaml.sample local_config.yaml
+cp etc/local_config.yaml.sample local_config.yaml
 vim local_config.yaml
 ```
 
