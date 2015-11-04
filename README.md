@@ -16,7 +16,7 @@ mkvirtualenv --no-site-packages venv_name
 ```
 To install project dependencies use pip and choose the correct file (production, development, etc.)
 ```
-pip install -r requirements/development.txt
+pip install -r requirements/dev.txt
 ```
 
 Copy the Local Configuration file:
@@ -55,9 +55,14 @@ gulp build
 ```
 
 ### Running the App in development mode
-Choose the appriopriate settings file
+Choose the appriopriate settings file  
+Collect statics
 ```
-python manage runserver --settings=volontulo_org.settings.dev
+python manage.py collectstatic --settings=volontulo_org.settings.dev
+```
+Run server
+```
+python manage.py runserver --settings=volontulo_org.settings.dev
 ```
 Now you able to access the development site:
 [http://localhost:8000](http://localhost:8000)
