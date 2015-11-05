@@ -74,3 +74,6 @@ static
 # SQLite database
 *.sqlite3
 *.sqlite
+
+# custom shell tools
+bin/*
