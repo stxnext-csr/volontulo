@@ -1,0 +1,76 @@
+{% extends "common/col1.html" %}
+
+{% block title %}Zgłoś chęć uczestnictwa w wolontariacie{% endblock %}
+
+{% block content-heading %}
+<div class="offer_view">
+    <img class="img-responsive center-block" src="{{ MEDIA_URL }}{{ main_image|default:'' }}" alt="{{ offer.title|safe }}" />
+    {% if user.is_administrator %}
+        <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
+    {% endif %}
+    <div class="panels">
+        <h2 class="offer-title">{{ offer.title }}</h2>
+        <div class="clearfix"></div>
+        <div class="media panel-default">
+            <div class="media-left panel-heading">
+                <span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>
+            </div>
+            <div class="media-body panel-body">
+                {{ offer.location }}
+            </div>
+        </div>
+        <div class="clearfix hidden-sm hidden-md hidden-lg"></div>
+        <div class="media panel-default">
+            <div class="media-left panel-heading">
+                <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
+            </div>
+            <div class="media-body panel-body">
+                {{ offer.time_period }}
+            </div>
+        </div>
+        <div class="clearfix hidden-sm hidden-md hidden-lg"></div>
+        <div class="addthis_sharing_toolbox"></div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+    <h3>Zgłoś swoją pomoc w tej akcji</h3>
+    <p>Twoje zgłoszenie zostanie wysłane jako wiadomość e-mail do organizatora. W każdej chwili możesz się z nim komunikować według własnego uznania.</p>
+    <form class="form-horizontal" action="{{ request.get_full_path }}" method="post" role="form">
+        {% csrf_token %}
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ form.fullname.id_for_label }}">Imię i nazwisko:</label>
+            <div class="col-xs-4">
+               <input type="text" value="{{ request.POST.fullname|default:volunteer_user.user.username }}" name="fullname" class="form-control" id="{{form.fullname.id_for_label }}" />
+            </div>
+            <label class="col-xs-1 control-label" for="{{ form.email.id_for_label }}">Email:</label>
+            <div class="col-xs-4">
+               <input type="text" value="{{ request.POST.email|default:volunteer_user.user.email }}" name="email" class="form-control" id="{{form.email.id_for_label }}"{% if user.is_authenticated %}readonly="readonly"{% endif %} />
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-offset-6 col-xs-1 control-label" for="{{ form.phone_no.id_for_label }}">Telefon:</label>
+            <div class="col-xs-4">
+               <input type="text" value="{{ request.POST.phone_no|default:'' }}" name="phone_no" class="form-control" id="{{form.phone_no.id_for_label }}" />
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ form.comments.id_for_label }}">Treść</label>
+            <div class="col-xs-9">
+                <textarea name="comments" class="form-control" rows="3" id="{{ form.comments.id_for_label }}">{{ request.POST.comments|default:'' }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-group form-group-sm">
+            <div class="col-xs-offset-2 col-xs-10">
+                {% if organization %}
+                <input type="hidden" value="{{ offer.id }}" name="offer" />
+                {% endif %}
+                <button class="btn btn-primary" type="submit">Zgłoś chęć współpracy</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

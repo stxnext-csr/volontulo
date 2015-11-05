@@ -1,0 +1,93 @@
+{% extends "common/col2.html" %}
+
+{% block title %}{{ offer.id|yesno:"Edycja,Tworzenie" }} oferty dla wolontariuszy{% endblock %}
+
+{% block content %}
+    <form id="offer_form" class="form-horizontal" method="post" action="{{ request.get_full_path }}" role="form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>{{ offer.id|yesno:"Edycja,Tworzenie" }} oferty dla wolontariuszy</h2>
+        {% if user.userprofile.is_administrator %}
+        <div class="form-group form-group-sm">
+            <label class="col-xs-offset-6 col-xs-2 control-label" for="{{ offer_form.status.id_for_label }}">Status</label>
+            <div class="col-xs-4">
+                <select name="status_old" class="form-control" id="{{ offer_form.status_old.id_for_label }}">
+                    {% for status, label in statuses.items %}
+                        {% if status == request.POST.offer|default:offer.status_old %}
+                        <option selected="selected" value="{{ status }}">{{ label }}</option>
+                        {% else %}
+                        <option value="{{ status }}">{{ label }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% endif %}
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ offer_form.organization.id_for_label }}">Organizacja</label>
+            <div class="col-xs-10">
+            <select value="{{ user.userprofile.organizations.all.0.id }}" name="organization" class="form-control" id="{{ offer_form.organization.id_for_label }}">
+                {% for o in user.userprofile.organizations.all %}
+                    <option value="{{ o.id }}">{{ o.name }}</option>
+                {% endfor %}
+            </select>
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ offer_form.title.id_for_label }}">Tytuł</label>
+            <div class="col-xs-4">
+                <input type="text" value="{{ request.POST.title|default:offer.title }}" name="title" class="form-control" id="{{ offer_form.title.id_for_label }}" />
+            </div>
+            <label class="col-xs-2 control-label" for="{{ offer_form.location.id_for_label }}">Lokalizacja</label>
+            <div class="col-xs-4">
+                <input type="text" value="{{ request.POST.location|default:offer.location }}" name="location" class="form-control" id="{{ offer_form.location.id_for_label }}" />
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ offer_form.time_commitment.id_for_label }}">Wymagania czasowe</label>
+            <div class="col-xs-4">
+                <input type="text" value="{{ request.POST.time_commitment|default:offer.time_commitment }}" name="time_commitment" class="form-control" id="{{ offer_form.time_commitment.id_for_label }}" />
+            </div>
+            <label class="col-xs-2 control-label" for="{{ offer_form.time_period.id_for_label }}">Dzień rozpoczęcia</label>
+            <div class="col-xs-4">
+                <input type="text" value="{{ request.POST.time_period|default:offer.time_period }}" name="time_period" class="form-control" id="{{ offer_form.time_period.id_for_label }}" />
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-offset-6 col-xs-2 control-label" for="{{ offer_form.time_period_end.id_for_label }}">Dzień Zakończenia</label>
+            <div class="col-xs-4">
+                <input type="text" value="" name="time_period_end" class="form-control" id="{{ offer_form.time_period_end.id_for_label }}" />
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ offer_form.description.id_for_label }}">Opis</label>
+            <div class="col-xs-10">
+                <textarea class="form-control" rows="3" name="description" id="{{ offer_form.description.id_for_label }}">{{ request.POST.description|default:offer.description }}</textarea>
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ offer_form.benefits.id_for_label }}">Korzyści</label>
+            <div class="col-xs-4">
+                <textarea class="form-control" rows="3" name="benefits" id="{{ offer_form.benefits.id_for_label }}">{{ request.POST.benefits|default:offer.benefits }}</textarea>
+            </div>
+            <label class="col-xs-2 control-label" for="{{ offer_form.requirements.id_for_label }}">Wymagania</label>
+            <div class="col-xs-4">
+                <textarea class="form-control" rows="3" name="requirements" id="{{ offer_form.requirements.id_for_label }}">{{ request.POST.requirements|default:offer.requirements }}</textarea>
+            </div>
+        </div>
+
+        <input type="hidden" value="full_edit" name="edit_type" />
+
+        <div class="form-group form-group-sm">
+            <div class="col-xs-offset-2 col-xs-10">
+                <button type="submit" name="submit" class="btn btn-primary">Zapisz ofertę</button>
+                {% if offer.id %}
+                <button type="submit" name="close_offer" value="close" class="btn btn-danger confirm-required">Zakończ ofertę</button>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+
+    {% if offer.id %}
+    {% include "offers/gallery.html" with offer_image_form=offer_image_form images=images MEDIA_URL=MEDIA_URL %}
+    {% endif %}
+{% endblock %}
