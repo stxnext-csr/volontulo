@@ -1,0 +1,417 @@
+# -*- coding: utf-8 -*-
+
+u"""
+.. module:: offers
+"""
+
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.admin.models import ADDITION
+from django.contrib.admin.models import CHANGE
+from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
+from django.db.utils import IntegrityError
+from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
+from django.shortcuts import render
+from django.utils.text import slugify
+from django.views.generic import View
+
+from apps.volontulo.forms import CreateOfferForm
+from apps.volontulo.forms import OfferApplyForm
+from apps.volontulo.forms import OfferImageForm
+from apps.volontulo.lib.email import send_mail
+from apps.volontulo.models import Offer
+from apps.volontulo.models import OfferImage
+from apps.volontulo.models import UserBadges
+from apps.volontulo.models import UserProfile
+from apps.volontulo.utils import correct_slug
+from apps.volontulo.utils import save_history
+from apps.volontulo.views import logged_as_admin
+
+
+def offers_list(request):
+    u"""View, that show list of offers.
+
+    It's used for volunteers to show active ones and for admins to show
+    all of them.
+
+    :param request: WSGIRequest instance
+    """
+    if logged_as_admin(request):
+        offers = Offer.objects.all()
+    else:
+        offers = Offer.objects.get_active()
+    return render(request, "offers/offers_list.html", context={
+        'offers': offers,
+    })
+
+
+class OffersCreate(View):
+    u"""Class view supporting creation of new offer."""
+
+    @staticmethod
+    def get(request):
+        u"""Method responsible for rendering form for new offer.
+
+        :param request: WSGIRequest instance
+        """
+        if request.user.userprofile.is_administrator:
+            messages.info(
+                request,
+                u"Administrator nie może tworzyć nowych ofert."
+            )
+            return redirect('offers_list')
+
+        return render(
+            request,
+            'offers/offer_form.html',
+            {
+                'offer': Offer(),
+                'form': CreateOfferForm(),
+                'organizations': request.user.userprofile.organizations.all(),
+            }
+        )
+
+    @staticmethod
+    def post(request):
+        u"""Method responsible for saving new offer.
+
+        :param request: WSGIRequest instance
+        """
+        form = CreateOfferForm(request.POST)
+        if form.is_valid():
+            offer = form.save()
+            offer.create_new()
+            offer.save()
+            save_history(request, offer, action=ADDITION)
+            send_mail(
+                request,
+                'offer_creation',
+                ['administrators@volontuloapp.org'],
+                {'offer': offer}
+            )
+            messages.success(request, u"Dziękujemy za dodanie oferty.")
+            return redirect(
+                'offers_view',
+                slug=slugify(offer.title),
+                id_=offer.id,
+            )
+        messages.error(
+            request,
+            u"Formularz zawiera niepoprawnie wypełnione pola <br />{0}"
+            .format('<br />'.join(form.errors)),
+        )
+        return render(
+            request,
+            'offers/offer_form.html',
+            {
+                'form': form,
+                'offer': Offer(),
+                'organizations': request.user.userprofile.organizations.all(),
+            }
+        )
+
+
+class OffersEdit(View):
+    u"""Class view supporting change of a offer."""
+
+    @staticmethod
+    @correct_slug(Offer, 'offers_edit', 'title')
+    def get(request, slug, id_):  # pylint: disable=unused-argument
+        u"""Method responsible for rendering form for offer to be changed.
+
+        :param request: WSGIRequest instance
+        :param slug: string Offer title slugified
+        :param id_: int Offer database unique identifier (primary key)
+        """
+        offer = Offer.objects.get(id=id_)
+
+        if offer.id or request.user.userprofile.is_administrator:
+            organizations = [offer.organization]
+        else:
+            organizations = request.user.userprofile.organizations.all()
+
+        return render(
+            request,
+            'offers/offer_form.html',
+            {
+                'offer': offer,
+                'offer_form': CreateOfferForm(),
+                'organization': offer.organization,
+                'organizations': organizations,
+                'offer_image_form': OfferImageForm(),
+                'images': OfferImage.objects.filter(offer=offer).all(),
+                'MEDIA_URL': settings.MEDIA_URL
+            }
+        )
+
+    @staticmethod
+    def post(request, slug, id_):  # pylint: disable=unused-argument
+        u"""Method resposible for saving changed offer.
+
+        :param request: WSGIRequest instance
+        :param slug: string Offer title slugified
+        :param id_: int Offer database unique identifier (primary key)
+        """
+        offer = Offer.objects.get(id=id_)
+        if request.POST.get('submit') == 'save_image' and request.FILES:
+            form = OfferImageForm(request.POST, request.FILES)
+            result = offer.save_offer_image(form, request.user.userprofile)
+            if result:
+                messages.error(
+                    request,
+                    u"Problem w trakcie dodawania grafiki: {}".format(
+                        '<br />'.join(result)
+                    )
+                )
+            else:
+                messages.success(request, u"Dodano zdjęcie do galerii.")
+            return redirect(
+                reverse(
+                    'offers_edit',
+                    args=[slugify(offer.title), offer.id]
+                )
+            )
+        elif request.POST.get('close_offer') == 'close':
+            offer.close_offer()
+            return redirect(
+                reverse(
+                    'offers_view',
+                    args=[slugify(offer.title), offer.id]
+                )
+            )
+        elif request.POST.get('status_flag') == 'change_status':
+            if request.POST.get('status') == 'published':
+                offer.publish()
+            elif request.POST.get('status') == 'rejected':
+                offer.reject()
+            return redirect('offers_list')
+
+        form = CreateOfferForm(request.POST, instance=offer)
+        if form.is_valid():
+            offer = form.save()
+            offer.unpublish()
+            offer.save()
+            save_history(request, offer, action=CHANGE)
+            messages.success(request, u"Oferta została zmieniona.")
+        else:
+            messages.error(
+                request,
+                u"Formularz zawiera niepoprawnie wypełnione pola: {}".format(
+                    '<br />'.join(form.errors)
+                )
+            )
+
+        if offer.id or request.user.userprofile.is_administrator:
+            organizations = [offer.organization]
+        else:
+            organizations = request.user.userprofile.organizations.all()
+
+        return render(
+            request,
+            'offers/offer_form.html',
+            {
+                'offer': offer,
+                'form': form,
+                'organizations': organizations,
+                'offer_image_form': OfferImageForm(),
+            }
+        )
+
+
+class OffersView(View):
+    u"""Class view supporting offer preview."""
+
+    @staticmethod
+    @correct_slug(Offer, 'offers_view', 'title')
+    def get(request, slug, id_):  # pylint: disable=unused-argument
+        u"""View responsible for showing details of particular offer."""
+        offer = get_object_or_404(Offer, id=id_)
+        try:
+            main_image = OfferImage.objects.get(offer=offer, is_main=True)
+        except OfferImage.DoesNotExist:
+            main_image = ''
+
+        context = {
+            'offer': offer,
+            'volunteers': offer.volunteers.all(),
+            'MEDIA_URL': settings.MEDIA_URL,
+            'main_image': main_image,
+        }
+        return render(request, "offers/show_offer.html", context=context)
+
+    @staticmethod
+    def post(request, slug, id_):  # pylint: disable=unused-argument
+        u"""View responsible for submitting volunteers awarding."""
+        offer = get_object_or_404(Offer, id=id_)
+        post_data = request.POST
+        if post_data.get('csrfmiddlewaretoken'):
+            del post_data['csrfmiddlewaretoken']
+        if post_data.get('submit'):
+            del post_data['submit']
+
+        offer_content_type = ContentType.objects.get(
+            app_label='volontulo',
+            model='offer'
+        )
+        for award in post_data:
+            userprofile_id = award.split('_')[1]
+            volunteer_user = UserProfile.objects.get(id=userprofile_id)
+            award_value = request.POST.get('award_%s' % userprofile_id)
+            if award_value == 'PROMINENT-PARTICIPANT':
+                UserBadges.apply_prominent_participant_badge(
+                    offer_content_type,
+                    volunteer_user,
+                )
+            elif award_value == 'NOT-APPLY':
+                UserBadges.decrease_user_participant_badge(
+                    offer_content_type,
+                    volunteer_user,
+                )
+        offer.votes = True
+        offer.save()
+
+        context = {
+            'offer': offer,
+        }
+        return render(request, "offers/show_offer.html", context=context)
+
+
+class OffersJoin(View):
+    u"""Class view supporting joining offer."""
+
+    @staticmethod
+    @correct_slug(Offer, 'offers_join', 'title')
+    def get(request, slug, id_):  # pylint: disable=unused-argument
+        u"""View responsible for showing join form for particular offer."""
+        if request.user.is_authenticated():
+            has_applied = Offer.objects.filter(
+                volunteers=request.user,
+                volunteers__offer=id_,
+            ).count()
+            if has_applied:
+                messages.error(
+                    request,
+                    u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
+                )
+                return redirect('offers_list')
+
+        offer = Offer.objects.get(id=id_)
+        form = OfferApplyForm()
+        context = {
+            'form': form,
+            'offer': offer,
+        }
+
+        context['volunteer_user'] = UserProfile()
+        if request.user.is_authenticated():
+            context['volunteer_user'] = request.user.userprofile
+
+        return render(
+            request,
+            'offers/offer_apply.html',
+            context
+        )
+
+    @staticmethod
+    def post(request, slug, id_):  # pylint: disable=unused-argument
+        u"""View responsible for saving join for particular offer."""
+        form = OfferApplyForm(request.POST)
+
+        if form.is_valid():
+            offer = Offer.objects.get(id=id_)
+
+            if request.user.is_authenticated():
+                user = request.user
+            else:
+                try:
+                    user = User.objects.create_user(
+                        username=request.POST.get('email'),
+                        email=request.POST.get('email'),
+                        password=User.objects.make_random_password(),
+                    )
+                    profile = UserProfile(user=user)
+                    profile.save()
+                except IntegrityError:
+                    messages.info(
+                        request,
+                        u'Użytkownik o podanym emailu już istnieje.'
+                        u' Zaloguj się.'
+                    )
+                    return render(
+                        request,
+                        'offers/offer_apply.html',
+                        {
+                            'form': form,
+                            'offer_id': id_,
+                            'volunteer_user': UserProfile(),
+                        }
+                    )
+
+            has_applied = Offer.objects.filter(
+                volunteers=user,
+                volunteers__offer=id_,
+            ).count()
+            if has_applied:
+                messages.error(
+                    request,
+                    u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
+                )
+                return redirect('offers_list')
+
+            offer_content_type = ContentType.objects.get(
+                app_label='volontulo',
+                model='offer'
+            )
+
+            offer.volunteers.add(user)
+            UserBadges.apply_participant_badge(
+                offer_content_type,
+                user.userprofile,
+            )
+            offer.save()
+
+            send_mail(
+                request,
+                'offer_application',
+                [
+                    user.email,
+                    request.POST.get('email'),
+                ],
+                dict(
+                    email=request.POST.get('email'),
+                    phone_no=request.POST.get('phone_no'),
+                    fullname=request.POST.get('fullname'),
+                    comments=request.POST.get('comments'),
+                    offer=offer,
+                )
+            )
+            messages.success(
+                request,
+                u'Zgłoszenie chęci uczestnictwa zostało wysłane.'
+            )
+            return redirect(
+                'offers_view',
+                slug=slugify(offer.title),
+                id_=offer.id,
+            )
+        else:
+            errors = '<br />'.join(form.errors)
+            messages.error(
+                request,
+                u'Formularz zawiera nieprawidłowe dane' + errors
+            )
+            volunteer_user = UserProfile()
+            if request.user.is_authenticated():
+                volunteer_user = request.user.userprofile
+            return render(
+                request,
+                'offers/offer_apply.html',
+                {
+                    'form': form,
+                    'offer_id': id_,
+                    'volunteer_user': volunteer_user,
+                }
+            )

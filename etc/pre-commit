@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+import subprocess
+import sys
+
+
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+def system(*args, **kwargs):
+    kwargs.setdefault('stdout', subprocess.PIPE)
+    kwargs.setdefault('stderr', subprocess.PIPE)
+    proc = subprocess.Popen(args, **kwargs)
+    out, err = proc.communicate()
+    proc.wait()
+    if proc.returncode:
+        print(args)
+        print(kwargs)
+        print(out.decode("unicode_escape"))
+        print(err.decode("unicode_escape") if err else '')
+    return proc.returncode
+
+
+def print_red(text):
+    format_ = '0;30;41'
+    print('\x1b[%sm %s \x1b[0m' % (format_, text))
+
+
+def main():
+    exitcode = system("pep8 --exclude='apps/volontulo/migrations/*,node_modules,.ropeproject' .", cwd=REPO_ROOT, shell=True)
+    if exitcode:
+        print_red(u'PEP8!')
+        sys.exit(exitcode)
+
+    exitcode = system('pylint --load-plugins pylint_django --min-similarity-lines=10 apps', cwd=REPO_ROOT, shell=True)
+    if exitcode:
+        print_red(u'PYLINT')
+        sys.exit(exitcode)
+
+    exitcode = system('python manage.py test --settings=volontulo_org.settings.test_settings -v 3', cwd=REPO_ROOT, shell=True)
+    if exitcode:
+        print_red(u'UNIT TEST')
+        sys.exit(exitcode)
+
+    sys.exit(0)
+
+if __name__ == '__main__':
+    main()
