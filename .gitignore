@@ -70,3 +70,7 @@ static
 
 # Development directories / files
 .ropeproject
+
+# SQLite database
+*.sqlite3
+*.sqlite
