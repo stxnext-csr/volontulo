@@ -419,12 +419,14 @@ class OffersJoin(View):
 
 
 class OffersArchived(View):
-    u"""Class view to list archived items."""
+    u"""Class based view to list archived offers."""
 
     @staticmethod
     def get(request):
-        u"""GET request for offer archive page."""
-        ctx = dict(
-            offers=Offer.objects.get_archived()
-        )
-        return render(request, 'offers/archived.html', ctx)
+        u"""GET request for offer archive page.
+
+        :param request: WSGIRequest instance
+        """
+        return render(request, 'offers/archived.html', {
+            'offers': Offer.objects.get_archived()
+        })

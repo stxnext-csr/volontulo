@@ -640,13 +640,11 @@ class TestOffersJoin(TestCase):
 
 
 class TestOffersArchived(TestCase):
-    u"""Class responsible for testing offer's join page."""
+    u"""Class responsible for testing archived offers page."""
 
     @classmethod
     def setUpTestData(cls):
         u"""Set up data for all tests."""
-        # 3. Create 15 Offers (1 - 1 organization, 2 - 2 organization, ...)
-
         for i in range(1, 6):
             Organization.objects.create(
                 name=u'Organization {0} name'.format(i),
@@ -678,7 +676,11 @@ class TestOffersArchived(TestCase):
                     description=u'',
                     requirements=u'',
                     time_commitment=u'',
-                    status='NEW',
+                    offer_status='published',
+                    recruitment_status='closed',
+                    action_status='finished',
+                    started_at='2010-10-10 10:10:10',
+                    finished_at='2012-12-12 12:12:12'
                 )
 
     def setUp(self):
@@ -696,5 +698,5 @@ class TestOffersArchived(TestCase):
         self.assertEqual(len(response.context['offers']), 15)
         self.assertNotContains(
             response,
-            u'Brak ofert w archiwum.',
+            u'Brak ofert spełniających podane kryteria',
         )

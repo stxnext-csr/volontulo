@@ -34,11 +34,32 @@ class OfferManager(models.Manager):
 
     def get_archived(self):
         u"""Return archived offers."""
-        return self.all()
+
+        return self.filter(
+            offer_status='published',
+            action_status__in=('ongoing', 'finished'),
+            recruitment_status='closed',
+        ).all()
 
 
 class Offer(models.Model):
     u"""Model that hadles offers."""
+
+    OFFER_STATUSES = (
+        ('unpublished', u'Unpublished'),
+        ('published', u'Published'),
+        ('rejected', u'Rejected'),
+    )
+    RECRUITMENT_STATUSES = (
+        ('open', u'Open'),
+        ('supplemental', u'Supplemental'),
+        ('closed', u'Closed'),
+    )
+    ACTION_STATUSES = (
+        ('future', u'Future'),
+        ('ongoing', u'Ongoing'),
+        ('finished', u'Finished'),
+    )
 
     objects = OfferManager()
     organization = models.ForeignKey(Organization)
@@ -49,9 +70,47 @@ class Offer(models.Model):
     benefits = models.TextField()
     location = models.CharField(max_length=150)
     title = models.CharField(max_length=150)
-    time_period = models.CharField(max_length=150)
-    status_old = models.CharField(max_length=30, default='NEW')
+    time_period = models.CharField(max_length=150, default='', blank=True)
+    status_old = models.CharField(
+        max_length=30,
+        default='NEW',
+        null=True,
+        unique=False
+    )
+    started_at = models.DateTimeField(blank=True, null=True)
+    finished_at = models.DateTimeField(blank=True, null=True)
+    offer_status = models.CharField(
+        max_length=16,
+        choices=OFFER_STATUSES,
+        default='unpublished',
+    )
+    recruitment_status = models.CharField(
+        max_length=16,
+        choices=RECRUITMENT_STATUSES,
+        default='open',
+    )
+    action_status = models.CharField(
+        max_length=16,
+        choices=ACTION_STATUSES,
+        default='ongoing',
+    )
     votes = models.BooleanField(default=0)
+    recruitment_start_date = models.DateTimeField(blank=True, null=True)
+    recruitment_end_date = models.DateTimeField(blank=True, null=True)
+    reserve_recruitment = models.BooleanField(blank=True, default=True)
+    reserve_recruitment_start_date = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+    reserve_recruitment_end_date = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+    action_ongoing = models.BooleanField(default=False, blank=True)
+    constant_coop = models.BooleanField(default=False, blank=True)
+    action_start_date = models.DateTimeField(blank=True, null=True)
+    action_end_date = models.DateTimeField(blank=True, null=True)
+    volunteers_limit = models.IntegerField(default=0, null=True, blank=True)
 
     def __str__(self):
         u"""Offer string representation."""
@@ -252,7 +311,10 @@ class OrganizationGallery(models.Model):
         self.remove()
 
     def set_as_main(self, organization):
-        u"""Save image as main."""
+        u"""Save image as main.
+
+        :param organization: Organization model instance
+        """
         OrganizationGallery.objects.filter(organization_id=organization.id)\
             .update(
                 is_main=False
@@ -262,7 +324,10 @@ class OrganizationGallery(models.Model):
 
     @staticmethod
     def get_organizations_galleries(userprofile):
-        u"""Get images grouped by organizations"""
+        u"""Get images grouped by organizations
+
+        :param userprofile: UserProfile model instance
+        """
         organizations = Organization.objects.filter(
             userprofiles=userprofile
         ).all()
