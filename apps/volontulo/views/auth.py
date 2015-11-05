@@ -46,7 +46,7 @@ def login(request):
             else:
                 messages.info(
                     request,
-                    u"Konto zostało wyłączone!"
+                    u"Konto jest nieaktywne, skontaktuj się z administratorem."
                 )
         else:
             messages.error(
