@@ -148,6 +148,7 @@ class OffersEdit(View):
         )
 
     @staticmethod
+    # pylint: disable=too-many-branches
     def post(request, slug, id_):  # pylint: disable=unused-argument
         u"""Method resposible for saving changed offer.
 
@@ -158,16 +159,29 @@ class OffersEdit(View):
         offer = Offer.objects.get(id=id_)
         if request.POST.get('submit') == 'save_image' and request.FILES:
             form = OfferImageForm(request.POST, request.FILES)
-            result = offer.save_offer_image(form, request.user.userprofile)
-            if result:
+            if form.is_valid():
+                result = offer.save_offer_image(
+                    form.save(commit=False),
+                    request.user.userprofile,
+                    form.cleaned_data['is_main']
+                )
+                if result:
+                    messages.error(
+                        request,
+                        u"Problem w trakcie dodawania grafiki: {}".format(
+                            '<br />'.join(form.errors)
+                        )
+                    )
+                else:
+                    messages.success(request, u"Dodano zdjęcie do galerii.")
+            else:
                 messages.error(
                     request,
                     u"Problem w trakcie dodawania grafiki: {}".format(
-                        '<br />'.join(result)
+                        '<br />'.join(form.errors)
                     )
                 )
-            else:
-                messages.success(request, u"Dodano zdjęcie do galerii.")
+
             return redirect(
                 reverse(
                     'offers_edit',

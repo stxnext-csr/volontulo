@@ -72,36 +72,6 @@ class Offer(models.Model):
         ('finished', u'Finished'),
     )
 
-    VISIBILITY_MATRIX = {
-        ('unpublished', 'open', 'future'): 0,
-        ('unpublished', 'open', 'ongoing'): 0,
-        ('unpublished', 'open', 'finished'): 0,
-        ('unpublished', 'supplemental', 'future'): 0,
-        ('unpublished', 'supplemental', 'ongoing'): 0,
-        ('unpublished', 'supplemental', 'finished'): 0,
-        ('unpublished', 'closed', 'future'): 0,
-        ('unpublished', 'closed', 'ongoing'): 0,
-        ('unpublished', 'closed', 'finished'): 0,
-        ('published', 'open', 'future'): 1,
-        ('published', 'open', 'ongoing'): 1,
-        ('published', 'open', 'finished'): 0,
-        ('published', 'supplemental', 'future'): 1,
-        ('published', 'supplemental', 'ongoing'): 1,
-        ('published', 'supplemental', 'finished'): 0,
-        ('published', 'closed', 'future'): 1,
-        ('published', 'closed', 'ongoing'): 0,
-        ('published', 'closed', 'finished'): 1,
-        ('rejected', 'open', 'future'): 1,
-        ('rejected', 'open', 'ongoing'): 1,
-        ('rejected', 'open', 'finished'): 1,
-        ('rejected', 'supplemental', 'future'): 1,
-        ('rejected', 'supplemental', 'ongoing'): 1,
-        ('rejected', 'supplemental', 'finished'): 0,
-        ('rejected', 'closed', 'future'): 0,
-        ('rejected', 'closed', 'ongoing'): 0,
-        ('rejected', 'closed', 'finished'): 0,
-    }
-
     objects = OffersManager()
     organization = models.ForeignKey(Organization)
     volunteers = models.ManyToManyField(User)
@@ -156,39 +126,28 @@ class Offer(models.Model):
     def __str__(self):
         return self.title
 
-    def is_visible(self):
-        u"""Determine offer visibility for specified user type."""
-        statuses_keys = (
-            self.offer_status,
-            self.recruitment_status,
-            self.action_status
-        )
-        return True if self.VISIBILITY_MATRIX[statuses_keys] else False
-
-    def set_main_image(self, form):
+    def set_main_image(self, is_main):
         u"""Set main image flag unsetting other offers images.
 
-        :param offer: Offer model instance
+        :param is_main: Boolean flag resetting offer main image
         """
-        if form.cleaned_data["is_main"]:
+        if is_main:
             OfferImage.objects.filter(offer=self).update(is_main=False)
             return True
         return False
 
-    def save_offer_image(self, form, userprofile):
+    def save_offer_image(self, gallery, userprofile, is_main=False):
         u"""Handle image upload for user profile page.
 
-        :param offer: Offer model instance
+        :param gallery: UserProfile model instance
+        :param userprofile: UserProfile model instance
+        :param is_main: Boolean main image flag
         """
-        if form.is_valid():
-            gallery = form.save(commit=False)
-            gallery.offer = self
-            gallery.userprofile = userprofile
-            gallery.is_main = self.set_main_image(form)
-            gallery.save()
-            return True
-        else:
-            return form.errors
+        gallery.offer = self
+        gallery.userprofile = userprofile
+        gallery.is_main = self.set_main_image(is_main)
+        gallery.save()
+        return self
 
     def create_new(self):
         u"""Set status while creating new offer."""
@@ -214,13 +173,13 @@ class Offer(models.Model):
         else:
             return 'finished'
 
-    def change_status(self, request):
+    def change_status(self, status):
         u"""Change offer status.
 
-        :param offer: Offer model instance
+        :param status: string Offer status
         """
-        if request.POST.get('status') in {'published', 'rejected'}:
-            self.offer_status = request.POST.get('status')
+        if status in ('published', 'rejected', 'unpublished'):
+            self.offer_status = status
             self.save()
         return self
 
@@ -249,36 +208,6 @@ class Offer(models.Model):
         self.recruitment_status = 'closed'
         self.save()
         return self
-
-#     def open_recruitment(self):
-#         u"""Change recruitation status of current offer open."""
-#         self.recruitment_status = 'open'
-#         return self
-#
-#     def close_recruitment(self):
-#         u"""Change recruitation status of current offer closed."""
-#         self.recruitment_status = 'closed'
-#         return self
-#
-#     def supplement_recruitment(self):
-#         u"""Change recruitation status of current offer supplemental."""
-#         self.recruitment_status = 'supplemental'
-#         return self
-#
-#     def futured_action(self):
-#         u"""Change state of current offer to publish."""
-#         self.action_status = 'future'
-#         return self
-#
-#     def ongoing_action(self):
-#         u"""Change state of current offer to unpublished."""
-#         self.action_status = 'ongoing'
-#         return self
-#
-#     def finished_action(self):
-#         u"""Change state of current offer to rejected."""
-#         self.action_status = 'finished'
-#         return self
 
 
 class Badge(models.Model):
@@ -351,7 +280,10 @@ class UserBadges(models.Model):
 
     @staticmethod
     def get_user_badges(userprofile):
-        u"""Return User badges for selected user."""
+        u"""Return User badges for selected user.
+
+        :param userprofile: UserProfile model instance
+        """
         return UserBadges.objects \
             .filter(userprofile=userprofile.id) \
             .values('badge_id', 'badge__name', 'badge__priority') \
