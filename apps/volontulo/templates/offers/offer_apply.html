@@ -5,11 +5,8 @@
 {% block content-heading %}
 <div class="offer_view">
     <img class="img-responsive center-block" src="{{ MEDIA_URL }}{{ main_image|default:'' }}" alt="{{ offer.title|safe }}" />
-    {% if user.is_administrator %}
-        <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
-    {% endif %}
     <div class="panels">
-        <a href="{% url 'offers_view' offer.title|slugify offer.id %}">
+        <a href="{% url 'offers_view' slug=offer.title|slugify id_=offer.id %}">
             <h2 class="offer-title">{{ offer.title }}</h2>
         </a>
         <div class="clearfix"></div>
@@ -38,8 +35,13 @@
 
 
 {% block content %}
-    <h3>Zgłoś swoją pomoc w tej akcji</h3>
-    <p>Twoje zgłoszenie zostanie wysłane jako wiadomość e-mail do organizatora. W każdej chwili możesz się z nim komunikować według własnego uznania.</p>
+    <h3 class="text-center">Zgłoś swoją pomoc w tej akcji</h3>
+    <div class="row">
+        <p class="col-xs-offset-2 col-xs-9">
+        Twoje zgłoszenie zostanie wysłane jako wiadomość e-mail do organizatora. Otrzyma on twoje dane kontaktowe, dlatego <b>bardzo ważne jest aby były one prawidłowe</b>.<br>
+        Organizator będzie się z tobą komunikował drogą poczty elektronicznej lub telefonicznie.
+        </p>
+    </div>
     <form class="form-horizontal" action="{{ request.get_full_path }}" method="post" role="form">
         {% csrf_token %}
         <div class="form-group form-group-sm">
@@ -62,6 +64,7 @@
             <label class="col-xs-2 control-label" for="{{ form.comments.id_for_label }}">Możliwe uwagi</label>
             <div class="col-xs-9">
                 <textarea name="comments" class="form-control" rows="3" id="{{ form.comments.id_for_label }}">{{ request.POST.comments|default:'' }}</textarea>
+                <p class="help-block">Jeśli chcesz przekazać dodatkową informację o swoim zgłoszeniu, możesz to opisać.</p>
             </div>
         </div>
 
