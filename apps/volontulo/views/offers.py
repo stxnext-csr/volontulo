@@ -346,7 +346,6 @@ class OffersJoin(View):
                         {
                             'offer': offer,
                             'form': form,
-                            'offer_id': id_,
                             'volunteer_user': UserProfile(),
                         }
                     )
@@ -413,7 +412,6 @@ class OffersJoin(View):
                 {
                     'offer': offer,
                     'form': form,
-                    'offer_id': id_,
                     'volunteer_user': volunteer_user,
                 }
             )
