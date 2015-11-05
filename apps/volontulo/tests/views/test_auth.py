@@ -8,7 +8,7 @@ from django.test import Client
 from django.test import TestCase
 from django.test import TransactionTestCase
 
-from apps.volontulo.tests.common import Common
+from apps.volontulo.tests import common
 
 
 class TestRegister(TransactionTestCase):
@@ -81,7 +81,7 @@ class TestRegister(TransactionTestCase):
     def test__register_authenticated_user(self):
         u"""Check if authenticated user can access register page."""
         # volunteer user
-        Common.initialize_empty_volunteer()
+        common.initialize_empty_volunteer()
 
         self.client.post('/login', {
             'email': 'volunteer1@example.com',
@@ -114,7 +114,7 @@ class TestLogin(TestCase):
     def setUpTestData(cls):
         u"""Set up fixtures data for test."""
         # volunteer user
-        Common.initialize_empty_volunteer()
+        common.initialize_empty_volunteer()
 
     def setUp(self):
         u"""Set up each test."""
@@ -188,7 +188,7 @@ class TestLogin(TestCase):
         self.assertContains(response, u"Nieprawidłowy email lub hasło!")
 
         # email and password is correct but and user is not active
-        user = User.objects.get(id=1)
+        user = User.objects.get(email=u'volunteer1@example.com')
         user.is_active = False
         user.save()
 
@@ -259,7 +259,7 @@ class TestLogout(TestCase):
     def setUpTestData(cls):
         u"""Set up fixtures data for test."""
         # volunteer user
-        Common.initialize_empty_volunteer()
+        common.initialize_empty_volunteer()
 
     def setUp(self):
         u"""Set up each test."""

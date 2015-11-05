@@ -14,7 +14,9 @@ class TestCreateOrganization(TestOrganizations):
     # pylint: disable=invalid-name
     def test__get_empty_organization_view_by_anonymous(self):
         u"""Request for empty organization view by anonymous user."""
-        response = self.client.get('/organizations/organization-1/1')
+        response = self.client.get('/organizations/organization-1/{}'.format(
+            self.organization.id
+        ))
 
         self.assertEqual(response.status_code, 200)
         # pylint: disable=no-member
@@ -41,7 +43,9 @@ class TestCreateOrganization(TestOrganizations):
     # pylint: disable=invalid-name
     def test__get_filled_organization_view_by_anonymous(self):
         u"""Request for filled organization view by anonymous user."""
-        response = self.client.get('/organizations/organization-2/2')
+        response = self.client.get('/organizations/organization-2/{}'.format(
+            self.organization2.id
+        ))
 
         self.assertNotContains(
             response,
@@ -58,7 +62,9 @@ class TestCreateOrganization(TestOrganizations):
             'email': u'volunteer2@example.com',
             'password': 'volunteer2',
         })
-        response = self.client.get('/organizations/organization-1/1')
+        response = self.client.get('/organizations/organization-1/{}'.format(
+            self.organization.id
+        ))
 
         self.assertContains(response, u'Organization 1')
         # pylint: disable=no-member
@@ -78,7 +84,7 @@ class TestCreateOrganization(TestOrganizations):
             'password': 'organization1',
         })
         response = self.client.get(
-            '/organizations/organization-1/1',
+            '/organizations/organization-1/{}'.format(self.organization.id),
             follow=True
         )
         # pylint: disable=no-member
@@ -97,7 +103,7 @@ class TestCreateOrganization(TestOrganizations):
             'password': 'organization2',
         })
         response = self.client.get(
-            '/organizations/organization-1/1',
+            '/organizations/organization-1/{}'.format(self.organization.id),
             follow=True
         )
         self.assertNotContains(response, u'Edytuj organizację')
@@ -115,7 +121,7 @@ class TestCreateOrganization(TestOrganizations):
             'password': 'organization2',
         })
         response = self.client.get(
-            '/organizations/organization-2/2',
+            '/organizations/organization-2/{}'.format(self.organization2.id),
             follow=True
         )
         # pylint: disable=no-member
@@ -132,7 +138,7 @@ class TestCreateOrganization(TestOrganizations):
             'message': u'',
         }
         response = self.client.post(
-            '/organizations/organization-1/1',
+            '/organizations/organization-1/{}'.format(self.organization.id),
             form_params,
             follow=True
         )
@@ -147,7 +153,7 @@ class TestCreateOrganization(TestOrganizations):
             'message': u'',
         }
         response = self.client.post(
-            '/organizations/organization-1/1',
+            '/organizations/organization-1/{}'.format(self.organization.id),
             form_params,
             follow=True
         )
@@ -165,7 +171,7 @@ class TestCreateOrganization(TestOrganizations):
             'message': u'Wiadomość dla organizacji',
         }
         response = self.client.post(
-            '/organizations/organization-1/1',
+            '/organizations/organization-1/{}'.format(self.organization.id),
             form_params,
             follow=True
         )
@@ -187,7 +193,7 @@ class TestCreateOrganization(TestOrganizations):
             'organization': 1,
         }
         response = self.client.post(
-            '/organizations/organization-2/2',
+            '/organizations/organization-2/{}'.format(self.organization2.id),
             form_params,
             follow=True
         )
@@ -201,7 +207,7 @@ class TestCreateOrganization(TestOrganizations):
             'organization': 1,
         }
         response = self.client.post(
-            '/organizations/organization-2/2',
+            '/organizations/organization-2/{}'.format(self.organization2.id),
             form_params
         )
         self.assertEqual(len(mail.outbox), 1)
@@ -226,7 +232,7 @@ class TestCreateOrganization(TestOrganizations):
             'organization': 1,
         }
         response = self.client.post(
-            '/organizations/organization-1/1',
+            '/organizations/organization-1/{}'.format(self.organization.id),
             form_params,
             follow=True
         )

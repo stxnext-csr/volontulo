@@ -117,12 +117,13 @@ class TestCreateOrganization(TestOrganizations):
 
     def test__create_valid_organization_form_post(self):
         u"""Test posting valid form for creating organization."""
+        org_name = u'Halperin Organix'
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
             'password': 'volunteer1',
         })
         form_params = {
-            'name': u'Halperin Organix',
+            'name': org_name,
             'address': u'East Street 123',
             'description': u'User unfriendly organization',
         }
@@ -132,18 +133,16 @@ class TestCreateOrganization(TestOrganizations):
             follow=True
         )
 
-        self.assertRedirects(
-            response,
-            '/organizations/halperin-organix/3',
-            302,
-            200,
-        )
         self.assertContains(
             response,
             u"Organizacja została dodana."
         )
-        record = Organization.objects.get(id=3)
-        self.assertEqual(record.id, 3)
-        self.assertEqual(record.name, u'Halperin Organix')
+        record = Organization.objects.get(name=org_name)
+        self.assertRedirects(
+            response,
+            'http://testserver/organizations/halperin-organix/{}'.format(
+                record.id),
+            302, 200)
+        self.assertEqual(record.name, org_name)
         self.assertEqual(record.address, u'East Street 123')
         self.assertEqual(record.description, u'User unfriendly organization')

@@ -6,7 +6,7 @@ u"""
 from django.test import Client
 from django.test import TestCase
 
-from apps.volontulo.tests.common import Common
+from apps.volontulo.tests import common
 
 
 class TestPages(TestCase):
@@ -15,8 +15,8 @@ class TestPages(TestCase):
     @classmethod
     def setUpTestData(cls):
         u"""Set up data for all tests."""
-        Common.initialize_filled_volunteer_and_organization()
-        Common.initialize_administrator()
+        common.initialize_filled_volunteer_and_organization()
+        common.initialize_administrator()
 
     def setUp(self):
         u"""Set up each test."""
@@ -51,8 +51,8 @@ class TestPages(TestCase):
     def test__homepage_for_administrator(self):
         u"""Home page for administrators."""
         self.client.post('/login', {
-            'email': u'administrator1@example.com',
-            'password': 'administrator1',
+            'email': u'admin_user@example.com',
+            'password': 'admin_password',
         })
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
