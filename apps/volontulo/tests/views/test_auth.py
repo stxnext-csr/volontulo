@@ -201,7 +201,10 @@ class TestLogin(TestCase):
             form_params,
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, u"Konto zostało wyłączone!")
+        self.assertContains(
+            response,
+            u"Konto jest nieaktywne, skontaktuj się z administratorem."
+        )
         self.assertNotIn('_auth_user_id', self.client.session)
 
         # email and password is correct and user is active

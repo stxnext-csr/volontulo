@@ -321,13 +321,12 @@ class OffersJoin(View):
         )
 
     @staticmethod
+    @correct_slug(Offer, 'offers_join', 'title')
     def post(request, slug, id_):  # pylint: disable=unused-argument
         u"""View responsible for saving join for particular offer."""
         form = OfferApplyForm(request.POST)
-
+        offer = Offer.objects.get(id=id_)
         if form.is_valid():
-            offer = Offer.objects.get(id=id_)
-
             if request.user.is_authenticated():
                 user = request.user
             else:
@@ -349,8 +348,8 @@ class OffersJoin(View):
                         request,
                         'offers/offer_apply.html',
                         {
+                            'offer': offer,
                             'form': form,
-                            'offer_id': id_,
                             'volunteer_user': UserProfile(),
                         }
                     )
@@ -415,8 +414,8 @@ class OffersJoin(View):
                 request,
                 'offers/offer_apply.html',
                 {
+                    'offer': offer,
                     'form': form,
-                    'offer_id': id_,
                     'volunteer_user': volunteer_user,
                 }
             )
