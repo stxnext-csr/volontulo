@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.test import Client
 from django.test import TestCase
 
+from apps.volontulo.models import Badge
 from apps.volontulo.models import Offer
 from apps.volontulo.models import Organization
 from apps.volontulo.models import UserProfile
@@ -19,15 +20,15 @@ class TestOffersList(TestCase):
     @classmethod
     def setUpTestData(cls):
         u"""Set up data for all tests."""
-        organization = Organization.objects.create(
+        cls.organization = Organization.objects.create(
             name=u'',
             address=u'',
             description=u'',
         )
-        organization.save()
+        cls.organization.save()
 
         common_offer_data = {
-            'organization': organization,
+            'organization': cls.organization,
             'description': u'',
             'requirements': u'',
             'time_commitment': u'',
@@ -63,17 +64,17 @@ class TestOffersList(TestCase):
         cls.volunteer.save()
 
         organization_user = User.objects.create_user(
-            u'organization@example.com',
-            u'organization@example.com',
+            u'cls.organization@example.com',
+            u'cls.organization@example.com',
             u'123org'
         )
         organization_user.save()
-        cls.organization = UserProfile(
+        cls.organization_profile = UserProfile(
             user=organization_user,
         )
-        cls.organization.save()
+        cls.organization_profile.save()
         # pylint: disable=no-member
-        cls.organization.organizations.add(organization)
+        cls.organization_profile.organizations.add(cls.organization)
 
         admin_user = User.objects.create_user(
             u'admin@example.com',
@@ -148,12 +149,12 @@ class TestOffersCreate(TestCase):
     @classmethod
     def setUpTestData(cls):
         u"""Set up data for all tests."""
-        organization = Organization.objects.create(
+        cls.organization = Organization.objects.create(
             name=u'',
             address=u'',
             description=u'',
         )
-        organization.save()
+        cls.organization.save()
         organization_user = User.objects.create_user(
             u'organization@example.com',
             u'organization@example.com',
@@ -165,7 +166,7 @@ class TestOffersCreate(TestCase):
         )
         cls.organization_profile.save()
         # pylint: disable=no-member
-        cls.organization_profile.organizations.add(organization)
+        cls.organization_profile.organizations.add(cls.organization)
 
     def setUp(self):
         u"""Set up each test."""
@@ -201,10 +202,10 @@ class TestOffersCreate(TestCase):
             'email': u'organization@example.com',
             'password': '123org',
         })
-        for i in range(1, 11):
+        for i in range(1, 4):
             response = self.client.post('/offers/create', {
-                'organization': u'1',
-                'description': u'required description',
+                'organization': self.organization.id,
+                'description': str(i),
                 'requirements': u'required requirements',
                 'time_commitment': u'required time_commitment',
                 'benefits': u'required benefits',
@@ -214,18 +215,18 @@ class TestOffersCreate(TestCase):
                 'started_at': '2015-11-01 11:11:11',
                 'finished_at': '2015-11-01 11:11:11',
             }, follow=True)
+            offer = Offer.objects.get(description=str(i))
             self.assertRedirects(
                 response,
-                '/offers/volontulo-offer/{}'.format(i),
+                '/offers/volontulo-offer/{}'.format(offer.id),
                 302,
                 200,
             )
-            offer = Offer.objects.get(id=i)
             self.assertEqual(
                 offer.organization,
                 self.organization_profile.organizations.all()[0],
             )
-            self.assertEqual(offer.description, u'required description')
+            self.assertEqual(offer.description, str(i))
             self.assertEqual(offer.requirements, u'required requirements')
             self.assertEqual(
                 offer.time_commitment,
@@ -243,12 +244,12 @@ class TestOffersEdit(TestCase):
     @classmethod
     def setUpTestData(cls):
         u"""Set up data for all tests."""
-        organization = Organization.objects.create(
+        cls.organization = Organization.objects.create(
             name=u'',
             address=u'',
             description=u'',
         )
-        organization.save()
+        cls.organization.save()
         organization_user = User.objects.create_user(
             u'organization@example.com',
             u'organization@example.com',
@@ -260,9 +261,9 @@ class TestOffersEdit(TestCase):
         )
         cls.organization_profile.save()
         # pylint: disable=no-member
-        cls.organization_profile.organizations.add(organization)
+        cls.organization_profile.organizations.add(cls.organization)
         cls.offer = Offer.objects.create(
-            organization=organization,
+            organization=cls.organization,
             description=u'',
             requirements=u'',
             time_commitment=u'',
@@ -298,10 +299,11 @@ class TestOffersEdit(TestCase):
             'email': u'organization@example.com',
             'password': '123org',
         })
-        response = self.client.get('/offers/different-slug/1/edit')
+        response = self.client.get(
+            '/offers/different-slug/{}/edit'.format(self.offer.id))
         self.assertRedirects(
             response,
-            '/offers/volontulo-offer/1/edit',
+            '/offers/volontulo-offer/{}/edit'.format(self.offer.id),
             302,
             200,
         )
@@ -312,7 +314,8 @@ class TestOffersEdit(TestCase):
             'email': u'organization@example.com',
             'password': '123org',
         })
-        response = self.client.get('/offers/volontulo-offer/1/edit')
+        response = self.client.get(
+            '/offers/volontulo-offer/{}/edit'.format(self.offer.id))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offer_form.html')
 
@@ -322,7 +325,9 @@ class TestOffersEdit(TestCase):
             'email': u'organization@example.com',
             'password': '123org',
         })
-        response = self.client.post('/offers/volontulo-offer/1/edit', {
+        response = self.client.post('/offers/volontulo-offer/{}/edit'.format(
+            self.offer.id
+        ), {
             'edit_type': 'full_edit',
         })
         self.assertEqual(response.status_code, 200)
@@ -331,7 +336,7 @@ class TestOffersEdit(TestCase):
             response,
             u'Formularz zawiera niepoprawnie wypełnione pola'
         )
-        offer = Offer.objects.get(id=1)
+        offer = Offer.objects.get(id=self.offer.id)
         self.assertEqual(
             offer.organization,
             self.organization_profile.organizations.all()[0],
@@ -353,9 +358,11 @@ class TestOffersEdit(TestCase):
             'email': u'organization@example.com',
             'password': '123org',
         })
-        response = self.client.post('/offers/volontulo-offer/1/edit', {
+        response = self.client.post('/offers/volontulo-offer/{}/edit'.format(
+            self.offer.id
+        ), {
             'edit_type': 'full_edit',
-            'organization': u'1',
+            'organization': self.organization.id,
             'description': u'required description',
             'requirements': u'required requirements',
             'time_commitment': u'required time_commitment',
@@ -370,7 +377,7 @@ class TestOffersEdit(TestCase):
             response,
             u'Oferta została zmieniona.'
         )
-        offer = Offer.objects.get(id=1)
+        offer = Offer.objects.get(id=self.offer.id)
         self.assertEqual(
             offer.organization,
             self.organization_profile.organizations.all()[0],
@@ -392,12 +399,14 @@ class TestOffersEdit(TestCase):
             'email': u'organization@example.com',
             'password': '123org',
         })
-        response = self.client.post('/offers/volontulo-offer/1/edit', {
+        response = self.client.post('/offers/volontulo-offer/{}/edit'.format(
+            self.offer.id
+        ), {
             'edit_type': 'status_change',
             'status_old': 'ACTIVE'
         })
-        self.assertEqual(response.status_code, 200,)
-        offer = Offer.objects.get(id=1)
+        self.assertEqual(response.status_code, 200)
+        offer = Offer.objects.get(id=self.offer.id)
         self.assertEqual(offer.status_old, u'NEW')
 
 
@@ -468,17 +477,20 @@ class TestOffersView(TestCase):
 
     def test_for_different_slug(self):
         u"""Test if redirect will be raised when offer has different slug."""
-        response = self.client.get('/offers/different-slug/1')
+        response = self.client.get('/offers/different-slug/{}'.format(
+            self.offer.id))
         self.assertRedirects(
             response,
-            '/offers/volontulo-offer/1',
+            '/offers/volontulo-offer/{}'.format(self.offer.id),
             302,
             200,
         )
 
     def test_for_correct_slug(self):
         u"""Test offer details for standard user."""
-        response = self.client.get('/offers/volontulo-offer/1')
+        response = self.client.get('/offers/volontulo-offer/{}'.format(
+            self.offer.id
+        ))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/show_offer.html')
         # pylint: disable=no-member
@@ -500,7 +512,7 @@ class TestOffersJoin(TestCase):
         )
         organization.save()
 
-        offer = Offer.objects.create(
+        cls.offer = Offer.objects.create(
             organization=organization,
             description=u'',
             requirements=u'',
@@ -513,16 +525,16 @@ class TestOffersJoin(TestCase):
             started_at='2015-10-10 21:22:23',
             finished_at='2015-12-12 11:12:13',
         )
-        offer.save()
+        cls.offer.save()
 
-        volunteer = User.objects.create_user(
+        cls.volunteer = User.objects.create_user(
             u'volunteer@example.com',
             u'volunteer@example.com',
             u'vol123',
         )
-        volunteer.save()
-        volunteer_profile = UserProfile(user=volunteer)
-        volunteer_profile.save()
+        cls.volunteer.save()
+        cls.volunteer_profile = UserProfile(user=cls.volunteer)
+        cls.volunteer_profile.save()
 
     def setUp(self):
         u"""Set up each test."""
@@ -535,10 +547,12 @@ class TestOffersJoin(TestCase):
 
     def test_for_different_slug(self):
         u"""Test if redirect will be raised when offer has different slug."""
-        response = self.client.get('/offers/different-slug/1/join')
+        response = self.client.get('/offers/different-slug/{}/join'.format(
+            self.offer.id
+        ))
         self.assertRedirects(
             response,
-            '/offers/volontulo-offer/1/join',
+            '/offers/volontulo-offer/{}/join'.format(self.offer.id),
             302,
             200,
         )
@@ -546,7 +560,9 @@ class TestOffersJoin(TestCase):
     # pylint: disable=invalid-name
     def test_correct_slug_for_anonymous_user(self):
         u"""Test get method of offer join for anonymous user."""
-        response = self.client.get('/offers/volontulo-offer/1/join')
+        response = self.client.get('/offers/volontulo-offer/{}/join'.format(
+            self.offer.id
+        ))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offer_apply.html')
         # pylint: disable=no-member
@@ -561,18 +577,23 @@ class TestOffersJoin(TestCase):
             'email': u'volunteer@example.com',
             'password': u'vol123',
         })
-        response = self.client.get('/offers/volontulo-offer/1/join')
+        response = self.client.get('/offers/volontulo-offer/{}/join'.format(
+            self.offer.id
+        ))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offer_apply.html')
         # pylint: disable=no-member
         self.assertIn('offer', response.context)
         self.assertIn('volunteer_user', response.context)
-        self.assertEqual(response.context['volunteer_user'].pk, 1)
+        self.assertEqual(response.context['volunteer_user'].pk,
+                         self.volunteer_profile.id)
         self.assertContains(response, u'volunteer@example.com')
 
     def test_offers_join_invalid_form(self):
         u"""Test attempt of joining offer with invalid form."""
-        response = self.client.post('/offers/volontulo-offer/1/join', {})
+        response = self.client.post('/offers/volontulo-offer/{}/join'.format(
+            self.offer.id
+        ), {})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offer_apply.html')
         self.assertContains(
@@ -582,13 +603,17 @@ class TestOffersJoin(TestCase):
 
     def test_offers_join_valid_form_and_logged_user(self):
         u"""Test attempt of joining offer with valid form and logged user."""
+        Badge.objects.create(name='Participant', slug='participant')
+
         self.client.post('/login', {
             'email': u'volunteer@example.com',
             'password': u'vol123',
         })
 
         # successfull joining offer:
-        response = self.client.post('/offers/volontulo-offer/1/join', {
+        response = self.client.post('/offers/volontulo-offer/{}/join'.format(
+            self.offer.id
+        ), {
             'email': u'volunteer@example.com',
             'phone_no': u'+42 42 42 42',
             'fullname': u'Mister Volunteer',
@@ -596,13 +621,15 @@ class TestOffersJoin(TestCase):
         }, follow=True)
         self.assertRedirects(
             response,
-            '/offers/volontulo-offer/1',
+            '/offers/volontulo-offer/{}'.format(self.offer.id),
             302,
             200,
         )
 
         # unsuccessfull joining the same offer for the second time:
-        response = self.client.post('/offers/volontulo-offer/1/join', {
+        response = self.client.post('/offers/volontulo-offer/{}/join'.format(
+            self.offer.id
+        ), {
             'email': u'volunteer@example.com',
             'phone_no': u'+42 42 42 42',
             'fullname': u'Mister Volunteer',
@@ -621,9 +648,12 @@ class TestOffersJoin(TestCase):
 
     def test_offers_join_valid_form_and_anonymous_user(self):
         u"""Test attempt of joining offer with valid form and anon user."""
+        Badge.objects.create(name='Participant', slug='participant')
 
         # successfull joining offer:
-        response = self.client.post('/offers/volontulo-offer/1/join', {
+        response = self.client.post('/offers/volontulo-offer/{}/join'.format(
+            self.offer.id
+        ), {
             'email': u'anon@example.com',
             'phone_no': u'+42 42 42 42',
             'fullname': u'Mister Anonymous',
@@ -631,13 +661,15 @@ class TestOffersJoin(TestCase):
         }, follow=True)
         self.assertRedirects(
             response,
-            '/offers/volontulo-offer/1',
+            '/offers/volontulo-offer/{}'.format(self.offer.id),
             302,
             200,
         )
 
         # unsuccessfull joining the same offer for the second time:
-        response = self.client.post('/offers/volontulo-offer/1/join', {
+        response = self.client.post('/offers/volontulo-offer/{}/join'.format(
+            self.offer.id
+        ), {
             'email': u'anon@example.com',
             'phone_no': u'+42 42 42 42',
             'fullname': u'Mister Anonymous',

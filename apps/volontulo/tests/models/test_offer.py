@@ -44,7 +44,7 @@ class TestOfferModel(TestCase):
             time_commitment='12.12.2015',
             benefits=u'Friends with benefits',
             location=u'Poland, Poznań',
-            title=u'This is example offer title',
+            title=u'Example Offer Title',
             time_period=u'2-5 times a week',
             started_at='2015-10-12 10:11:12',
             finished_at='2015-12-12 11:12:13',
@@ -54,9 +54,8 @@ class TestOfferModel(TestCase):
 
     def test__string_representation(self):
         u"""Test Offer model string reprezentation."""
-        offer = Offer.objects.get(id=1)
+        offer = Offer.objects.get(title='Example Offer Title')
 
-        self.assertEqual(offer.title, u'This is example offer title')
         self.assertEqual(offer.volunteers.count(), 3)
         self.assertEqual(
             offer.volunteers.all()[0].email,
