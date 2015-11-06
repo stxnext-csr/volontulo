@@ -62,6 +62,10 @@ To allow that:
 ```
 postgres=# ALTER USER <database_user> CREATEDB;
 ```
+To leave postgres command line:
+```
+postgres=# \q
+```
 Don't forget to fill the database credential in the `local_config.yaml` file.
 
 ### Gulp Instalation
@@ -99,4 +103,10 @@ To run the project tests:
 ```
 python manage.py test --settings=volontulo_org.settings.test_settings -v 3
 ```
+
+You can run the tests locally using SQLite, which is faster:
+```
+python manage.py test --settings=volontulo_org.settings.test_settings_sqlite -v 3
+```
+Don't forget to run the tests on the production RDBMS (test_settings) before pushing your changes!
 
