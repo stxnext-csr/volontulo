@@ -404,12 +404,7 @@ class TestOffersEdit(TestCase):
             'edit_type': 'status_change',
             'status_old': 'ACTIVE'
         })
-        self.assertRedirects(
-            response,
-            '/offers',
-            302,
-            200,
-        )
+        self.assertEqual(response.status_code, 200)
         offer = Offer.objects.get(id=self.offer.id)
         self.assertEqual(offer.status_old, u'NEW')
 
