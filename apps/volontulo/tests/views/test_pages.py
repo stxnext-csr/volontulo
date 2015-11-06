@@ -60,13 +60,13 @@ class TestPages(TestCase):
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         # pylint: disable=no-member
-        self.assertEqual(len(response.context['offers']), 14)
+        self.assertEqual(len(response.context['offers']), 10)
 
         offers = {u'NEW': 0, u'ACTIVE': 0, u'SUSPENDED': 0}
         for offer in response.context['offers']:
             offers[offer.status_old] += 1
 
-        self.assertEqual(offers[u'ACTIVE'], 4)
+        self.assertEqual(offers[u'ACTIVE'], 0)
         self.assertEqual(offers[u'NEW'], 5)
         self.assertEqual(offers[u'SUSPENDED'], 5)
 

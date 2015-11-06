@@ -113,7 +113,12 @@ class Common(object):
                 time_period=u'Time period {}'.format(i),
                 status_old=u'ACTIVE',
                 votes=True,
+                started_at='2015-10-05 09:10:11',
+                finished_at='2015-12-12 12:13:14',
                 organization=organization2,
+                offer_status='published',
+                recruitment_status='open',
+                action_status='ongoing',
             )
             offer.volunteers.add(volunteer_user2)
             offer.save()
@@ -130,7 +135,12 @@ class Common(object):
                 time_period=u'Time period {}'.format(i),
                 status_old=u'SUSPENDED' if i % 2 == 0 else u'NEW',
                 votes=True,
+                started_at='2015-10-05 09:10:11',
+                finished_at='2015-12-12 12:13:14',
                 organization=organization2,
+                offer_status='unpublished',
+                recruitment_status='open',
+                action_status='ongoing',
             )
             offer2.save()
 
