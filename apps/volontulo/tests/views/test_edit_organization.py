@@ -13,14 +13,16 @@ class TestEditOrganization(TestOrganizations):
     def test__edit_organization_get_form_anonymous(self):
         u"""Get organization edit form as anonymous."""
         response = self.client.get(
-            '/organizations/organization-1/1/edit',
+            '/organizations/organization-1/{}/edit'.format(
+                self.organization.id),
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(
             response,
             'http://testserver/login?'
-            'next=/organizations/organization-1/1/edit',
+            'next=/organizations/organization-1/{}/edit'.format(
+                self.organization.id),
             302,
             200,
         )
@@ -29,7 +31,9 @@ class TestEditOrganization(TestOrganizations):
             response.redirect_chain[0],
             (
                 'http://testserver/login?'
-                'next=/organizations/organization-1/1/edit',
+                'next=/organizations/organization-1/{}/edit'.format(
+                    self.organization.id
+                ),
                 302
             ),
         )
@@ -38,14 +42,16 @@ class TestEditOrganization(TestOrganizations):
     def test__edit_organization_post_form_anonymous(self):
         u"""Post organization edit form as anonymous."""
         response = self.client.get(
-            '/organizations/organization-1/1/edit',
+            '/organizations/organization-1/{}/edit'.format(
+                self.organization.id),
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(
             response,
             'http://testserver/login?'
-            'next=/organizations/organization-1/1/edit',
+            'next=/organizations/organization-1/{}/edit'.format(
+                self.organization.id),
             302,
             200,
         )
@@ -54,7 +60,9 @@ class TestEditOrganization(TestOrganizations):
             response.redirect_chain[0],
             (
                 'http://testserver/login?'
-                'next=/organizations/organization-1/1/edit',
+                'next=/organizations/organization-1/{}/edit'.format(
+                    self.organization.id
+                ),
                 302
             ),
         )
@@ -67,13 +75,15 @@ class TestEditOrganization(TestOrganizations):
             'password': 'volunteer1',
         })
         response = self.client.get(
-            '/organizations/organization-1/1/edit',
+            '/organizations/organization-1/{}/edit'.format(
+                self.organization.id
+            ),
             follow=True,
         )
 
         self.assertRedirects(
             response,
-            '/organizations/organization-1/1',
+            '/organizations/organization-1/{}'.format(self.organization.id),
             302,
             200,
         )
@@ -81,7 +91,9 @@ class TestEditOrganization(TestOrganizations):
         self.assertEqual(
             response.redirect_chain[0],
             (
-                'http://testserver/organizations/organization-1/1',
+                'http://testserver/organizations/organization-1/{}'.format(
+                    self.organization.id
+                ),
                 302
             ),
         )
@@ -98,13 +110,15 @@ class TestEditOrganization(TestOrganizations):
             'password': 'volunteer1',
         })
         response = self.client.get(
-            '/organizations/organization-1/1/edit',
+            '/organizations/organization-1/{}/edit'.format(
+                self.organization.id
+            ),
             follow=True,
         )
 
         self.assertRedirects(
             response,
-            '/organizations/organization-1/1',
+            '/organizations/organization-1/{}'.format(self.organization.id),
             302,
             200,
         )
@@ -112,7 +126,9 @@ class TestEditOrganization(TestOrganizations):
         self.assertEqual(
             response.redirect_chain[0],
             (
-                'http://testserver/organizations/organization-1/1',
+                'http://testserver/organizations/organization-1/{}'.format(
+                    self.organization.id
+                ),
                 302
             ),
         )
@@ -129,13 +145,15 @@ class TestEditOrganization(TestOrganizations):
             'password': 'organization2',
         })
         response = self.client.get(
-            '/organizations/organization-1/1/edit',
+            '/organizations/organization-1/{}/edit'.format(
+                self.organization.id
+            ),
             follow=True,
         )
 
         self.assertRedirects(
             response,
-            '/organizations/organization-1/1',
+            '/organizations/organization-1/{}'.format(self.organization.id),
             302,
             200,
         )
@@ -143,7 +161,9 @@ class TestEditOrganization(TestOrganizations):
         self.assertEqual(
             response.redirect_chain[0],
             (
-                'http://testserver/organizations/organization-1/1',
+                'http://testserver/organizations/organization-1/{}'.format(
+                    self.organization.id
+                ),
                 302
             ),
         )
@@ -160,13 +180,14 @@ class TestEditOrganization(TestOrganizations):
             'password': 'organization2',
         })
         response = self.client.get(
-            '/organizations/organization-1/1/edit',
+            '/organizations/organization-1/{}/edit'.format(
+                self.organization.id),
             follow=True,
         )
 
         self.assertRedirects(
             response,
-            '/organizations/organization-1/1',
+            '/organizations/organization-1/{}'.format(self.organization.id),
             302,
             200,
         )
@@ -174,7 +195,9 @@ class TestEditOrganization(TestOrganizations):
         self.assertEqual(
             response.redirect_chain[0],
             (
-                'http://testserver/organizations/organization-1/1',
+                'http://testserver/organizations/organization-1/{}'.format(
+                    self.organization.id
+                ),
                 302
             ),
         )
@@ -191,7 +214,9 @@ class TestEditOrganization(TestOrganizations):
             'password': 'organization1',
         })
         response = self.client.get(
-            '/organizations/organization-1/1/edit',
+            '/organizations/organization-1/{}/edit'.format(
+                self.organization.id
+            ),
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
@@ -228,7 +253,8 @@ class TestEditOrganization(TestOrganizations):
             'description': u'',
         }
         response = self.client.post(
-            '/organizations/organization-1/1/edit',
+            '/organizations/organization-1/{}/edit'.format(
+                self.organization.id),
             form_params,
             follow=True,
         )
@@ -247,14 +273,18 @@ class TestEditOrganization(TestOrganizations):
         }
 
         response = self.client.post(
-            '/organizations/organization-1/1/edit',
+            '/organizations/organization-1/{}/edit'.format(
+                self.organization.id
+            ),
             form_params,
             follow=True,
         )
 
         self.assertRedirects(
             response,
-            '/organizations/new-organization-1-name/1',
+            '/organizations/new-organization-1-name/{}'.format(
+                self.organization.id
+            ),
             302,
             200,
         )

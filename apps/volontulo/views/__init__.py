@@ -27,6 +27,8 @@ def logged_as_admin(request):
     u""""Helper function that provide information is user has admin privilege.
 
     It is used in separate modules.
+
+    :param request: WSGIRequest instance
     """
     return (
         request.user.is_authenticated() and
@@ -38,14 +40,16 @@ def homepage(request):  # pylint: disable=unused-argument
     u"""Main view of app.
 
     We will display page with few step CTA links?
+
+    :param request: WSGIRequest instance
     """
     if logged_as_admin(request):
-        offers = Offer.objects.all().order_by('-status_old')
+        offers = Offer.objects.get_for_administrator()
         return render(request, "admin/list_offers.html", context={
             'offers': offers,
         })
     else:
-        offers = Offer.objects.filter(status_old='ACTIVE')
+        offers = Offer.objects.get_active()
 
     return render(
         request,
@@ -57,7 +61,11 @@ def homepage(request):  # pylint: disable=unused-argument
 
 
 def static_pages(request, template_name):
-    u"""Generic view used for rendering static pages."""
+    u"""Generic view used for rendering static pages.
+
+    :param request: WSGIRequest instance
+    :param template_name: string Template name to display
+    """
     try:
         return render(
             request,
@@ -69,7 +77,10 @@ def static_pages(request, template_name):
 
 @login_required
 def logged_user_profile(request):
-    u"""View to display user profile page."""
+    u"""View to display user profile page.
+
+    :param request: WSGIRequest instance
+    """
     def _init_edit_profile_form():
         u"""Initialize EditProfileForm - helper method."""
         return EditProfileForm(
@@ -80,16 +91,15 @@ def logged_user_profile(request):
             }
         )
 
-    def _populate_offers():
-        u"""..."""
-        if userprofile.organizations.count():
-            # Current user is organization
-            return Offer.objects.filter(
-                organization__userprofiles__user=request.user
-            )
-        else:
-            # get offers that volunteer applied
-            return Offer.objects.filter(volunteers=request.user)
+    def _populate_participated_offers(request):
+        u"""Populate offers that current user participate."""
+        return Offer.objects.filter(volunteers=request.user)
+
+    def _populate_created_offers(request):
+        u"""Populate offers that current user create."""
+        return Offer.objects.filter(
+            organization__userprofiles__user=request.user
+        )
 
     def _is_saving_user_avatar():
         u"""."""
@@ -199,13 +209,18 @@ def logged_user_profile(request):
         userprofile=userprofile,
         MEDIA_URL=settings.MEDIA_URL
     )
-    ctx['offers'] = _populate_offers()
+    ctx['participated_offers'] = _populate_participated_offers(request)
+    ctx['created_offers'] = _populate_created_offers(request)
+
     return render(request, 'users/user_profile.html', ctx)
 
 
 @login_required
 def contact_form(request):
-    u"""View responsible for contact forms."""
+    u"""View responsible for contact forms.
+
+    :param request: WSGIRequest instance
+    """
     if request.method == 'POST':
         form = AdministratorContactForm(request.POST)
         if form.is_valid():
@@ -247,7 +262,10 @@ def contact_form(request):
 
 
 def page_not_found(request):
-    u"""Page not found - 404 error handler."""
+    u"""Page not found - 404 error handler.
+
+    :param request: WSGIRequest instance
+    """
     return render(
         request,
         '404.html',
@@ -256,7 +274,10 @@ def page_not_found(request):
 
 
 def server_error(request):
-    u"""Internal Server Error - 500 error handler."""
+    u"""Internal Server Error - 500 error handler.
+
+    :param request: WSGIRequest instance
+    """
     return render(
         request,
         '500.html',

@@ -11,8 +11,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
+        migrations.AddField(
             model_name='userprofile',
-            name='is_organization',
+            name='phone_no',
+            field=models.CharField(blank=True, null=True, max_length=32, default=''),
         ),
     ]

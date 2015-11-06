@@ -27,7 +27,6 @@ from apps.volontulo.models import OfferImage
 from apps.volontulo.models import UserBadges
 from apps.volontulo.models import UserProfile
 from apps.volontulo.utils import correct_slug
-from apps.volontulo.utils import OFFERS_STATUSES
 from apps.volontulo.utils import save_history
 from apps.volontulo.views import logged_as_admin
 
@@ -37,11 +36,13 @@ def offers_list(request):
 
     It's used for volunteers to show active ones and for admins to show
     all of them.
+
+    :param request: WSGIRequest instance
     """
     if logged_as_admin(request):
         offers = Offer.objects.all()
     else:
-        offers = Offer.objects.filter(status_old='ACTIVE')
+        offers = Offer.objects.get_active()
     return render(request, "offers/offers_list.html", context={
         'offers': offers,
     })
@@ -52,40 +53,46 @@ class OffersCreate(View):
 
     @staticmethod
     def get(request):
-        u"""Method responsible for rendering form for new offer."""
-        form = CreateOfferForm()
-        context = {
-            'offer_form': form,
-            'statuses': OFFERS_STATUSES,
-            'offer': Offer(),
-        }
+        u"""Method responsible for rendering form for new offer.
+
+        :param request: WSGIRequest instance
+        """
+        if request.user.userprofile.is_administrator:
+            messages.info(
+                request,
+                u"Administrator nie może tworzyć nowych ofert."
+            )
+            return redirect('offers_list')
 
         return render(
             request,
             'offers/offer_form.html',
-            context
+            {
+                'offer': Offer(),
+                'form': CreateOfferForm(),
+                'organizations': request.user.userprofile.organizations.all(),
+            }
         )
 
     @staticmethod
     def post(request):
-        u"""Method resposible for saving new offer."""
-        form = CreateOfferForm(request.POST)
-        images = []
+        u"""Method responsible for saving new offer.
 
+        :param request: WSGIRequest instance
+        """
+        form = CreateOfferForm(request.POST)
         if form.is_valid():
             offer = form.save()
+            offer.create_new()
+            offer.save()
             save_history(request, offer, action=ADDITION)
-            ctx = {'offer': offer}
             send_mail(
                 request,
                 'offer_creation',
                 ['administrators@volontuloapp.org'],
-                ctx
+                {'offer': offer}
             )
-            messages.success(
-                request,
-                u"Dziękujemy za dodanie oferty."
-            )
+            messages.success(request, u"Dziękujemy za dodanie oferty.")
             return redirect(
                 'offers_view',
                 slug=slugify(offer.title),
@@ -93,16 +100,16 @@ class OffersCreate(View):
             )
         messages.error(
             request,
-            u"Formularz zawiera niepoprawnie wypełnione pola"
+            u"Formularz zawiera niepoprawnie wypełnione pola <br />{0}"
+            .format('<br />'.join(form.errors)),
         )
         return render(
             request,
             'offers/offer_form.html',
             {
-                'offer_form': form,
-                'statuses': OFFERS_STATUSES,
+                'form': form,
                 'offer': Offer(),
-                'images': images,
+                'organizations': request.user.userprofile.organizations.all(),
             }
         )
 
@@ -113,111 +120,108 @@ class OffersEdit(View):
     @staticmethod
     @correct_slug(Offer, 'offers_edit', 'title')
     def get(request, slug, id_):  # pylint: disable=unused-argument
-        u"""Method responsible for rendering form for offer to be changed."""
-        offer = Offer.objects.get(id=id_)
-        organization = offer.organization
-        form = CreateOfferForm()
-        offer_image_form = OfferImageForm()
-        images = OfferImage.objects.filter(offer=offer).all()
+        u"""Method responsible for rendering form for offer to be changed.
 
-        context = {
-            'offer_form': form,
-            'organization': organization,
-            'statuses': OFFERS_STATUSES,
-            'offer': offer,
-            'offer_image_form': offer_image_form,
-            'images': images,
-            'MEDIA_URL': settings.MEDIA_URL
-        }
+        :param request: WSGIRequest instance
+        :param slug: string Offer title slugified
+        :param id_: int Offer database unique identifier (primary key)
+        """
+        offer = Offer.objects.get(id=id_)
+
+        if offer.id or request.user.userprofile.is_administrator:
+            organizations = [offer.organization]
+        else:
+            organizations = request.user.userprofile.organizations.all()
 
         return render(
             request,
             'offers/offer_form.html',
-            context
+            {
+                'offer': offer,
+                'offer_form': CreateOfferForm(),
+                'organization': offer.organization,
+                'organizations': organizations,
+                'offer_image_form': OfferImageForm(),
+                'images': OfferImage.objects.filter(offer=offer).all(),
+                'MEDIA_URL': settings.MEDIA_URL
+            }
         )
 
     @staticmethod
     def post(request, slug, id_):  # pylint: disable=unused-argument
-        u"""Method resposible for saving changed offer."""
-        def _set_main_image(offer, gallery_form):
-            u"""Set main image flag unsetting other offers images."""
-            if gallery_form.cleaned_data["is_main"]:
-                OfferImage.objects.filter(offer=offer).update(is_main=False)
-                return True
-            return False
+        u"""Method resposible for saving changed offer.
 
-        def _save_offer_image(offer, userprofile):
-            u"""Handle image upload for user profile page."""
-            gallery_form = OfferImageForm(
-                request.POST,
-                request.FILES
-            )
-            if gallery_form.is_valid():
-                gallery = gallery_form.save(commit=False)
-                gallery.offer = offer
-                gallery.userprofile = userprofile
-                gallery.is_main = _set_main_image(offer, gallery_form)
-                gallery.save()
+        :param request: WSGIRequest instance
+        :param slug: string Offer title slugified
+        :param id_: int Offer database unique identifier (primary key)
+        """
+        offer = Offer.objects.get(id=id_)
+        if request.POST.get('submit') == 'save_image' and request.FILES:
+            form = OfferImageForm(request.POST, request.FILES)
+            if form.is_valid():
+                offer.save_offer_image(
+                    form.save(commit=False),
+                    request.user.userprofile,
+                    form.cleaned_data['is_main']
+                )
                 messages.success(request, u"Dodano zdjęcie do galerii.")
             else:
-                errors = '<br />'.join(gallery_form.errors)
                 messages.error(
                     request,
-                    u"Problem w trakcie dodawania grafiki: {}".format(errors)
+                    u"Problem w trakcie dodawania grafiki: {}".format(
+                        '<br />'.join(form.errors)
+                    )
                 )
+
             return redirect(
                 reverse(
                     'offers_edit',
                     args=[slugify(offer.title), offer.id]
                 )
             )
-
-        def _close_offer(offer):
-            u"""Change offer status to close."""
-            offer.status = 'CLOSED'
-            offer.save()
+        elif request.POST.get('close_offer') == 'close':
+            offer.close_offer()
             return redirect(
                 reverse(
                     'offers_view',
                     args=[slugify(offer.title), offer.id]
                 )
             )
-
-        def _change_status(offer):
-            u"""Change offer status."""
-            if request.POST['edit_type'] == 'status_change':
-                offer.status_old = request.POST['status_old']
-                offer.save()
+        elif request.POST.get('status_flag') == 'change_status':
+            if request.POST.get('status') == 'published':
+                offer.publish()
+            elif request.POST.get('status') == 'rejected':
+                offer.reject()
             return redirect('offers_list')
-
-        offer = Offer.objects.get(id=id_)
-        if request.POST.get('submit') == 'save_image' and request.FILES:
-            return _save_offer_image(offer, request.user.userprofile)
-        elif request.POST.get('close_offer') == 'close':
-            return _close_offer(offer)
-        elif request.POST.get('edit_type') == 'status_change':
-            return _change_status(offer)
 
         form = CreateOfferForm(request.POST, instance=offer)
         if form.is_valid():
             offer = form.save()
+            offer.unpublish()
+            offer.save()
             save_history(request, offer, action=CHANGE)
-            messages.success(
-                request,
-                u"Oferta została zmieniona."
-            )
+            messages.success(request, u"Oferta została zmieniona.")
         else:
             messages.error(
                 request,
-                u"Formularz zawiera niepoprawnie wypełnione pola"
+                u"Formularz zawiera niepoprawnie wypełnione pola: {}".format(
+                    '<br />'.join(form.errors)
+                )
             )
+
+        if offer.id or request.user.userprofile.is_administrator:
+            organizations = [offer.organization]
+        else:
+            organizations = request.user.userprofile.organizations.all()
+
         return render(
             request,
             'offers/offer_form.html',
             {
-                'offer_form': form,
-                'statuses': OFFERS_STATUSES,
-                'offer': Offer()
+                'offer': offer,
+                'form': form,
+                'organizations': organizations,
+                'offer_image_form': OfferImageForm(),
             }
         )
 
@@ -317,13 +321,12 @@ class OffersJoin(View):
         )
 
     @staticmethod
+    @correct_slug(Offer, 'offers_join', 'title')
     def post(request, slug, id_):  # pylint: disable=unused-argument
         u"""View responsible for saving join for particular offer."""
         form = OfferApplyForm(request.POST)
-
+        offer = Offer.objects.get(id=id_)
         if form.is_valid():
-            offer = Offer.objects.get(id=id_)
-
             if request.user.is_authenticated():
                 user = request.user
             else:
@@ -345,8 +348,8 @@ class OffersJoin(View):
                         request,
                         'offers/offer_apply.html',
                         {
+                            'offer': offer,
                             'form': form,
-                            'offer_id': id_,
                             'volunteer_user': UserProfile(),
                         }
                     )
@@ -411,8 +414,8 @@ class OffersJoin(View):
                 request,
                 'offers/offer_apply.html',
                 {
+                    'offer': offer,
                     'form': form,
-                    'offer_id': id_,
                     'volunteer_user': volunteer_user,
                 }
             )

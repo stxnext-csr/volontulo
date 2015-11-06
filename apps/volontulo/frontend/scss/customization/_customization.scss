@@ -22,6 +22,11 @@ label {
     font-weight: 600;
 }
 
+// forms
+.form-horizontal .control-label[class*="col-"] {
+    padding-right: 0;
+}
+
 // section header
 .header {
     .navbar-header {
@@ -151,17 +156,25 @@ label {
     img {
         position: absolute;
         width: 100%;
+        min-width: 700px;
         bottom: 0px;
         right: 0px;
         left: 0px;
     }
     .offer-title {
-        color: $lightgray-light;
         float: left;
-        font-size: 25px;
+        margin: 0;
+        padding: 8px 16px 8px 18px;
+        line-height: 29px;
+        font-size: 24px;
         font-weight: 700;
-        margin: 0 0 0px 0;
-        text-shadow: 0 0 12px rgba(black, 0.4), 0 1px 1px black;
+        color: $lightgray-light;
+        border-radius: 3px;
+        border: 1px solid rgba(black, .08);
+        background-color: rgba(black, .05);
+        text-shadow: 0 0 12px rgba(black, .5),
+                     0 1px 2px rgba(black, .75), 
+                     0 1px 0 rgba(black, .5);
     }
     .panels {
         position: absolute;

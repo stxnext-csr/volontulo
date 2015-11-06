@@ -6,7 +6,7 @@ u"""
 from django.test import Client
 from django.test import TestCase
 
-from apps.volontulo.tests.common import Common
+from apps.volontulo.tests import common
 from apps.volontulo.models import Offer
 
 
@@ -16,11 +16,11 @@ class TestUsersProfile(TestCase):
     @classmethod
     def setUpTestData(cls):
         # volunteer user - totally useless
-        Common.initialize_empty_volunteer()
+        common.initialize_empty_volunteer()
         # organization user - no offers
-        Common.initialize_empty_organization()
+        common.initialize_empty_organization()
         # volunteer user - badges, offers, organizations
-        Common.initialize_filled_volunteer_and_organization()
+        common.initialize_filled_volunteer_and_organization()
 
     def setUp(self):
         u"""Set up each test."""
