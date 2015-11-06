@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.test import Client
 from django.test import TestCase
 
-from apps.volontulo.models import Offer
+from apps.volontulo.models import Offer, Badge
 from apps.volontulo.models import Organization
 from apps.volontulo.models import UserProfile
 
@@ -607,6 +607,8 @@ class TestOffersJoin(TestCase):
 
     def test_offers_join_valid_form_and_logged_user(self):
         u"""Test attempt of joining offer with valid form and logged user."""
+        Badge.objects.create(name='Participant', slug='participant')
+
         self.client.post('/login', {
             'email': u'volunteer@example.com',
             'password': u'vol123',
@@ -650,6 +652,7 @@ class TestOffersJoin(TestCase):
 
     def test_offers_join_valid_form_and_anonymous_user(self):
         u"""Test attempt of joining offer with valid form and anon user."""
+        Badge.objects.create(name='Participant', slug='participant')
 
         # successfull joining offer:
         response = self.client.post('/offers/volontulo-offer/{}/join'.format(
