@@ -44,17 +44,18 @@ class TestOfferModel(TestCase):
             time_commitment='12.12.2015',
             benefits=u'Friends with benefits',
             location=u'Poland, Poznań',
-            title=u'This is example offer title',
+            title=u'Example Offer Title',
             time_period=u'2-5 times a week',
+            started_at='2015-10-12 10:11:12',
+            finished_at='2015-12-12 11:12:13',
         )
         for volunteer in volunteers:
             offer.volunteers.add(volunteer)
 
     def test__string_representation(self):
         u"""Test Offer model string reprezentation."""
-        offer = Offer.objects.get(id=1)
+        offer = Offer.objects.get(title='Example Offer Title')
 
-        self.assertEqual(offer.title, u'This is example offer title')
         self.assertEqual(offer.volunteers.count(), 3)
         self.assertEqual(
             offer.volunteers.all()[0].email,
@@ -93,7 +94,12 @@ class OfferTestCase(TestCase):
             location=u"Polska, Poznań",
             title=u"Zwięzły tytuł oferty",
             time_period=u"Od 23.09.2015 do 25.12.2016",
-            status_old='ACTIVE'
+            status_old='ACTIVE',
+            started_at='2015-10-12 10:11:12',
+            finished_at='2015-12-12 11:12:13',
+            offer_status='published',
+            recruitment_status='open',
+            action_status='ongoing',
         )
 
     def test__organization_name(self):

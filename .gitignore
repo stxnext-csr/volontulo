@@ -22,6 +22,7 @@ lib64/
 parts/
 sdist/
 var/
+bin/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -74,3 +75,6 @@ static
 # SQLite database
 *.sqlite3
 *.sqlite
+
+# custom shell tools
+bin/*

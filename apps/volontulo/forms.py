@@ -75,6 +75,8 @@ class CreateOfferForm(forms.ModelForm):
             'title',
             'time_period',
             'status_old',
+            'started_at',
+            'finished_at'
         ]
 
 

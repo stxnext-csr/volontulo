@@ -90,8 +90,12 @@ WSGI_APPLICATION = 'volontulo_org.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'USER': LOCAL_CONFIG['db_user'],
+        'PASSWORD': LOCAL_CONFIG['db_pass'],
+        'NAME': LOCAL_CONFIG['db_name'],
+        'HOST': LOCAL_CONFIG['db_host'],
+        'PORT': LOCAL_CONFIG['db_port'],
     }
 }
 
