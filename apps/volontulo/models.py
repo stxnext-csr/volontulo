@@ -70,6 +70,12 @@ class UserProfile(models.Model):
         through='UserBadges',
         related_name='user_profile'
     )
+    phone_no = models.CharField(
+        max_length=32,
+        blank=True,
+        default='',
+        null=True
+    )
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
     def is_admin(self):
