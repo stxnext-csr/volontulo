@@ -7,7 +7,7 @@ from django.test import Client
 from django.test import TestCase
 
 from apps.volontulo.models import Organization
-from apps.volontulo.tests.common import Common
+from apps.volontulo.tests import common
 
 
 class TestOrganizations(TestCase):
@@ -17,11 +17,12 @@ class TestOrganizations(TestCase):
     def setUpTestData(cls):
         u"""Data fixtures for all tests."""
         # volunteer user - totally useless
-        Common.initialize_empty_volunteer()
+        cls.volunteer = common.initialize_empty_volunteer()
         # organization user - no offers
-        Common.initialize_empty_organization()
+        cls.organization = common.initialize_empty_organization()
         # volunteer user - badges, offers, organizations
-        Common.initialize_filled_volunteer_and_organization()
+        cls.volunteer2, cls.organization2 = \
+            common.initialize_filled_volunteer_and_organization()
 
     def setUp(self):
         u"""Set up each test."""

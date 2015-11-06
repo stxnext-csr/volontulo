@@ -37,9 +37,40 @@ If the site is supposed to be served under different domain than volontulo.org o
 and you are not in development environment, fill the "allowed_host" value. Otherwise
 it can be left blank.
 
+## Database Set Up
+
+The project uses PostgreSQL 9.4 database.
+
+In Debian / Ubuntu systems:
+```
+# apt-get install postgresql-9.4
+```
+Install psycopg2 driver dependency:
+```
+# apt-get install libpq-dev
+```
+
+### Create application database
+```
+# su - postgres
+$ psql
+postgres=# CREATE ROLE <database_user> WITH ENCRYPTED PASSWORD <db_user_password>;
+postgres=# CREATE DATABASE <database_name> WITH OWNER <database_user>;
+```
+While running tests each time the database is created and destroyed.
+To allow that:
+```
+postgres=# ALTER USER <database_user> CREATEDB;
+```
+To leave postgres command line:
+```
+postgres=# \q
+```
+Don't forget to fill the database credential in the `local_config.yaml` file.
+
 ### Gulp Instalation
 
-Gulp is used to prepare and serve all static files into `/volontulo_org/volontulo/volontulo/static/volontulo` so Django can use them
+Gulp is used to prepare and serve all static files into `/apps/volontulo/static/volontulo` so Django can use them
 ```
 cd /apps/volontulo
 npm install
@@ -60,10 +91,6 @@ gulp build
 
 ### Running the App in development mode
 Choose the appriopriate settings file  
-Collect statics
-```
-python manage.py collectstatic --settings=volontulo_org.settings.dev
-```
 Run server
 ```
 python manage.py runserver --settings=volontulo_org.settings.dev
@@ -76,4 +103,10 @@ To run the project tests:
 ```
 python manage.py test --settings=volontulo_org.settings.test_settings -v 3
 ```
+
+You can run the tests locally using SQLite, which is faster:
+```
+python manage.py test --settings=volontulo_org.settings.test_settings_sqlite -v 3
+```
+Don't forget to run the tests on the production RDBMS (test_settings) before pushing your changes!
 

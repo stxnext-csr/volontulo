@@ -3,7 +3,6 @@
 u"""
 .. module:: utils
 """
-from django.contrib import messages
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -15,6 +14,7 @@ from apps.volontulo.models import UserProfile
 
 
 # Offers statuses dictionary with meaningful names.
+# todo: remove dependency
 OFFERS_STATUSES = {
     'NEW': u"Nowa",
     'ACTIVE': u"Aktywna",
@@ -22,26 +22,6 @@ OFFERS_STATUSES = {
     'SUSPENDED': u"Zawieszona",
     'CLOSED': u"Zamknięta",
 }
-
-
-def yield_message_successful(request, msg):
-    u"""Helper function yielding success message."""
-    return messages.add_message(request, messages.SUCCESS, msg)
-
-
-def yield_message_error(request, msg):
-    u"""Helper function yielding error message."""
-    return messages.add_message(request, messages.ERROR, msg)
-
-
-def yield_message_info(request, msg):
-    u"""Helper function yielding info message."""
-    return messages.add_message(request, messages.INFO, msg)
-
-
-def yield_message_warn(request, msg):
-    u"""Helper function yielding info message."""
-    return messages.add_message(request, messages.WARNING, msg)
 
 
 def get_administrators_emails():

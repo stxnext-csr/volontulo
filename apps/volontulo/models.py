@@ -25,16 +25,27 @@ class Organization(models.Model):
     description = models.TextField()
 
     def __str__(self):
+        u"""Organization model string reprezentation."""
         return self.name
 
 
-# pylint: disable=too-few-public-methods
-class OfferManager(models.Manager):
-    u"""Offer Manager for custom queries."""
+class OffersManager(models.Manager):
+    u"""Offers Manager."""
+
+    def get_active(self):
+        u"""Return active offers."""
+        return self.filter(
+            offer_status='published',
+            action_status__in=('ongoing', 'future'),
+            recruitment_status__in=('open', 'supplemental'),
+        ).all()
+
+    def get_for_administrator(self):
+        u"""Return all offers for administrator to allow management."""
+        return self.filter(offer_status='unpublished').all()
 
     def get_archived(self):
         u"""Return archived offers."""
-
         return self.filter(
             offer_status='published',
             action_status__in=('ongoing', 'finished'),
@@ -43,7 +54,7 @@ class OfferManager(models.Manager):
 
 
 class Offer(models.Model):
-    u"""Model that hadles offers."""
+    u"""Offer model."""
 
     OFFER_STATUSES = (
         ('unpublished', u'Unpublished'),
@@ -61,7 +72,7 @@ class Offer(models.Model):
         ('finished', u'Finished'),
     )
 
-    objects = OfferManager()
+    objects = OffersManager()
     organization = models.ForeignKey(Organization)
     volunteers = models.ManyToManyField(User)
     description = models.TextField()
@@ -70,6 +81,8 @@ class Offer(models.Model):
     benefits = models.TextField()
     location = models.CharField(max_length=150)
     title = models.CharField(max_length=150)
+    started_at = models.DateTimeField(blank=True, null=True)
+    finished_at = models.DateTimeField(blank=True, null=True)
     time_period = models.CharField(max_length=150, default='', blank=True)
     status_old = models.CharField(
         max_length=30,
@@ -77,8 +90,6 @@ class Offer(models.Model):
         null=True,
         unique=False
     )
-    started_at = models.DateTimeField(blank=True, null=True)
-    finished_at = models.DateTimeField(blank=True, null=True)
     offer_status = models.CharField(
         max_length=16,
         choices=OFFER_STATUSES,
@@ -115,6 +126,89 @@ class Offer(models.Model):
     def __str__(self):
         u"""Offer string representation."""
         return self.title
+
+    def set_main_image(self, is_main):
+        u"""Set main image flag unsetting other offers images.
+
+        :param is_main: Boolean flag resetting offer main image
+        """
+        if is_main:
+            OfferImage.objects.filter(offer=self).update(is_main=False)
+            return True
+        return False
+
+    def save_offer_image(self, gallery, userprofile, is_main=False):
+        u"""Handle image upload for user profile page.
+
+        :param gallery: UserProfile model instance
+        :param userprofile: UserProfile model instance
+        :param is_main: Boolean main image flag
+        """
+        gallery.offer = self
+        gallery.userprofile = userprofile
+        gallery.is_main = self.set_main_image(is_main)
+        gallery.save()
+        return self
+
+    def create_new(self):
+        u"""Set status while creating new offer."""
+        self.offer_status = 'unpublished'
+        self.recruitment_status = 'open'
+        self.action_status = self.determine_action_status()
+
+    def determine_action_status(self):
+        u"""Determine action status by offer dates."""
+        if (
+                (
+                    self.finished_at and
+                    self.started_at < timezone.now() < self.finished_at
+                ) or
+                (
+                    self.started_at < timezone.now() and
+                    not self.finished_at
+                )
+        ):
+            return 'ongoing'
+        elif self.started_at > timezone.now():
+            return 'future'
+        else:
+            return 'finished'
+
+    def change_status(self, status):
+        u"""Change offer status.
+
+        :param status: string Offer status
+        """
+        if status in ('published', 'rejected', 'unpublished'):
+            self.offer_status = status
+            self.save()
+        return self
+
+    def unpublish(self):
+        u"""Unpublish offer."""
+        self.offer_status = 'unpublished'
+        self.save()
+        return self
+
+    def publish(self):
+        u"""Publish offer."""
+        self.offer_status = 'published'
+        self.save()
+        return self
+
+    def reject(self):
+        u"""Reject offer."""
+        self.offer_status = 'rejected'
+        self.save()
+        return self
+
+    def close_offer(self):
+        u"""Change offer status to close."""
+        self.offer_status = 'unpublished'
+        self.action_status = 'finished'
+        self.recruitment_status = 'closed'
+        self.save()
+        return self
 
 
 class Badge(models.Model):
@@ -188,7 +282,10 @@ class UserBadges(models.Model):
 
     @staticmethod
     def get_user_badges(userprofile):
-        u"""Return User badges for selected user."""
+        u"""Return User badges for selected user.
+
+        :param userprofile: UserProfile model instance
+        """
         return UserBadges.objects \
             .filter(userprofile=userprofile.id) \
             .values('badge_id', 'badge__name', 'badge__priority') \
@@ -224,6 +321,7 @@ class UserBadges(models.Model):
     # pylint: disable=invalid-name
     def apply_prominent_participant_badge(content_type, volunteer_user):
         u"""Helper function to apply particpant badge to specified user."""
+
         badge = Badge.objects.get(slug='prominent-participant')
         try:
             usersbadge = UserBadges.objects.get(

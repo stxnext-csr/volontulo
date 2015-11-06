@@ -5,73 +5,105 @@
 {% block content %}
     <form id="offer_form" class="form-horizontal" method="post" action="{{ request.get_full_path }}" role="form" enctype="multipart/form-data">
         {% csrf_token %}
-        <h2>{{ offer.id|yesno:"Edycja,Tworzenie" }} oferty dla wolontariuszy</h2>
+        <h2>{{ offer.id|yesno:"Edycja,Tworzenie" }} oferty</h2>
+
         {% if user.userprofile.is_administrator %}
         <div class="form-group form-group-sm">
-            <label class="col-xs-offset-6 col-xs-2 control-label" for="{{ offer_form.status.id_for_label }}">Status</label>
+            <label class="col-xs-offset-6 col-xs-2 control-label" for="{{ form.status.id_for_label }}">Status</label>
             <div class="col-xs-4">
-                <select name="status_old" class="form-control" id="{{ offer_form.status_old.id_for_label }}">
-                    {% for status, label in statuses.items %}
-                        {% if status == request.POST.offer|default:offer.status_old %}
-                        <option selected="selected" value="{{ status }}">{{ label }}</option>
-                        {% else %}
-                        <option value="{{ status }}">{{ label }}</option>
-                        {% endif %}
-                    {% endfor %}
+                <select name="status" class="form-control" id="{{ form.status.id_for_label }}">
+                    <option value="">-- Zmień status --</option>
+                    <option value="published">Opublikuj</option>
+                    <option value="rejected">Odrzuć</option>
                 </select>
+                <input type="hidden" name="status_flag" value="change_status" />
             </div>
         </div>
         {% endif %}
-        <div class="form-group form-group-sm">
-            <label class="col-xs-2 control-label" for="{{ offer_form.organization.id_for_label }}">Organizacja</label>
-            <div class="col-xs-10">
-            <select value="{{ user.userprofile.organizations.all.0.id }}" name="organization" class="form-control" id="{{ offer_form.organization.id_for_label }}">
-                {% for o in user.userprofile.organizations.all %}
-                    <option value="{{ o.id }}">{{ o.name }}</option>
-                {% endfor %}
-            </select>
+
+        <div class="row">
+            <div class="col-xs-12 {% if form.organizations.errors %}has-error{% endif %}">
+                {% if form.organizations.errors %}<div class="cols-xs-12">{{ form.organizations.errors }}</div>{% endif %}
+                <div class="col-xs-12 form-group form-group-sm">
+                    <div class="col-xs-5"><label class="control-label" for="{{ form.organization.id_for_label }}">Organizacja</label></div>
+                    <div class="col-xs-7">
+                        <select value="{{ user.userprofile.organizations.all.0.id }}" name="organization" class="form-control" id="{{ form.organization.id_for_label }}">
+                            {% for o in organizations %}
+                                <option value="{{ o.id }}">{{ o.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="form-group form-group-sm">
-            <label class="col-xs-2 control-label" for="{{ offer_form.title.id_for_label }}">Tytuł</label>
-            <div class="col-xs-4">
-                <input type="text" value="{{ request.POST.title|default:offer.title }}" name="title" class="form-control" id="{{ offer_form.title.id_for_label }}" />
+
+        <div class="row">
+            <div class="col-xs-6 {% if form.title.errors %}has-error{% endif %}">
+                {% if form.title.errors %}<div class="col-xs-12">{{ form.title.errors }}</div>{% endif %}
+                <div class="col-xs-12 form-group form-group-sm">
+                    <div class="col-xs-5"><label class="control-label" for="{{ form.title.id_for_label }}">Tytuł</label></div>
+                    <div class="col-xs-7"><input type="text" value="{{ request.POST.title|default:offer.title }}" name="title" class="form-control" id="{{ form.title.id_for_label }}" /></div>
+                </div>
             </div>
-            <label class="col-xs-2 control-label" for="{{ offer_form.location.id_for_label }}">Lokalizacja</label>
-            <div class="col-xs-4">
-                <input type="text" value="{{ request.POST.location|default:offer.location }}" name="location" class="form-control" id="{{ offer_form.location.id_for_label }}" />
-            </div>
-        </div>
-        <div class="form-group form-group-sm">
-            <label class="col-xs-2 control-label" for="{{ offer_form.time_commitment.id_for_label }}">Wymagania czasowe</label>
-            <div class="col-xs-4">
-                <input type="text" value="{{ request.POST.time_commitment|default:offer.time_commitment }}" name="time_commitment" class="form-control" id="{{ offer_form.time_commitment.id_for_label }}" />
-            </div>
-            <label class="col-xs-2 control-label" for="{{ offer_form.time_period.id_for_label }}">Dzień rozpoczęcia</label>
-            <div class="col-xs-4">
-                <input type="text" value="{{ request.POST.time_period|default:offer.time_period }}" name="time_period" class="form-control" id="{{ offer_form.time_period.id_for_label }}" />
+            <div class="col-xs-6 {% if form.location.errors %}has-error{% endif %}">
+                <div class="col-xs-12">{{ form.location.errors }}</div>
+                <div class="col-xs-12 form-group form-group-sm">
+                    <div class="col-xs-5"><label class="control-label" for="{{ form.location.id_for_label }}">Lokalizacja</label></div>
+                    <div class="col-xs-7"><input type="text" value="{{ request.POST.location|default:offer.location }}" name="location" class="form-control" id="{{ form.location.id_for_label }}" /></div>
+                </div>
             </div>
         </div>
-        <div class="form-group form-group-sm">
-            <label class="col-xs-offset-6 col-xs-2 control-label" for="{{ offer_form.time_period_end.id_for_label }}">Dzień Zakończenia</label>
-            <div class="col-xs-4">
-                <input type="text" value="" name="time_period_end" class="form-control" id="{{ offer_form.time_period_end.id_for_label }}" />
+
+        <div class="row show-grid">
+            <div class="col-xs-6 {% if form.time_commitment.errors %}has-error{% endif %}">
+                <div class="col-xs-12">{{ form.time_commitment.errors }}</div>
+                <div class="col-xs-12 form-group form-group-sm">
+                    <div class="col-xs-5"><label class="control-label" for="{{ form.time_commitment.id_for_label }}">Wymagania czasowe</label></div>
+                    <div class="col-xs-7"><input type="text" value="{{ request.POST.time_commitment|default:offer.time_commitment }}" name="time_commitment" class="form-control" id="{{ form.time_commitment.id_for_label }}" /></div>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="col-xs-12 {% if form.started_at.errors %}has-error{% endif %}">
+                    {% if form.started_at.errors %}<div class="col-xs-12">{{ form.started_at.errors }}</div>{% endif %}
+                    <div class="col-xs-12 form-group form-group-sm">
+                        <div class="col-xs-5"><label class="control-label" for="{{ form.started_at.id_for_label }}">Dzień rozpoczęcia</label></div>
+                        <div class="col-xs-7"><input type="text" value="{{ request.POST.started_at|date:"Y-m-d H:i:s"|default:offer.started_at|date:"Y-m-d H:i:s" }}" name="started_at" class="form-control" id="{{ form.started_at.id_for_label }}" /></div>
+                    </div>
+                </div>
+                <div class="col-xs-12 {% if form.finished_at.errors %}has-error{% endif %}">
+                    {% if form.finished_at.errors %}<div class="col-xs-12">{{ form.finished_at.errors }}</div>{% endif %}
+                    <div class="col-xs-12 form-group form-group-sm">
+                        <div class="col-xs-5"><label class="control-label" for="{{ form.finished_at.id_for_label }}">Dzień zakończenia</label></div>
+                        <div class="col-xs-7"><input type="text" value="{{ request.POST.finished_at|date:"Y-m-d H:i:s"|default:offer.finished_at|date:"Y-m-d H:i:s" }}" name="finished_at" class="form-control" id="{{ form.finished_at.id_for_label }}" /></div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="form-group form-group-sm">
-            <label class="col-xs-2 control-label" for="{{ offer_form.description.id_for_label }}">Opis</label>
-            <div class="col-xs-10">
-                <textarea class="form-control" rows="3" name="description" id="{{ offer_form.description.id_for_label }}">{{ request.POST.description|default:offer.description }}</textarea>
+
+        <div class="row">
+            <div class="col-xs-12 {% if form.description.errors %}has-error{% endif %}">
+                {% if form.description.errors %}<div class="col-xs-12">{{ form.description.errors }}</div>{% endif %}
+                <div class="col-xs-12 form-group form-group-sm">
+                    <div class="col-xs-5"><label class="control-label" for="{{ form.description.id_for_label }}">Opis</label></div>
+                    <div class="col-xs-7"><textarea class="form-control" rows="3" name="description" id="{{ form.description.id_for_label }}">{{ request.POST.description|default:offer.description }}</textarea></div>
+                </div>
             </div>
         </div>
-        <div class="form-group form-group-sm">
-            <label class="col-xs-2 control-label" for="{{ offer_form.benefits.id_for_label }}">Korzyści</label>
-            <div class="col-xs-4">
-                <textarea class="form-control" rows="3" name="benefits" id="{{ offer_form.benefits.id_for_label }}">{{ request.POST.benefits|default:offer.benefits }}</textarea>
+
+        <div class="row">
+            <div class="col-xs-6 {% if form.benefits.errors %}has-error{% endif %}">
+                {% if form.benefits.errors %}<div class="col-xs-12">{{ form.benefits.errors }}</div>{% endif %}
+                <div class="col-xs-12 form-group form-group-sm">
+                    <div class="col-xs-5"><label class="control-label" for="{{ form.benefits.id_for_label }}">Korzyści</label></div>
+                    <div class="col-xs-7"><textarea class="form-control" rows="3" name="benefits" id="{{ form.benefits.id_for_label }}">{{ request.POST.benefits|default:offer.benefits }}</textarea></div>
+                </div>
             </div>
-            <label class="col-xs-2 control-label" for="{{ offer_form.requirements.id_for_label }}">Wymagania</label>
-            <div class="col-xs-4">
-                <textarea class="form-control" rows="3" name="requirements" id="{{ offer_form.requirements.id_for_label }}">{{ request.POST.requirements|default:offer.requirements }}</textarea>
+            <div class="col-xs-6 {% if form.requirements.errors %}has-error{% endif %}">
+                {% if form.requirements.errors %}<div class="col-xs-12">{{ form.requirements.errors }}</div>{% endif %}
+                <div class="col-xs-12 form-group form-group-sm">
+                    <div class="col-xs-5"><label class="control-label" for="{{ form.requirements.id_for_label }}">Wymagania</label></div>
+                    <div class="col-xs-7"><textarea class="form-control" rows="3" name="requirements" id="{{ form.requirements.id_for_label }}">{{ request.POST.requirements|default:offer.requirements }}</textarea></div>
+                </div>
             </div>
         </div>
 
@@ -88,6 +120,7 @@
     </form>
 
     {% if offer.id %}
-    {% include "offers/gallery.html" with offer_image_form=offer_image_form images=images MEDIA_URL=MEDIA_URL %}
+        <hr />
+        {% include "offers/gallery.html" with offer_image_form=offer_image_form images=images MEDIA_URL=MEDIA_URL %}
     {% endif %}
 {% endblock %}
