@@ -1,0 +1,33 @@
+{% extends "common/col1.html" %}
+
+{% block title %}Lista ofert w archiwum{% endblock %}
+
+{% block content %}
+    {% if offers %}
+        <h2>Lista ofert</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Tytuł</th>
+                <th>Miejsce</th>
+                <th>Nazwa organizacji</th>
+                <th>Czas obowiązywania</th>
+                <th>Data rozpoczęcia akcji</th>
+                <th>Data zakończenia akcji</th>
+                <th></th>
+            </tr>
+        {% for o in offers %}
+            <tr>
+                <td>{{ o.title }}</td>
+                <td>{{ o.location }}</td>
+                <td>{{ o.organization.name }}</td>
+                <td>{{ o.time_period }}</td>
+                <td>{{ o.started_at }}</td>
+                <td>{{ o.finished_at }}</td>
+                <td><a href="{% url 'offers_view' o.title|slugify o.id %}">Podgląd</a></td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>Brak ofert spełniających podane kryteria</p>
+    {% endif %}
+{% endblock %}

@@ -124,6 +124,7 @@ class Offer(models.Model):
     volunteers_limit = models.IntegerField(default=0, null=True, blank=True)
 
     def __str__(self):
+        u"""Offer string representation."""
         return self.title
 
     def set_main_image(self, is_main):
@@ -223,6 +224,7 @@ class Badge(models.Model):
 
 class UserProfile(models.Model):
     u"""Model that handles users' profiles."""
+
     user = models.OneToOneField(User)
     organizations = models.ManyToManyField(
         Organization,
@@ -407,7 +409,10 @@ class OrganizationGallery(models.Model):
         self.remove()
 
     def set_as_main(self, organization):
-        u"""Save image as main."""
+        u"""Save image as main.
+
+        :param organization: Organization model instance
+        """
         OrganizationGallery.objects.filter(organization_id=organization.id)\
             .update(
                 is_main=False
@@ -417,7 +422,10 @@ class OrganizationGallery(models.Model):
 
     @staticmethod
     def get_organizations_galleries(userprofile):
-        u"""Get images grouped by organizations"""
+        u"""Get images grouped by organizations
+
+        :param userprofile: UserProfile model instance
+        """
         organizations = Organization.objects.filter(
             userprofiles=userprofile
         ).all()
