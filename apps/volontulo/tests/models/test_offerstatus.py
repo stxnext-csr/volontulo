@@ -3,7 +3,11 @@
 u"""
 .. module:: test_offerstatus
 """
+from datetime import datetime
+from datetime import timedelta
+
 from django.test import TestCase
+from django.utils import timezone
 
 from apps.volontulo.models import Offer
 from apps.volontulo.models import Organization
@@ -15,10 +19,7 @@ class TestOfferStatusModel(TestCase):
     @classmethod
     def setUpTestData(cls):
         u"""Fixtures for OfferStatus model unittests."""
-        from datetime import datetime
-        from datetime import timedelta
-
-        current_datetime = '2015-11-01 11:01:11'
+        current_datetime = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
         past = datetime.strptime(
             current_datetime,
             "%Y-%m-%d %H:%M:%S"
@@ -42,7 +43,7 @@ class TestOfferStatusModel(TestCase):
             time_commitment='12.12.2015',
             benefits=u'',
             location=u'',
-            title=u'',
+            title=u'Offer 1',
             time_period=u'',
         )
 
@@ -60,7 +61,7 @@ class TestOfferStatusModel(TestCase):
             time_commitment='12.12.2015',
             benefits=u'',
             location=u'',
-            title=u'',
+            title=u'Offer 2',
             time_period=u'',
         )
 
@@ -78,7 +79,7 @@ class TestOfferStatusModel(TestCase):
             time_commitment='12.12.2015',
             benefits=u'',
             location=u'',
-            title=u'',
+            title=u'Offer 3',
             time_period=u'',
         )
 
@@ -96,20 +97,20 @@ class TestOfferStatusModel(TestCase):
             time_commitment='12.12.2015',
             benefits=u'',
             location=u'',
-            title=u'',
+            title=u'Offer 4',
             time_period=u'',
         )
 
     def test__determine_action_status(self):
         u"""Verify action status."""
-        finished_offer = Offer.objects.get(id=1)
+        finished_offer = Offer.objects.get(title='Offer 1')
         self.assertEqual(finished_offer.determine_action_status(), 'finished')
 
-        future_offer = Offer.objects.get(id=2)
+        future_offer = Offer.objects.get(title='Offer 2')
         self.assertEqual(future_offer.determine_action_status(), 'future')
 
-        ongoing_offer1 = Offer.objects.get(id=3)
+        ongoing_offer1 = Offer.objects.get(title='Offer 3')
         self.assertEqual(ongoing_offer1.determine_action_status(), 'ongoing')
 
-        ongoing_offer2 = Offer.objects.get(id=4)
+        ongoing_offer2 = Offer.objects.get(title='Offer 4')
         self.assertEqual(ongoing_offer2.determine_action_status(), 'ongoing')
