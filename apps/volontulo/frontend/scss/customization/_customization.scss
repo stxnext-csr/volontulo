@@ -14,6 +14,14 @@
 .h5 h5,
 .h6 h6 {
     display: inline-block;
+    margin: 0;
+}
+.h1,
+.h2,
+.h3 {
+    .btn {
+        vertical-align: top;
+    }
 }
 
 b, // strong is 700
