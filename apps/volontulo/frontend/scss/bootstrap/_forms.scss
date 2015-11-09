@@ -327,7 +327,7 @@ input[type="checkbox"] {
   .form-control {
     height: $input-height-small;
     padding: $padding-small-vertical $padding-small-horizontal;
-    font-size: $font-size-small;
+    font-size: ($font-size-small + 1);
     line-height: $line-height-small;
     border-radius: $input-border-radius-small;
   }
@@ -601,8 +601,8 @@ input[type="checkbox"] {
   .form-group-sm {
     @media (min-width: $screen-sm-min) {
       .control-label {
-        padding-top: ($padding-small-vertical + 1);
-        font-size: $font-size-small;
+        padding-top: ($padding-small-vertical + 0.5);
+        font-size: ($font-size-small + 1);
       }
     }
   }
