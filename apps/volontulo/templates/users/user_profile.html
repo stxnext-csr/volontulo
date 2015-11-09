@@ -64,7 +64,7 @@
         {% if offers %}
             <h4>Oferty w których zamierzasz wziąć udział</h4>
             {% endif %}
-            {% include 'users/my_offers.html' with offers=offers%}
+            {% include 'users/my_offers.html' with offers=participated_offers%}
         </div>
     </div>
 
@@ -80,7 +80,7 @@
                 <h4>Organizowane oferty</h4>
                 <a href="{% url 'offers_create' %}" class="btn btn-primary btn-sm">Utwórz ofertę</a>
             </div>
-            {% include 'organizations/organization_offers.html' with offers=offers %}
+            {% include 'organizations/organization_offers.html' with offers=created_offers %}
         </div>
     </div>
 

@@ -5,10 +5,7 @@ u"""
 """
 # pylint: skip-file
 
-import os
-
 from .base import *
-
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases

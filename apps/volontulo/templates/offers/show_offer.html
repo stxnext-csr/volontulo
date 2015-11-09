@@ -5,9 +5,6 @@
 {% block content-heading %}
 <div class="offer_view">
     <img class="img-responsive center-block" src="{{ MEDIA_URL }}{{ main_image|default:'' }}" alt="{{ offer.title|safe }}" />
-    {% if user.is_administrator %}
-        <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
-    {% endif %}
     <div class="panels">
         <div class="media panel-default">
             <div class="media-left panel-heading">
@@ -33,7 +30,12 @@
 {% endblock %}
 
 {% block content %}
-    <h2>{{ offer.title }}</h2>
+    <div class="h2">
+        <h2>{{ offer.title }}</h2>
+        {% if user.userprofile.is_administrator %}
+            <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-default"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edytuj ofertę</a>
+        {% endif %}
+    </div>
     <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-8">
             <div class="media row">

@@ -18,8 +18,43 @@ from django.utils import timezone
 logger = logging.getLogger('volontulo.models')
 
 
-class OfferStatus(models.Model):
-    u"""Offer complex statuses."""
+class Organization(models.Model):
+    u"""Model that handles ogranizations/institutions."""
+    name = models.CharField(max_length=150)
+    address = models.CharField(max_length=150)
+    description = models.TextField()
+
+    def __str__(self):
+        u"""Organization model string reprezentation."""
+        return self.name
+
+
+class OffersManager(models.Manager):
+    u"""Offers Manager."""
+
+    def get_active(self):
+        u"""Return active offers."""
+        return self.filter(
+            offer_status='published',
+            action_status__in=('ongoing', 'future'),
+            recruitment_status__in=('open', 'supplemental'),
+        ).all()
+
+    def get_for_administrator(self):
+        u"""Return all offers for administrator to allow management."""
+        return self.filter(offer_status='unpublished').all()
+
+    def get_archived(self):
+        u"""Return archived offers."""
+        return self.filter(
+            offer_status='published',
+            action_status__in=('ongoing', 'finished'),
+            recruitment_status='closed',
+        ).all()
+
+
+class Offer(models.Model):
+    u"""Offer model."""
 
     OFFER_STATUSES = (
         ('unpublished', u'Unpublished'),
@@ -37,122 +72,6 @@ class OfferStatus(models.Model):
         ('finished', u'Finished'),
     )
 
-    offer_status = models.CharField(max_length=16, choices=OFFER_STATUSES)
-    recruitment_status = models.CharField(
-        max_length=16,
-        choices=RECRUITMENT_STATUSES
-    )
-    recruitment_start_date = models.DateTimeField(blank=True, null=True)
-    recruitment_end_date = models.DateTimeField(blank=True, null=True)
-    action_status = models.CharField(max_length=16, choices=ACTION_STATUSES)
-    action_start_date = models.DateTimeField(blank=True, null=True)
-    action_end_date = models.DateTimeField(blank=True, null=True)
-    volunteers_limit = models.IntegerField(default=0, null=True, blank=True)
-
-    @classmethod
-    def create(cls, status, recruitment, action):
-        u"""Helper creating OfferStatus object.
-
-        :param status: string Offer status
-        :param recruitment: string Recruitment status
-        :param action: string Datetime determined action status
-        """
-        return cls(
-            offer_status=status,
-            recruitment_status=recruitment,
-            action_status=action,
-        )
-
-    def __str__(self):
-        u"""Offer status string representation."""
-        def as_dict(tuples_tuple):
-            u"""Return dictionary from tuples tuple.
-
-            :param tuples_tuple: tuple with tuples
-            """
-            return {item[0]: item[1] for item in tuples_tuple}
-
-        offer_statuses = as_dict(OfferStatus.OFFER_STATUSES)
-        recruitment_statuses = as_dict(OfferStatus.RECRUITMENT_STATUSES)
-        action_statuses = as_dict(OfferStatus.ACTION_STATUSES)
-
-        return u"{}, {}, {}".format(
-            offer_statuses[self.offer_status],
-            recruitment_statuses[self.recruitment_status],
-            action_statuses[self.action_status]
-        )
-
-    def publish(self):
-        u"""Change state of current offer to published."""
-        self.offer_status = 'published'
-        return self
-
-    def unpublish(self):
-        u"""Change state of current offer to unpublished."""
-        self.offer_status = 'unpublished'
-        return self
-
-    def reject(self):
-        u"""Change state of current offer to rejected."""
-        self.offer_status = 'rejected'
-        return self
-
-    def open_recruitment(self):
-        u"""Change recruitation status of current offer open."""
-        self.recruitment_status = 'open'
-        return self
-
-    def close_recruitment(self):
-        u"""Change recruitation status of current offer closed."""
-        self.recruitment_status = 'closed'
-        return self
-
-    def supplement_recruitment(self):
-        u"""Change recruitation status of current offer supplemental."""
-        self.recruitment_status = 'supplemental'
-        return self
-
-    def futured_action(self):
-        u"""Change state of current offer to publish."""
-        self.action_status = 'future'
-        return self
-
-    def ongoing_action(self):
-        u"""Change state of current offer to unpublished."""
-        self.action_status = 'ongoing'
-        return self
-
-    def finished_action(self):
-        u"""Change state of current offer to rejected."""
-        self.action_status = 'finished'
-        return self
-
-
-class Organization(models.Model):
-    u"""Model that handles ogranizations/institutions."""
-    name = models.CharField(max_length=150)
-    address = models.CharField(max_length=150)
-    description = models.TextField()
-
-    def __str__(self):
-        return self.name
-
-
-class OffersManager(models.Manager):
-    u"""Offers Manager."""
-
-    def get_active(self):
-        u"""Return active offers."""
-        return self.all()
-
-    def get_archived(self):
-        u"""Return archived offers."""
-        return self.all()
-
-
-class Offer(models.Model):
-    u"""Offer model."""
-
     objects = OffersManager()
     organization = models.ForeignKey(Organization)
     volunteers = models.ManyToManyField(User)
@@ -162,15 +81,8 @@ class Offer(models.Model):
     benefits = models.TextField()
     location = models.CharField(max_length=150)
     title = models.CharField(max_length=150)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     started_at = models.DateTimeField(blank=True, null=True)
     finished_at = models.DateTimeField(blank=True, null=True)
-    status = models.OneToOneField(
-        OfferStatus,
-        related_name='offer',
-        null=True
-    )
     time_period = models.CharField(max_length=150, default='', blank=True)
     status_old = models.CharField(
         max_length=30,
@@ -178,13 +90,74 @@ class Offer(models.Model):
         null=True,
         unique=False
     )
+    offer_status = models.CharField(
+        max_length=16,
+        choices=OFFER_STATUSES,
+        default='unpublished',
+    )
+    recruitment_status = models.CharField(
+        max_length=16,
+        choices=RECRUITMENT_STATUSES,
+        default='open',
+    )
+    action_status = models.CharField(
+        max_length=16,
+        choices=ACTION_STATUSES,
+        default='ongoing',
+    )
     votes = models.BooleanField(default=0)
+    recruitment_start_date = models.DateTimeField(blank=True, null=True)
+    recruitment_end_date = models.DateTimeField(blank=True, null=True)
+    reserve_recruitment = models.BooleanField(blank=True, default=True)
+    reserve_recruitment_start_date = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+    reserve_recruitment_end_date = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+    action_ongoing = models.BooleanField(default=False, blank=True)
+    constant_coop = models.BooleanField(default=False, blank=True)
+    action_start_date = models.DateTimeField(blank=True, null=True)
+    action_end_date = models.DateTimeField(blank=True, null=True)
+    volunteers_limit = models.IntegerField(default=0, null=True, blank=True)
 
     def __str__(self):
+        u"""Offer string representation."""
         return self.title
 
+    def set_main_image(self, is_main):
+        u"""Set main image flag unsetting other offers images.
+
+        :param is_main: Boolean flag resetting offer main image
+        """
+        if is_main:
+            OfferImage.objects.filter(offer=self).update(is_main=False)
+            return True
+        return False
+
+    def save_offer_image(self, gallery, userprofile, is_main=False):
+        u"""Handle image upload for user profile page.
+
+        :param gallery: UserProfile model instance
+        :param userprofile: UserProfile model instance
+        :param is_main: Boolean main image flag
+        """
+        gallery.offer = self
+        gallery.userprofile = userprofile
+        gallery.is_main = self.set_main_image(is_main)
+        gallery.save()
+        return self
+
+    def create_new(self):
+        u"""Set status while creating new offer."""
+        self.offer_status = 'unpublished'
+        self.recruitment_status = 'open'
+        self.action_status = self.determine_action_status()
+
     def determine_action_status(self):
-        u"""Determine action status by dates."""
+        u"""Determine action status by offer dates."""
         if (
                 (
                     self.finished_at and
@@ -201,6 +174,42 @@ class Offer(models.Model):
         else:
             return 'finished'
 
+    def change_status(self, status):
+        u"""Change offer status.
+
+        :param status: string Offer status
+        """
+        if status in ('published', 'rejected', 'unpublished'):
+            self.offer_status = status
+            self.save()
+        return self
+
+    def unpublish(self):
+        u"""Unpublish offer."""
+        self.offer_status = 'unpublished'
+        self.save()
+        return self
+
+    def publish(self):
+        u"""Publish offer."""
+        self.offer_status = 'published'
+        self.save()
+        return self
+
+    def reject(self):
+        u"""Reject offer."""
+        self.offer_status = 'rejected'
+        self.save()
+        return self
+
+    def close_offer(self):
+        u"""Change offer status to close."""
+        self.offer_status = 'unpublished'
+        self.action_status = 'finished'
+        self.recruitment_status = 'closed'
+        self.save()
+        return self
+
 
 class Badge(models.Model):
     u"""Generic badge representation."""
@@ -215,6 +224,7 @@ class Badge(models.Model):
 
 class UserProfile(models.Model):
     u"""Model that handles users' profiles."""
+
     user = models.OneToOneField(User)
     organizations = models.ManyToManyField(
         Organization,
@@ -272,7 +282,10 @@ class UserBadges(models.Model):
 
     @staticmethod
     def get_user_badges(userprofile):
-        u"""Return User badges for selected user."""
+        u"""Return User badges for selected user.
+
+        :param userprofile: UserProfile model instance
+        """
         return UserBadges.objects \
             .filter(userprofile=userprofile.id) \
             .values('badge_id', 'badge__name', 'badge__priority') \
@@ -396,7 +409,10 @@ class OrganizationGallery(models.Model):
         self.remove()
 
     def set_as_main(self, organization):
-        u"""Save image as main."""
+        u"""Save image as main.
+
+        :param organization: Organization model instance
+        """
         OrganizationGallery.objects.filter(organization_id=organization.id)\
             .update(
                 is_main=False
@@ -406,7 +422,10 @@ class OrganizationGallery(models.Model):
 
     @staticmethod
     def get_organizations_galleries(userprofile):
-        u"""Get images grouped by organizations"""
+        u"""Get images grouped by organizations
+
+        :param userprofile: UserProfile model instance
+        """
         organizations = Organization.objects.filter(
             userprofiles=userprofile
         ).all()
