@@ -1,4 +1,0 @@
-{% extends "emails/base.txt" %}
-{% block email_content %}
-ID oferty: {{ offer.id }}.
-{% endblock %}
