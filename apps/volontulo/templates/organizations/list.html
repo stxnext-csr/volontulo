@@ -1,0 +1,24 @@
+{% extends "common/col1.html" %}
+
+{% block title %}Lista organizacji{% endblock %}
+
+{% block content %}
+       {% if organizations %}
+        <h2>Lista organizacji</h2>
+        <table class="table table-striped">
+            <tr>
+                <th>Nazwa</th>
+                <th>Adres</th>
+            </tr>
+        {% for o in organizations %}
+            <tr>
+                <td><a href="{% url 'organization_view' slug=o.name|slugify id_=o.id %}">{{ o.name }}</a></td>
+                <td>{{ o.address }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>Brak zdefiniowanych organizacji.</p>
+    {% endif %}
+
+{% endblock %}

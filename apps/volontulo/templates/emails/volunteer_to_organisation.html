@@ -1,0 +1,12 @@
+{% extends "emails/base.html" %}
+
+{% block title %}Kontakt wolontariusza z organizatorem{% endblock %}
+
+{% block email_content %}
+
+Imię i nazwisko: {{ name }}<br />
+Email: {{ email }}<br />
+Telefon: {{ phone_no }}<br />
+Wiadomość: {{ message }}<br />
+
+{% endblock %}

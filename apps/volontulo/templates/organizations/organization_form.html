@@ -1,0 +1,33 @@
+{% extends "common/col2.html" %}
+
+{% block title %}Tworzenie organizacji{% endblock %}
+
+{% block content %}
+    <h2>Tworzenie organizacji</h2>
+
+    <form id="organization_form" class="form-horizontal" method="post" action="{{ request.get_full_path }}" role="form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ organization_form.name.id_for_label }}">Nazwa</label>
+            <div class="col-xs-4">
+                <input type="text" value="{{ request.POST.name|default:organization.name }}" name="name" class="form-control" id="{{ organization_form.name.id_for_label }}" />
+            </div>
+            <label class="col-xs-2 control-label" for="{{ organization_form.address.id_for_label }}">Adres</label>
+            <div class="col-xs-4">
+                <input type="text" value="{{ request.POST.address|default:organization.address }}" name="address" class="form-control" id="{{ organization_form.address.id_for_label }}" />
+            </div>
+        </div>
+        <div class="form-group form-group-sm">
+            <label class="col-xs-2 control-label" for="{{ organization_form.description.id_for_label }}">Opis</label>
+            <div class="col-xs-10">
+                <textarea name="description" class="form-control" rows="3" id="{{ organization_form.description.id_for_label }}">{{ request.POST.description|default:organization.description }}</textarea>
+            </div>
+        </div>
+
+        <div class="form-group form-group-sm">
+            <div class="col-xs-offset-2 col-xs-10">
+                <button type="submit" name="submit" class="btn btn-primary">Zapisz zmiany</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

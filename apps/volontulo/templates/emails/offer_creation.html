@@ -1,0 +1,9 @@
+{% extends "emails/base.html" %}
+
+{% block title %}Zgłoszenie oferty{% endblock %}
+
+{% block email_content %}
+
+ID oferty: <a href="{{ protocol }}://{{ domain }}{% url 'offers_view' offer.title|slugify offer.id %}">{{ offer.id }}</a>
+
+{% endblock %}

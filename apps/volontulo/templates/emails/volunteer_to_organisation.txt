@@ -1,0 +1,7 @@
+{% extends "emails/base.txt" %}
+{% block email_content %}
+Imię i nazwisko: {{ name }},
+Email: {{ email }},
+Telefon: {{ phone_no }},
+Wiadomość: {{ message}},
+{% endblock %}

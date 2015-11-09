@@ -1,0 +1,110 @@
+{% extends "common/col1.html" %}
+
+{% block title %}Oferta {{ offer.title }}{% endblock %}
+
+{% block content-heading %}
+<div class="offer_view">
+    <img class="img-responsive center-block" src="{{ MEDIA_URL }}{{ main_image|default:'' }}" alt="{{ offer.title|safe }}" />
+    {% if user.is_administrator %}
+        <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
+    {% endif %}
+    <div class="panels">
+        <div class="media panel-default">
+            <div class="media-left panel-heading">
+                <span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>
+            </div>
+            <div class="media-body panel-body">
+                {{ offer.location }}
+            </div>
+        </div>
+        <div class="clearfix hidden-sm hidden-md hidden-lg"></div>
+        <div class="media panel-default">
+            <div class="media-left panel-heading">
+                <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
+            </div>
+            <div class="media-body panel-body">
+                {{ offer.time_period }}
+            </div>
+        </div>
+        <div class="clearfix hidden-sm hidden-md hidden-lg"></div>
+        <div class="addthis_sharing_toolbox"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+    <h2>{{ offer.title }}</h2>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-8">
+            <div class="media row">
+                <div class="media-body">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            {{ offer.description }}
+                        </div>
+                    </div>
+                </div>
+                <div class="media-right media-bottom col-xs-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Korzyści dla wolontariusza</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ offer.benefits }}</p>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Wymagania wobec wolontariusza</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ offer.requirements }}</p>
+                        </div>
+                        <div class="panel-heading">
+                            <p>Zaangażowanie czasowe</p>
+                        </div>
+                        <div class="panel-body">
+                            <p>{{ offer.time_commitment }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# User jest organizacją i oferta jest zamknięta. #}
+            {% if offer.status_old == 'CLOSED' and user.organization %}
+                {% include 'offers/rewarding_volunteers.html' with volunteers=volunteers offer=offer %}
+            {% endif %}
+
+            {% if user.userprofile.is_administrator %}
+                {% include 'offers/applied_volunteers.html' with volunteers=volunteers %}
+            {% endif %}
+
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="panel panel-danger text-center">
+                <div class="panel-heading">
+                    <h3>Możesz pomóc?</h3>
+                    <p>Twoja pomoc jest ważna. <b>Potrzebujemy Ciebie!</b></p>
+                    <a href="{% url "offers_join" offer.title|slugify offer.id %}" class="btn btn-default btn-lg">Zgłoś się na ten wolontariat</a>
+                </div>
+                <div class="panel-footer">
+                    <p>Rekrutacja trwa do <b>{data końca zgłoszeń}</b></p>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Organizator</h3>
+                </div>
+                <div class="panel-body">
+                    <p>{{ offer.organization.name }}</p>
+                </div>
+            </div>
+         </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <!-- Go to www.addthis.com/dashboard to customize your tools -->
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-563108a02fc94ff9" async="async"></script>
+{% endblock %}

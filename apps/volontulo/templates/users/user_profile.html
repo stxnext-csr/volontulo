@@ -1,0 +1,88 @@
+{% extends "common/col1.html" %}
+{% load bootstrap3 %}
+
+{% block title %}Strona użytkownika {{ user.email }}{% endblock %}
+
+{% block content-heading %}
+    <div class="media user-heading">
+        <div class="media-left">
+            <div class="cover-image" style="background-image:url({{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}"></div>
+        </div>
+        <div class="media-body media-top">
+            <h2 class="lead">Użytkownik: {{ user.username }}</h2>
+            <ul class="list-unstyled">
+                <li><b>Real User ID:</b> <span class="badge">{{ user.id }}</span></li>
+                <li><b>UserProfile ID:</b> <span class="badge">{{ user.userprofile.id }}</span></li>
+            </ul>
+        </div>
+        <div class="media-body media-top">
+            <h2 class="lead">Odznaki</h2>
+            {% include 'common/badges.html' with badges=badges %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <div class="panel panel-default">
+                <h3 class="panel-heading lead">
+                    <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                    Zdjęcie profilowe
+                </h3>
+                <div class="panel-body">
+                    {% include 'users/gallery.html' with image=image %}
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="panel panel-default">
+                <h3 class="panel-heading lead">
+                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    Profil
+                </h3>
+                <div class="panel-body">
+                    <form action="{{ request.path }}" method="post" role="form">
+                        {% csrf_token %}
+                        {% bootstrap_form profile_form %}
+                        <div class="btn-form">
+                            <button type="submit" name="submit" value="save_profile" class="btn btn-success">Zapisz zmiany</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <h3 class="panel-heading lead">
+            <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+            Aktywność
+        </h3>
+        <div class="panel-body">
+        {% if offers %}
+            <h4>Oferty w których zamierzasz wziąć udział</h4>
+            {% endif %}
+            {% include 'users/my_offers.html' with offers=offers%}
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <h3 class="panel-heading lead">
+            <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+            Działania w instytucji czy organizacji
+        </h3>
+        <div class="panel-body">
+            {% include 'organizations/gallery.html' with image_form=image_form gallery=gallery %}
+            <hr />
+            <div class="h4">
+                <h4>Organizowane oferty</h4>
+                <a href="{% url 'offers_create' %}" class="btn btn-primary btn-sm">Utwórz ofertę</a>
+            </div>
+            {% include 'organizations/organization_offers.html' with offers=offers %}
+        </div>
+    </div>
+
+    <p class="pull-right"><a href="{% url 'logout' %}" class="btn btn-default">Wyloguj</a></p>
+{% endblock %}

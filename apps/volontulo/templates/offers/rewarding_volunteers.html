@@ -1,0 +1,29 @@
+{% if volunteers and not offer.votes %}
+    <form id="offer_form" class="form-horizontal" method="post" action="{{ request.get_full_path }}" role="form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2>Ocena wolontariuszy</h2>
+
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td>Imię i nazwisko (email) wolontariusza</td>
+                <td>Odznaka "Uczestnik"</td>
+                <td>Odznaka "Wybitny uczestnik"</td>
+                <td>Odznaka "Nikt" - usuń badge "Uczestnik"</td>
+            </tr>
+            {% for volunteer in volunteers %}
+            <tr>
+                <td>{{ volunteer.last_name }} {{ volunteer.first_name }} ({{ volunteer.email }})</td>
+                <td class="text-center"><input type="radio" name="award_{{ volunteer.userprofile.id }}" value="PARTICIPANT" checked="checked" /></td>
+                <td class="text-center"><input type="radio" name="award_{{ volunteer.userprofile.id }}" value="PROMINENT-PARTICIPANT" /></td>
+                <td class="text-center"><input type="radio" name="award_{{ volunteer.userprofile.id }}" value="NOT-APPLY" /></td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="form-group form-group-sm">
+            <div class="col-xs-offset-2 col-xs-10">
+                <button type="submit" value="save" name="submit" class="btn btn-primary">Zapisz oceny</button>
+            </div>
+        </div>
+    </form>
+{% endif %}

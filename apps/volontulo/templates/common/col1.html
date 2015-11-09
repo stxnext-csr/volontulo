@@ -1,0 +1,17 @@
+{% extends "common/base.html" %}
+
+{% block layout %}
+<section class="content-heading">
+    <div class="container">
+    {% block content-heading %}
+    {% endblock %}
+    </div>
+</section>
+<section class="content">
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</section>
+
+{% endblock %}
