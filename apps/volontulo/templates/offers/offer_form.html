@@ -119,22 +119,34 @@
             <div class="col-xs-4 {% if form.recruitment_start_date.errors %}has-error{% endif %}">
                 {% if form.title.errors %}<div class="col-xs-12">{{ form.recruitment_start_date.errors }}</div>{% endif %}
                 <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5"><label class="control-label" for="{{ form.recruitment_start_date.id_for_label }}">Data rozpoczęcia rekrutacji</label></div>
-                    <div class="col-xs-7"><input type="text" value="{{ request.POST.recruitment_start_date|default:offer.recruitment_start_date }}" name="recruitment_start_date" class="form-control" id="{{ form.recruitment_start_date.id_for_label }}" /></div>
+                    <div class="col-xs-5">
+                        <label class="control-label" for="{{ form.recruitment_start_date.id_for_label }}">Data rozpoczęcia rekrutacji</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <input type="text" value="{{ request.POST.recruitment_start_date|date:"Y-m-d H:i:s"|default:offer.recruitment_start_date|date:"Y-m-d H:i:s" }}" name="recruitment_start_date" class="form-control" id="{{ form.recruitment_start_date.id_for_label }}" />
+                    </div>
                 </div>
             </div>
             <div class="col-xs-4 {% if form.recruitment_end_date.errors %}has-error{% endif %}">
                 <div class="col-xs-12">{{ form.recruitment_end_date.errors }}</div>
                 <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5"><label class="control-label" for="{{ form.recruitment_end_date.id_for_label }}">Data zakończenia rekrutacji</label></div>
-                    <div class="col-xs-7"><input type="text" value="{{ request.POST.recruitment_end_date|default:offer.recruitment_end_date }}" name="recruitment_end_date" class="form-control" id="{{ form.recruitment_end_date.id_for_label }}" /></div>
+                    <div class="col-xs-5">
+                        <label class="control-label" for="{{ form.recruitment_end_date.id_for_label }}">Data zakończenia rekrutacji</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <input type="text" value="{{ request.POST.recruitment_end_date|date:"Y-m-d H:i:s"|default:offer.recruitment_end_date|date:"Y-m-d H:i:s" }}" name="recruitment_end_date" class="form-control" id="{{ form.recruitment_end_date.id_for_label }}" />
+                    </div>
                 </div>
             </div>
             <div class="col-xs-4 {% if form.volunteers_limit.errors %}has-error{% endif %}">
                 <div class="col-xs-12">{{ form.volunteers_limit.errors }}</div>
                 <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5"><label class="control-label" for="{{ form.volunteers_limit.id_for_label }}">Limit wolontariuszy</label></div>
-                    <div class="col-xs-7"><input type="text" value="{{ request.POST.volunteers_limit|default:offer.volunteers_limit }}" name="volunteers_limit" class="form-control" id="{{ form.volunteers_limit.id_for_label }}" /></div>
+                    <div class="col-xs-5">
+                        <label class="control-label" for="{{ form.volunteers_limit.id_for_label }}">Limit wolontariuszy</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <input type="text" value="{% if request.POST.volunteers_limit or offer.volunteers_limit %}{{ request.POST.volunteers_limit|default:offer.volunteers_limit }}{% else %}0{% endif %}" name="volunteers_limit" class="form-control" id="{{ form.volunteers_limit.id_for_label }}" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -144,7 +156,7 @@
                 {% if form.title.errors %}<div class="col-xs-12">{{ form.reserve_recruitment.errors }}</div>{% endif %}
                 <div class="col-xs-12 form-group form-group-sm checkbox">
                     <label for="{{ form.reserve_recruitment.id_for_label }}">
-                        <input type="checkbox" value="{{ request.POST.reserve_recruitment|default:offer.reserve_recruitment }}" name="reserve_recruitment" id="{{ form.reserve_recruitment.id_for_label }}" /> Rekrutacja rezerwowa
+                        <input type="checkbox" value="reserve_recruitment" name="reserve_recruitment" id="{{ form.reserve_recruitment.id_for_label }}" {% if request.POST.reserve_recruitment or offer.reserve_recruitment %}checked="checked"{% endif %} /> Rekrutacja rezerwowa
                     </label>
                 </div>
             </div>
@@ -155,7 +167,7 @@
                         <label class="control-label" for="{{ form.reserve_recruitment_start_date.id_for_label }}">Data rozpoczęcia rekrutacji rezerwowej</label>
                     </div>
                     <div class="col-xs-7">
-                        <input type="text" value="{{ request.POST.reserve_recruitment_start_date|default:offer.reserve_recruitment_start_date }}" name="reserve_recruitment_start_date" class="form-control" id="{{ form.reserve_recruitment_start_date.id_for_label }}" />
+                        <input type="text" value="{{ request.POST.reserve_recruitment_start_date|date:"Y-m-d H:i:s"|default:offer.reserve_recruitment_start_date|date:"Y-m-d H:i:s" }}" name="reserve_recruitment_start_date" class="form-control" id="{{ form.reserve_recruitment_start_date.id_for_label }}" />
                     </div>
                 </div>
             </div>
@@ -166,7 +178,7 @@
                         <label class="control-label" for="{{ form.reserve_recruitment_end_date.id_for_label }}">Data zakończenia rekrutacji rezerwowej</label>
                     </div>
                     <div class="col-xs-7">
-                        <input type="text" value="{{ request.POST.reserve_recruitment_end_date|default:offer.reserve_recruitment_end_date }}" name="reserve_recruitment_end_date" class="form-control" id="{{ form.reserve_recruitment_end_date.id_for_label }}" />
+                        <input type="text" value="{{ request.POST.reserve_recruitment_end_date|date:"Y-m-d H:i:s"|default:offer.reserve_recruitment_end_date|date:"Y-m-d H:i:s" }}" name="reserve_recruitment_end_date" class="form-control" id="{{ form.reserve_recruitment_end_date.id_for_label }}" />
                     </div>
                 </div>
             </div>
