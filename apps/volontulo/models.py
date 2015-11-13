@@ -246,6 +246,11 @@ class UserProfile(models.Model):
         u"""Return True if current user is volunteer, else return False"""
         return not (self.is_administrator and self.organizations)
 
+    def can_edit_offer(self, offer):
+        u"""Checks if the user can edit given offer"""
+        return self.is_administrator or self.organizations.filter(
+            id=offer.organization_id).exists()
+
     def get_avatar(self):
         u"""Return avatar for current user."""
         return UserGallery.objects.filter(
