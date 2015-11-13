@@ -250,18 +250,20 @@ class TestOffersEdit(TestCase):
             description=u'',
         )
         cls.organization.save()
+        cls.organization_user_email = u'organization@example.com'
+        cls.organization_user_password = u'123org'
         organization_user = User.objects.create_user(
-            u'organization@example.com',
-            u'organization@example.com',
-            u'123org'
+            cls.organization_user_email,
+            cls.organization_user_email,
+            cls.organization_user_password
         )
         organization_user.save()
         cls.organization_profile = UserProfile(
-            user=organization_user,
+            user=organization_user
         )
         cls.organization_profile.save()
-        # pylint: disable=no-member
         cls.organization_profile.organizations.add(cls.organization)
+        # pylint: disable=no-member
         cls.offer = Offer.objects.create(
             organization=cls.organization,
             description=u'',
@@ -311,8 +313,8 @@ class TestOffersEdit(TestCase):
     def test_for_correct_slug(self):
         u"""Test of get request for offers/edit with correct slug."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
-            'password': '123org',
+            'email': self.organization_user_email,
+            'password': self.organization_user_password
         })
         response = self.client.get(
             '/offers/volontulo-offer/{}/edit'.format(self.offer.id))

@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db.utils import IntegrityError
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -101,7 +102,7 @@ class OffersCreate(View):
         messages.error(
             request,
             u"Formularz zawiera niepoprawnie wypełnione pola <br />{0}"
-            .format('<br />'.join(form.errors)),
+                .format('<br />'.join(form.errors)),
         )
         return render(
             request,
@@ -116,6 +117,17 @@ class OffersCreate(View):
 
 class OffersEdit(View):
     u"""Class view supporting change of a offer."""
+
+    def dispatch(self, request, *args, **kwargs):
+        u"""Dispatch method overriden to check offer edit permission"""
+        try:
+            is_edit_allowed = request.user.userprofile.can_edit_offer(
+                offer_id=kwargs['id_'])
+        except Offer.DoesNotExist:
+            is_edit_allowed = False
+        if not is_edit_allowed:
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
 
     @staticmethod
     @correct_slug(Offer, 'offers_edit', 'title')

@@ -246,8 +246,10 @@ class UserProfile(models.Model):
         u"""Return True if current user is volunteer, else return False"""
         return not (self.is_administrator and self.organizations)
 
-    def can_edit_offer(self, offer):
-        u"""Checks if the user can edit given offer"""
+    def can_edit_offer(self, offer=None, offer_id=None):
+        u"""Checks if the user can edit an offer based on its ID"""
+        if offer is None:
+            offer = Offer.objects.get(id=offer_id)
         return self.is_administrator or self.organizations.filter(
             id=offer.organization_id).exists()
 
