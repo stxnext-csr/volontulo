@@ -14,6 +14,14 @@
 .h5 h5,
 .h6 h6 {
     display: inline-block;
+    margin: 0;
+}
+.h1,
+.h2,
+.h3 {
+    .btn {
+        vertical-align: top;
+    }
 }
 
 b, // strong is 700
@@ -65,7 +73,7 @@ label {
 }
 // section content
 .content {
-    min-height: 60vh;
+    min-height: calc(65vh - 45px);
     background: $lightgray-light;
     .container:before {
         margin-bottom: 20px;
@@ -75,7 +83,7 @@ label {
 // section footer
 .footer {
     min-height: 35vh;
-    padding-bottom: 10vh;
+    padding-bottom: 5vh;
     background-color: $darkgray-dark;
     color: $mediumgray-dark;
     .nav-title {
@@ -163,18 +171,26 @@ label {
     }
     .offer-title {
         float: left;
-        margin: 0;
-        padding: 8px 16px 8px 18px;
-        line-height: 29px;
-        font-size: 24px;
-        font-weight: 700;
-        color: $lightgray-light;
+        padding: 0px 8px;
         border-radius: 3px;
-        border: 1px solid rgba(black, .08);
+        border: 1px solid rgba(black, .1);
         background-color: rgba(black, .05);
-        text-shadow: 0 0 12px rgba(black, .5),
-                     0 1px 2px rgba(black, .75), 
-                     0 1px 0 rgba(black, .5);
+        .title {
+            display: inline-block;
+            margin: 0;
+            padding: 6px 8px 10px;
+            line-height: 29px;
+            font-size: 24px;
+            font-weight: 700;
+            color: $lightgray-light;
+            text-shadow: 0 0 10px rgba(black, .2),
+                        0 0px 1px rgba(black, .6), 
+                        0 1px 0 rgba(black, .6);
+            vertical-align: middle;
+        }
+        .btn {
+            vertical-align: middle;
+        }
     }
     .panels {
         position: absolute;
@@ -187,6 +203,7 @@ label {
             .media-left {
                 opacity: .92;
                 line-height: .5;
+                border-top: 0;
                 .glyphicon {
                     margin: 0;
                     font-size: 24px;

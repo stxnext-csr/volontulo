@@ -6,9 +6,11 @@
 <div class="offer_view">
     <img class="img-responsive center-block" src="{{ MEDIA_URL }}{{ main_image|default:'' }}" alt="{{ offer.title|safe }}" />
     <div class="panels">
-        <a href="{% url 'offers_view' slug=offer.title|slugify id_=offer.id %}">
-            <h2 class="offer-title">{{ offer.title }}</h2>
-        </a>
+        <div class="offer-title">
+            <a href="{% url 'offers_view' slug=offer.title|slugify id_=offer.id %}">
+                <h2 class="title">{{ offer.title }}</h2>
+            </a>
+        </div>
         <div class="clearfix"></div>
         <div class="media panel-default">
             <div class="media-left panel-heading">
@@ -38,7 +40,8 @@
     <h3 class="text-center">Zgłoś swoją pomoc w tej akcji</h3>
     <div class="row">
         <p class="col-xs-offset-2 col-xs-9">
-        Twoje zgłoszenie zostanie wysłane jako wiadomość e-mail do organizatora. Otrzyma on twoje dane kontaktowe, dlatego <b>bardzo ważne jest aby były one prawidłowe</b>.<br>
+        Twoje zgłoszenie zostanie wysłane jako wiadomość e-mail do organizatora.<br>
+        Otrzyma on twoje dane kontaktowe, dlatego <b>bardzo ważne jest aby były one prawidłowe</b>.<br>
         Organizator będzie się z tobą komunikował drogą poczty elektronicznej lub telefonicznie.
         </p>
     </div>
