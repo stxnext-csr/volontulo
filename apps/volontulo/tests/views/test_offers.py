@@ -496,7 +496,6 @@ class TestOffersView(TestCase):
         # pylint: disable=no-member
         self.assertIn('offer', response.context)
         self.assertIn('volunteers', response.context)
-        self.assertEqual(len(response.context['volunteers']), 5)
 
 
 class TestOffersJoin(TestCase):
