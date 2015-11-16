@@ -15,3 +15,4 @@ def can_edit_offer(userprofile, offer):
     if userprofile is None:
         return False
     return userprofile.can_edit_offer(offer=offer)
+
