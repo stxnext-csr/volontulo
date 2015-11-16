@@ -327,10 +327,16 @@ class OffersJoin(View):
                 return redirect('offers_list')
 
         offer = Offer.objects.get(id=id_)
-        form = OfferApplyForm()
+        try:
+            main_image = OfferImage.objects.get(offer=offer, is_main=True)
+        except OfferImage.DoesNotExist:
+            main_image = ''
+
         context = {
-            'form': form,
+            'form': OfferApplyForm(),
             'offer': offer,
+            'MEDIA_URL': settings.MEDIA_URL,
+            'main_image': main_image,
         }
 
         context['volunteer_user'] = UserProfile()
