@@ -32,21 +32,40 @@ from apps.volontulo.utils import save_history
 from apps.volontulo.views import logged_as_admin
 
 
-def offers_list(request):
-    u"""View, that show list of offers.
+class OffersList(View):
+    u"""View that handle list of offers."""
 
-    It's used for volunteers to show active ones and for admins to show
-    all of them.
+    @staticmethod
+    def get(request):
+        u"""It's used for volunteers to show active ones and for admins to show
+        all of them.
 
-    :param request: WSGIRequest instance
-    """
-    if logged_as_admin(request):
-        offers = Offer.objects.all()
-    else:
-        offers = Offer.objects.get_active()
-    return render(request, "offers/offers_list.html", context={
-        'offers': offers,
-    })
+        :param request: WSGIRequest instance
+        """
+        if logged_as_admin(request):
+            offers = Offer.objects.all()
+        else:
+            offers = Offer.objects.get_active()
+
+        return render(request, "offers/offers_list.html", context={
+            'offers': offers,
+        })
+
+    @staticmethod
+    def post(request):
+        u"""Method responsible for rendering form for new offer.
+
+        :param request: WSGIRequest instance
+        """
+        if (
+                request.POST.get('edit_type') == 'status_change' and
+                request.POST.get('offer_id')
+        ):
+            offer = get_object_or_404(Offer, id=request.POST.get('offer_id'))
+            offer.publish()
+            messages.success(request,
+                             u"Aktywowałeś ofertę '%s'" % offer.title)
+        return redirect('offers_list')
 
 
 class OffersCreate(View):

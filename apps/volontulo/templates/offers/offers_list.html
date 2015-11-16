@@ -20,15 +20,17 @@
                 <td>{{ o.organization.name }}</td>
                 <td>{{ o.time_period }}</td>
                 <td>
-                {% if o.status_old == 'ACTIVE' %}
-                    <a href="{% url 'offers_view' o.title|slugify o.id %}">Pomóż</a>
-                {% else %}
-                    <form id="offer_{{ o.id }}_activate" method="post" action="{% url 'offers_edit' o.title|slugify o.id %}" enctype="multipart/form-data">
+                {% if user.userprofile.is_administrator %}
+                    {% if o.offer_status == 'unpublished' %}
+                    <form id="offer_{{ o.id }}_activate" method="post" action="{% url 'offers_list' %}" enctype="multipart/form-data">
                         {% csrf_token %}
+                        <input type="hidden" value="{{ o.id }}" name="offer_id" />
                         <input type="hidden" value="status_change" name="edit_type" />
-                        <input type="hidden" value="ACTIVE" name="status_old" />
                         <button type="submit" name="submit" class="btn btn-primary">Aktywuj</button>
                     </form>
+                    {% endif %}
+                {% elif o.offer_status == 'published' %}
+                    <a href="{% url 'offers_view' o.title|slugify o.id %}">Pomóż</a>
                 {% endif %}
                 </td>
             </tr>

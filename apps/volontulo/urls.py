@@ -40,7 +40,7 @@ urlpatterns = [  # pylint: disable=invalid-name
     # me/settings
 
     # offers' namesapce:
-    url(r'^offers$', offers_views.offers_list, name='offers_list'),
+    url(r'^offers$', offers_views.OffersList.as_view(), name='offers_list'),
     url(
         r'^offers/create$',
         offers_views.OffersCreate.as_view(),
