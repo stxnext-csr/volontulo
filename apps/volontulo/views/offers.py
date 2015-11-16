@@ -101,8 +101,8 @@ class OffersCreate(View):
             )
         messages.error(
             request,
-            u"Formularz zawiera niepoprawnie wypełnione pola <br />{0}"
-                .format('<br />'.join(form.errors)),
+            u"Formularz zawiera niepoprawnie wypełnione pola <br />{0}".format(
+                '<br />'.join(form.errors)),
         )
         return render(
             request,
@@ -118,6 +118,7 @@ class OffersCreate(View):
 class OffersEdit(View):
     u"""Class view supporting change of a offer."""
 
+    # pylint: disable=R0201
     def dispatch(self, request, *args, **kwargs):
         u"""Dispatch method overriden to check offer edit permission"""
         try:

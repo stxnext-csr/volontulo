@@ -262,8 +262,8 @@ class TestOffersEdit(TestCase):
             user=organization_user
         )
         cls.organization_profile.save()
-        cls.organization_profile.organizations.add(cls.organization)
         # pylint: disable=no-member
+        cls.organization_profile.organizations.add(cls.organization)
         cls.offer = Offer.objects.create(
             organization=cls.organization,
             description=u'',
