@@ -88,7 +88,17 @@ class CreateOfferForm(forms.ModelForm):
             'time_period',
             'status_old',
             'started_at',
-            'finished_at'
+            'finished_at',
+            'recruitment_start_date',
+            'recruitment_end_date',
+            'reserve_recruitment',
+            'reserve_recruitment_start_date',
+            'reserve_recruitment_end_date',
+            'action_ongoing',
+            'constant_coop',
+            'action_start_date',
+            'action_end_date',
+            'volunteers_limit',
         ]
 
 

@@ -3,15 +3,15 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import django.utils.timezone
-import uuid
 from django.conf import settings
+import uuid
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('contenttypes', '0002_remove_content_type_name'),
     ]
 
     operations = [
@@ -36,11 +36,11 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=150)),
                 ('started_at', models.DateTimeField(blank=True, null=True)),
                 ('finished_at', models.DateTimeField(blank=True, null=True)),
-                ('time_period', models.CharField(blank=True, max_length=150, default='')),
-                ('status_old', models.CharField(null=True, max_length=30, default='NEW')),
-                ('offer_status', models.CharField(max_length=16, choices=[('unpublished', 'Unpublished'), ('published', 'Published'), ('rejected', 'Rejected')], default='unpublished')),
-                ('recruitment_status', models.CharField(max_length=16, choices=[('open', 'Open'), ('supplemental', 'Supplemental'), ('closed', 'Closed')], default='open')),
-                ('action_status', models.CharField(max_length=16, choices=[('future', 'Future'), ('ongoing', 'Ongoing'), ('finished', 'Finished')], default='ongoing')),
+                ('time_period', models.CharField(blank=True, default='', max_length=150)),
+                ('status_old', models.CharField(default='NEW', max_length=30, null=True)),
+                ('offer_status', models.CharField(default='unpublished', choices=[('unpublished', 'Unpublished'), ('published', 'Published'), ('rejected', 'Rejected')], max_length=16)),
+                ('recruitment_status', models.CharField(default='open', choices=[('open', 'Open'), ('supplemental', 'Supplemental'), ('closed', 'Closed')], max_length=16)),
+                ('action_status', models.CharField(default='ongoing', choices=[('future', 'Future'), ('ongoing', 'Ongoing'), ('finished', 'Finished')], max_length=16)),
                 ('votes', models.BooleanField(default=0)),
                 ('recruitment_start_date', models.DateTimeField(blank=True, null=True)),
                 ('recruitment_end_date', models.DateTimeField(blank=True, null=True)),
@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                 ('constant_coop', models.BooleanField(default=False)),
                 ('action_start_date', models.DateTimeField(blank=True, null=True)),
                 ('action_end_date', models.DateTimeField(blank=True, null=True)),
-                ('volunteers_limit', models.IntegerField(blank=True, null=True, default=0)),
+                ('volunteers_limit', models.IntegerField(blank=True, default=0, null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('path', models.ImageField(upload_to='gallery/')),
                 ('is_main', models.BooleanField(default=False)),
-                ('organization', models.ForeignKey(related_name='images', to='volontulo.Organization')),
+                ('organization', models.ForeignKey(to='volontulo.Organization', related_name='images')),
             ],
         ),
         migrations.CreateModel(
@@ -106,31 +106,31 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('is_administrator', models.BooleanField(default=False)),
-                ('uuid', models.UUIDField(unique=True, default=uuid.uuid4)),
-                ('badges', models.ManyToManyField(through='volontulo.UserBadges', related_name='user_profile', to='volontulo.Badge')),
-                ('organizations', models.ManyToManyField(related_name='userprofiles', to='volontulo.Organization')),
+                ('uuid', models.UUIDField(default=uuid.uuid4, unique=True)),
+                ('badges', models.ManyToManyField(to='volontulo.Badge', through='volontulo.UserBadges', related_name='user_profile')),
+                ('organizations', models.ManyToManyField(to='volontulo.Organization', related_name='userprofiles')),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
             model_name='usergallery',
             name='userprofile',
-            field=models.ForeignKey(related_name='images', to='volontulo.UserProfile'),
+            field=models.ForeignKey(to='volontulo.UserProfile', related_name='images'),
         ),
         migrations.AddField(
             model_name='userbadges',
             name='userprofile',
-            field=models.ForeignKey(db_column='userprofile_id', to='volontulo.UserProfile'),
+            field=models.ForeignKey(to='volontulo.UserProfile', db_column='userprofile_id'),
         ),
         migrations.AddField(
             model_name='organizationgallery',
             name='published_by',
-            field=models.ForeignKey(related_name='gallery', to='volontulo.UserProfile'),
+            field=models.ForeignKey(to='volontulo.UserProfile', related_name='gallery'),
         ),
         migrations.AddField(
             model_name='offerimage',
             name='userprofile',
-            field=models.ForeignKey(related_name='offerimages', to='volontulo.UserProfile'),
+            field=models.ForeignKey(to='volontulo.UserProfile', related_name='offerimages'),
         ),
         migrations.AddField(
             model_name='offer',

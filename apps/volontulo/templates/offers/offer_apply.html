@@ -5,6 +5,9 @@
 {% block content-heading %}
 <div class="offer_view">
     <img class="img-responsive center-block" src="{{ MEDIA_URL }}{{ main_image|default:'' }}" alt="{{ offer.title|safe }}" />
+    {% if user.is_administrator %}
+        <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-primary">Edytuj ofertę</a>
+    {% endif %}
     <div class="panels">
         <div class="offer-title">
             <a href="{% url 'offers_view' slug=offer.title|slugify id_=offer.id %}">

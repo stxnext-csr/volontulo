@@ -170,7 +170,12 @@ def initialize_empty_organizations():
 def initialize_administrator(
         username='admin_user@example.com',
         email='admin_user@example.com', password='admin_password'):
-    u"""Initialize administrator user."""
+    u"""Initialize administrator user.
+
+    :param username: string User username
+    :param email: string User email
+    :param password: string User plaintext password
+    """
     administrator1 = User.objects.create_user(username, email, password)
     administrator1.save()
     administrator_profile = UserProfile.objects.create(user=administrator1)
