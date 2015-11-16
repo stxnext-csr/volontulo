@@ -76,12 +76,7 @@
                 </div>
             </div>
 
-            {# User jest organizacją i oferta jest zamknięta. #}
-            {% if offer.status_old == 'CLOSED' and user.organization %}
-                {% include 'offers/rewarding_volunteers.html' with volunteers=volunteers offer=offer %}
-            {% endif %}
-
-            {% if user.userprofile.is_administrator %}
+            {% if volunteers %}
                 {% include 'offers/applied_volunteers.html' with volunteers=volunteers %}
             {% endif %}
 

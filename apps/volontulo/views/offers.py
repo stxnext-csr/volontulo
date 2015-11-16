@@ -252,9 +252,19 @@ class OffersView(View):
         except OfferImage.DoesNotExist:
             main_image = ''
 
+        volunteers = None
+        users = [u.user.id for u in offer.organization.userprofiles.all()]
+        if (
+                request.user.is_authenticated() and (
+                    request.user.userprofile.is_administrator or
+                    request.user.userprofile.id in users
+                )
+        ):
+            volunteers = offer.volunteers.all()
+
         context = {
             'offer': offer,
-            'volunteers': offer.volunteers.all(),
+            'volunteers': volunteers,
             'MEDIA_URL': settings.MEDIA_URL,
             'main_image': main_image,
         }
