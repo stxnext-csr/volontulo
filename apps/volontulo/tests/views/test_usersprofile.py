@@ -134,3 +134,17 @@ class TestUsersProfile(TestCase):
             response,
             u'Ta organizacja nie utworzyła jeszcze żadnych ofert.'
         )
+
+    def test__userprofile_phone_no(self):
+        u"""Testing user profile page for filled organization."""
+        self.client.post('/login', {
+            'email': u'volunteer1@example.com',
+            'password': 'volunteer1',
+        })
+        response = self.client.get('/me')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/user_profile.html')
+        # pylint: disable=no-member
+        self.assertIn('profile_form', response.context)
+        self.assertContains(response, u'333666999')

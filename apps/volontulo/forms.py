@@ -29,9 +29,19 @@ class UserForm(forms.ModelForm):
 class EditProfileForm(forms.Form):
     u"""Form reposponsible for edit user details on profile page."""
     email = forms.EmailField(label="Email")
-    current_password = forms.CharField(widget=forms.PasswordInput())
-    new_password = forms.CharField(widget=forms.PasswordInput())
-    confirm_new_password = forms.CharField(widget=forms.PasswordInput())
+    phone_no = forms.CharField(label=u"Phone number", required=False)
+    current_password = forms.CharField(
+        widget=forms.PasswordInput(),
+        required=False
+    )
+    new_password = forms.CharField(
+        widget=forms.PasswordInput(),
+        required=False
+    )
+    confirm_new_password = forms.CharField(
+        widget=forms.PasswordInput(),
+        required=False
+    )
     user = forms.CharField(widget=forms.HiddenInput())
 
     def is_valid(self):
@@ -40,18 +50,20 @@ class EditProfileForm(forms.Form):
             return valid
 
         current_password = self.cleaned_data['current_password']
-        user = User.objects.get(id=self.cleaned_data['user'])
-
-        if not user.check_password(current_password):
-            raise ValidationError(u"Aktualne hasło jest błędne")
-
         new_password = self.cleaned_data['new_password']
         confirm_new_password = self.cleaned_data['confirm_new_password']
-        if new_password:
+        user = User.objects.get(id=self.cleaned_data['user'])
+
+        if (
+                current_password and
+                new_password and
+                confirm_new_password
+        ):
+            if not user.check_password(current_password):
+                raise ValidationError(u"Aktualne hasło jest błędne")
+
             if new_password != confirm_new_password:
                 raise ValidationError(u"Wprowadzone hasła różnią się")
-        else:
-            raise ValidationError(u"Nowe hasło nie może być puste.")
 
         return True
 
@@ -76,7 +88,17 @@ class CreateOfferForm(forms.ModelForm):
             'time_period',
             'status_old',
             'started_at',
-            'finished_at'
+            'finished_at',
+            'recruitment_start_date',
+            'recruitment_end_date',
+            'reserve_recruitment',
+            'reserve_recruitment_start_date',
+            'reserve_recruitment_end_date',
+            'action_ongoing',
+            'constant_coop',
+            'action_start_date',
+            'action_end_date',
+            'volunteers_limit',
         ]
 
 

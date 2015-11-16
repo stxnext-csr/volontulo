@@ -86,6 +86,7 @@ def logged_user_profile(request):
         return EditProfileForm(
             initial={
                 'email': request.user.email,
+                'phone_no': request.user.userprofile.phone_no,
                 'user': request.user.id,
             }
         )
@@ -114,18 +115,25 @@ def logged_user_profile(request):
         return request.POST.get('submit') == 'save_profile'
 
     def _save_userprofile():
-        u"""."""
+        u"""Save user profile"""
         form = EditProfileForm(request.POST)
         if form.is_valid():
             user = User.objects.get(id=request.user.id)
-            user.set_password(profile_form.cleaned_data['new_password'])
+            if (
+                    form.cleaned_data['current_password'] and
+                    form.cleaned_data['new_password'] and
+                    form.cleaned_data['confirm_new_password']
+            ):
+                user.set_password(form.cleaned_data['new_password'])
+            user.userprofile.phone_no = form.cleaned_data['phone_no']
+            user.userprofile.save()
             user.save()
             messages.success(
                 request,
                 u"Zaktualizowano profil"
             )
         else:
-            errors = '<br />'.join(profile_form.errors)
+            errors = '<br />'.join(form.errors)
             messages.error(
                 request,
                 u"Problem w trakcie zapisywania profilu: {}".format(errors)

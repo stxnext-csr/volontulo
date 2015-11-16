@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db.utils import IntegrityError
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -100,8 +101,8 @@ class OffersCreate(View):
             )
         messages.error(
             request,
-            u"Formularz zawiera niepoprawnie wypełnione pola <br />{0}"
-            .format('<br />'.join(form.errors)),
+            u"Formularz zawiera niepoprawnie wypełnione pola <br />{0}".format(
+                '<br />'.join(form.errors)),
         )
         return render(
             request,
@@ -116,6 +117,18 @@ class OffersCreate(View):
 
 class OffersEdit(View):
     u"""Class view supporting change of a offer."""
+
+    # pylint: disable=R0201
+    def dispatch(self, request, *args, **kwargs):
+        u"""Dispatch method overriden to check offer edit permission"""
+        try:
+            is_edit_allowed = request.user.userprofile.can_edit_offer(
+                offer_id=kwargs['id_'])
+        except Offer.DoesNotExist:
+            is_edit_allowed = False
+        if not is_edit_allowed:
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
 
     @staticmethod
     @correct_slug(Offer, 'offers_edit', 'title')
@@ -239,9 +252,19 @@ class OffersView(View):
         except OfferImage.DoesNotExist:
             main_image = ''
 
+        volunteers = None
+        users = [u.user.id for u in offer.organization.userprofiles.all()]
+        if (
+                request.user.is_authenticated() and (
+                    request.user.userprofile.is_administrator or
+                    request.user.userprofile.id in users
+                )
+        ):
+            volunteers = offer.volunteers.all()
+
         context = {
             'offer': offer,
-            'volunteers': offer.volunteers.all(),
+            'volunteers': volunteers,
             'MEDIA_URL': settings.MEDIA_URL,
             'main_image': main_image,
         }
@@ -304,10 +327,16 @@ class OffersJoin(View):
                 return redirect('offers_list')
 
         offer = Offer.objects.get(id=id_)
-        form = OfferApplyForm()
+        try:
+            main_image = OfferImage.objects.get(offer=offer, is_main=True)
+        except OfferImage.DoesNotExist:
+            main_image = ''
+
         context = {
-            'form': form,
+            'form': OfferApplyForm(),
             'offer': offer,
+            'MEDIA_URL': settings.MEDIA_URL,
+            'main_image': main_image,
         }
 
         context['volunteer_user'] = UserProfile()

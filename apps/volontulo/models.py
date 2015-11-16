@@ -236,6 +236,12 @@ class UserProfile(models.Model):
         through='UserBadges',
         related_name='user_profile'
     )
+    phone_no = models.CharField(
+        max_length=32,
+        blank=True,
+        default='',
+        null=True
+    )
     uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
     def is_admin(self):
@@ -245,6 +251,13 @@ class UserProfile(models.Model):
     def is_volunteer(self):
         u"""Return True if current user is volunteer, else return False"""
         return not (self.is_administrator and self.organizations)
+
+    def can_edit_offer(self, offer=None, offer_id=None):
+        u"""Checks if the user can edit an offer based on its ID"""
+        if offer is None:
+            offer = Offer.objects.get(id=offer_id)
+        return self.is_administrator or self.organizations.filter(
+            id=offer.organization_id).exists()
 
     def get_avatar(self):
         u"""Return avatar for current user."""

@@ -5,3 +5,4 @@ django-coverage==1.2
 django-debug-toolbar==1.4
 django-extensions==1.5
 ipdb==0.8.1
+fake-factory==0.5.3

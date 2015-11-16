@@ -1,4 +1,5 @@
 {% extends "common/col1.html" %}
+{% load offer_utilities %}
 
 {% block title %}Oferta {{ offer.title }}{% endblock %}
 
@@ -8,7 +9,7 @@
     <div class="panels">
         <div class="offer-title">
             <h2 class="title">{{ offer.title }}</h2>
-            {% if user.userprofile.is_administrator %}
+            {% if user.userprofile|can_edit_offer:offer %}
                 <a href="{% url 'offers_edit' offer.title|slugify offer.id %}" class="btn btn-default btn-sm">
                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Edytuj ofertę
                 </a>
@@ -75,12 +76,7 @@
                 </div>
             </div>
 
-            {# User jest organizacją i oferta jest zamknięta. #}
-            {% if offer.status_old == 'CLOSED' and user.organization %}
-                {% include 'offers/rewarding_volunteers.html' with volunteers=volunteers offer=offer %}
-            {% endif %}
-
-            {% if user.userprofile.is_administrator %}
+            {% if volunteers %}
                 {% include 'offers/applied_volunteers.html' with volunteers=volunteers %}
             {% endif %}
 
