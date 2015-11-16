@@ -32,7 +32,9 @@ def initialize_empty_volunteer():
         'volunteer1'
     )
     volunteer_user1.save()
-    UserProfile.objects.create(user=volunteer_user1)
+    userprofile = UserProfile.objects.create(user=volunteer_user1)
+    userprofile.phone_no = '333666999'
+    userprofile.save()
     return volunteer_user1
 
 
