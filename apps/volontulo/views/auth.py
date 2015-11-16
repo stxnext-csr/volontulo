@@ -171,8 +171,8 @@ def activate(request, uuid):
     """View responsible for activating user account."""
     try:
         profile = UserProfile.objects.get(uuid=uuid)
-        profile.user.is_active = 1
-        profile.save()
+        profile.user.is_active = True
+        profile.user.save()
         messages.success(
             request,
             """Pomyślnie aktywowałeś użytkownika."""
