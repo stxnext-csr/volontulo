@@ -29,7 +29,7 @@ class UserForm(forms.ModelForm):
 class EditProfileForm(forms.Form):
     u"""Form reposponsible for edit user details on profile page."""
     email = forms.EmailField(label="Email")
-    phone_no = forms.CharField(label=u"Phone number")
+    phone_no = forms.CharField(label=u"Phone number", required=False)
     current_password = forms.CharField(
         widget=forms.PasswordInput(),
         required=False
