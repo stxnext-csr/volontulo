@@ -47,6 +47,11 @@ urlpatterns = [  # pylint: disable=invalid-name
         name='offers_create'
     ),
     url(
+        r'^offers/reorder/(?P<id_>[0-9]+)?$',
+        offers_views.OffersReorder.as_view(),
+        name='offers_reorder'
+    ),
+    url(
         r'^offers/archived$',
         offers_views.OffersArchived.as_view(),
         name='offers_archived'
