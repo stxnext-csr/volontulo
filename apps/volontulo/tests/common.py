@@ -29,7 +29,9 @@ def initialize_empty_volunteer():
     volunteer_user1 = User.objects.create_user(
         'volunteer1@example.com',
         'volunteer1@example.com',
-        'volunteer1'
+        'volunteer1',
+        first_name=u'Grzegorz',
+        last_name=u'Brzęczyszczykiewicz',
     )
     volunteer_user1.save()
     userprofile = UserProfile.objects.create(user=volunteer_user1)
@@ -49,7 +51,9 @@ def initialize_empty_organization():
     organization_user1 = User.objects.create_user(
         'organization1@example.com',
         'organization1@example.com',
-        'organization1'
+        'organization1',
+        first_name=u'Organization1Firstname',
+        last_name=u'Organization1Lastname',
     )
     organization_user1.save()
     organization_profile1 = UserProfile.objects.create(
