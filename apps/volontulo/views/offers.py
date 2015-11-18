@@ -134,6 +134,46 @@ class OffersCreate(View):
         )
 
 
+class OffersReorder(View):
+    u"""Class view supporting change of a offer."""
+
+    @staticmethod
+    def get(request, id_):
+        u"""Display offer list with weights GET request.
+
+        :param request: WSGIRequest instance
+        :param id_:
+        :return:
+        """
+        offers = Offer.objects.get_weightened()
+        return render(request, 'offers/reorder.html', {
+            'offers': offers, 'id': id_})
+
+    @staticmethod
+    def post(request, id_):
+        u"""Display offer list with weights GET request.
+
+        :param request:
+        :param id_: Integer newly created offer id
+        :return:
+        """
+        if request.POST.get('submit') == 'reorder':
+            items = [item
+                     for item
+                     in request.POST.items()
+                     if item[0].startswith('weight_')]
+            weights = {id_.split('_')[1]: weight
+                       for id_, weight in items}
+            for id_, weight in weights.items():
+                Offer.objects.filter(id=id_).update(weight=weight)
+
+            messages.success(
+                request,
+                u"Uporządkowano oferty."
+            )
+        return redirect('offers_list')
+
+
 class OffersEdit(View):
     u"""Class view supporting change of a offer."""
 
@@ -175,7 +215,7 @@ class OffersEdit(View):
                 'organizations': organizations,
                 'offer_image_form': OfferImageForm(),
                 'images': OfferImage.objects.filter(offer=offer).all(),
-                'MEDIA_URL': settings.MEDIA_URL
+                'MEDIA_URL': settings.MEDIA_URL,
             }
         )
 
@@ -222,6 +262,8 @@ class OffersEdit(View):
         elif request.POST.get('status_flag') == 'change_status':
             if request.POST.get('status') == 'published':
                 offer.publish()
+                if request.user.userprofile.is_administrator:
+                    return redirect('offers_reorder', offer.id)
             elif request.POST.get('status') == 'rejected':
                 offer.reject()
             return redirect('offers_list')

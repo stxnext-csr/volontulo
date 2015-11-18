@@ -1,0 +1,38 @@
+{% extends "common/col1.html" %}
+
+{% block title %}Kolejność ofert{% endblock %}
+
+{% block content %}
+    {% if offers %}
+        <h2>Kolejność ofert</h2>
+        <form action="" method="post">
+        {% csrf_token %}
+        <div class="btn-group">
+            <button type="submit" class="btn btn-default" name="submit" value="reorder">Zapisz</button>
+        </div>
+        <table class="table table-striped">
+            <tr>
+                <th>ID</th>
+                <th>Tytuł</th>
+                <th>Miejsce</th>
+                <th>Nazwa organizacji</th>
+                <th>Waga</th>
+            </tr>
+        {% for o in offers %}
+            <tr class="draggable {% if id == o.id %}latest{% endif %}">
+                <td>{{ o.id }}</td>
+                <td>{{ o.title }}</td>
+                <td>{{ o.location }}</td>
+                <td>{{ o.organization.name }}</td>
+                <td><input type="text" size="3" name="weight_{{ o.id }}" value="{{ o.weight }}" class="form-control" /></td>
+            </tr>
+        {% endfor %}
+        </table>
+        <div class="btn-group">
+            <button type="submit" class="btn btn-default" name="submit" value="reorder">Zapisz</button>
+        </div>
+        </form>
+    {% else %}
+        <p>Brak ofert spełniających podane kryteria</p>
+    {% endif %}
+{% endblock %}

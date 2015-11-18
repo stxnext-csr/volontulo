@@ -49,7 +49,7 @@ def homepage(request):  # pylint: disable=unused-argument
             'offers': offers,
         })
     else:
-        offers = Offer.objects.get_active()
+        offers = Offer.objects.get_weightened()
 
     return render(
         request,

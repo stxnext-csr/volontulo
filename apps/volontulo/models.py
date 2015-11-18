@@ -12,6 +12,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models import F
 from django.utils import timezone
 
 # pylint: disable=invalid-name
@@ -43,6 +44,15 @@ class OffersManager(models.Manager):
     def get_for_administrator(self):
         u"""Return all offers for administrator to allow management."""
         return self.filter(offer_status='unpublished').all()
+
+    def get_weightened(self, count=10):
+        u"""Return all published offers ordered by weight.
+
+        :param count: Integer
+        :return:
+        """
+        return self.filter(
+            offer_status='published').order_by('weight')[:count]
 
     def get_archived(self):
         u"""Return archived offers."""
@@ -122,6 +132,7 @@ class Offer(models.Model):
     action_start_date = models.DateTimeField(blank=True, null=True)
     action_end_date = models.DateTimeField(blank=True, null=True)
     volunteers_limit = models.IntegerField(default=0, null=True, blank=True)
+    weight = models.IntegerField(default=0, null=True, blank=True)
 
     def __str__(self):
         u"""Offer string representation."""
@@ -193,6 +204,8 @@ class Offer(models.Model):
     def publish(self):
         u"""Publish offer."""
         self.offer_status = 'published'
+        Offer.objects.all().update(weight=F('weight') + 1)
+        self.weight = 0
         self.save()
         return self
 
