@@ -134,7 +134,7 @@ class TestLogin(TestCase):
         )
         self.assertContains(
             response,
-            u'Email address:'
+            u'Adres email:'
         )
         self.assertContains(
             response,
