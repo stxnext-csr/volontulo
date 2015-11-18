@@ -87,6 +87,8 @@ def logged_user_profile(request):
             initial={
                 'email': request.user.email,
                 'phone_no': request.user.userprofile.phone_no,
+                'first_name': request.user.first_name,
+                'last_name': request.user.last_name,
                 'user': request.user.id,
             }
         )
@@ -126,6 +128,8 @@ def logged_user_profile(request):
             ):
                 user.set_password(form.cleaned_data['new_password'])
             user.userprofile.phone_no = form.cleaned_data['phone_no']
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
             user.userprofile.save()
             user.save()
             messages.success(
