@@ -110,3 +110,8 @@ python manage.py test --settings=volontulo_org.settings.test_settings_sqlite -v 
 ```
 Don't forget to run the tests on the production RDBMS (test_settings) before pushing your changes!
 
+### Populate badges in database
+To populate database with 3 required badges (volunteer, participant, prominent-participant) run followin command:
+```
+python manage.py addbadges --settings=volontulo_org.settings.dev
+```
