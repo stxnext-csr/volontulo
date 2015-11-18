@@ -76,7 +76,7 @@ class Offer(models.Model):
     organization = models.ForeignKey(Organization)
     volunteers = models.ManyToManyField(User)
     description = models.TextField()
-    requirements = models.TextField()
+    requirements = models.TextField(blank=True, default='')
     time_commitment = models.TextField()
     benefits = models.TextField()
     location = models.CharField(max_length=150)
