@@ -56,6 +56,7 @@ def homepage(request):  # pylint: disable=unused-argument
         "homepage.html",
         {
             'offers': offers,
+            'MEDIA_URL': settings.MEDIA_URL,
         }
     )
 
