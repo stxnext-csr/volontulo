@@ -1,4 +1,5 @@
 {% extends "common/col1.html" %}
+{% load main_image %}
 
 {% block title %}Volontulo - podejmij pracę jako wolontariusz{% endblock %}
 
@@ -10,9 +11,11 @@
         <h2>Pomóż w jednej z ofert:</h2>
         <div class="row offer-thumbnails">
         {% for o in offers %}
+            {{ o.image }}
             <div class="col-sm-6 col-md-3">
+
                 <div class="thumbnail">
-                    <div class="heading-image" style="background-image:url(http://placehold.it/300x190?text=fota+mobilizująca)"></div>
+                    <div class="heading-image" style="background-image:url({{ MEDIA_URL }}{{ o.images.all|main_image }})"></div>
                     <div class="caption">
                         <div class="text-right">
                             <a role="button" class="btn btn-warning" href="{% url 'offers_view' o.title|slugify o.id %}">Pomóż</a>

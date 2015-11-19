@@ -409,7 +409,7 @@ class UserGallery(models.Model):
 class OfferImage(models.Model):
     u"""Handling offer image."""
     userprofile = models.ForeignKey(UserProfile, related_name='offerimages')
-    offer = models.ForeignKey(Offer)
+    offer = models.ForeignKey(Offer, related_name='images')
     path = models.ImageField(upload_to='offers/')
     is_main = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
