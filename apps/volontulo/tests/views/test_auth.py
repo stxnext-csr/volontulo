@@ -32,7 +32,8 @@ class TestRegister(TransactionTestCase):
         self.assertTemplateUsed(response, 'auth/register.html')
         self.assertContains(
             response,
-            u'Wprowadzono nieprawidłowy email lub hasło',
+            u'Wprowadzono nieprawidłowy email, hasło lub nie wyrażono '
+            u'zgody na przetwarzanie danych osobowych.',
         )
         self.assertNotIn('_auth_user_id', self.client.session)
 
@@ -46,6 +47,7 @@ class TestRegister(TransactionTestCase):
         response = self.client.post('/register', {
             'email': u'existing@example.com',
             'password': u'123existing',
+            'terms_acceptance': True,
         })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'auth/register.html')
@@ -56,11 +58,52 @@ class TestRegister(TransactionTestCase):
         self.assertNotIn('_auth_user_id', self.client.session)
         self.assertEqual(User.objects.all().count(), 1)
 
+    # pylint: disable=invalid-name
+    def test_register_without_term_acceptance(self):
+        u"""Test for registration without accepted terms."""
+        response = self.client.post('/register', {
+            'email': u'notacceptregistration@example.com',
+            'password': u'123notacceptregistration',
+            'terms_acceptance': False,
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'auth/register.html')
+        self.assertContains(
+            response,
+            u'Wprowadzono nieprawidłowy email, hasło lub nie wyrażono '
+            u'zgody na przetwarzanie danych osobowych.',
+        )
+        self.assertNotIn('_auth_user_id', self.client.session)
+
+    # pylint: disable=invalid-name
+    def test_register_with_term_acceptance(self):
+        u"""Test for registration with accepted terms."""
+        response = self.client.post('/register', {
+            'email': u'acceptterms@example.com',
+            'password': u'123acceptterms',
+            'terms_acceptance': True,
+        }, follow=True)
+        self.assertRedirects(response, '/', 302, 200)
+        self.assertContains(
+            response,
+            u'Rejestracja przebiegła pomyślnie',
+        )
+        self.assertContains(
+            response,
+            u'Na podany przy rejestracji email został wysłany link '
+            u'aktywacyjny. Aby w pełni wykorzystać konto należy je aktywować '
+            u'poprzez kliknięcie linku lub wklejenie go w przeglądarce.'
+        )
+
+        self.assertIn('_auth_user_id', self.client.session)
+        self.assertEqual(User.objects.all().count(), 1)
+
     def test_successful_registration(self):
         u"""Test for attempt of registration for new user."""
         response = self.client.post('/register', {
             'email': u'new@example.com',
             'password': u'123new',
+            'terms_acceptance': True,
         }, follow=True)
         self.assertRedirects(response, '/', 302, 200)
         self.assertContains(
@@ -134,7 +177,7 @@ class TestLogin(TestCase):
         )
         self.assertContains(
             response,
-            u'Email address:'
+            u'Email:'
         )
         self.assertContains(
             response,

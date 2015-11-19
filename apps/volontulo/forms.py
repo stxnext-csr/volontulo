@@ -16,10 +16,14 @@ from apps.volontulo.models import OrganizationGallery
 from apps.volontulo.models import UserGallery
 from apps.volontulo.utils import get_administrators_emails
 
+ACCEPT_TERMS = u"""Wyrażam zgodę na przetwarzanie moich danych osobowych"""
+
 
 class UserForm(forms.ModelForm):
     u"""Form reposponsible for authorization."""
+    email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
+    terms_acceptance = forms.BooleanField(label=ACCEPT_TERMS, required=True)
 
     class Meta(object):
         model = User

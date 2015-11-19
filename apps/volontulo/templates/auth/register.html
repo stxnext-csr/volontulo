@@ -4,16 +4,21 @@
 
 {% block content %}
     <h2>Rejestracja w Volontulo</h2>
-
-    <form id="user_register" method="post" action="{% url 'register' %}" role="form" enctype="multipart/form-data">
+    <form id="user_register" method="post" action="{% url 'register' %}" role="form" enctype="multipart/form-data" {% if user_form.errors %}class="has-errors"{% endif %}>
         {% csrf_token %}
-        <div class="form-group">
-            {{ user_form.email.label_tag }}
+        <div class="form-group {% if user_form.email.errors %}has-error{% endif %}">
+            {{ user_form.email.errors }}
+            <label for="id_email" class="control-label">{{ user_form.email.label }} <span class="required">*</span></label>
             <input type="text" value="" name="email" class="form-control" id="{{ user_form.email.id_for_label }}" />
         </div>
-        <div class="form-group">
-            {{ user_form.password.label_tag }}
+        <div class="form-group {% if user_form.password.errors %}has-error{% endif %}">
+            {{ user_form.password.errors }}
+            <label for="id_password" class="control-label">{{ user_form.password.label }} <span class="required">*</span></label>
             <input type="password" value="" name="password" class="form-control" id="{{ user_form.password.id_for_label }}" />
+        </div>
+        <div class="checkbox {% if user_form.terms_acceptance.errors %}has-error{% endif %}">
+            {{ user_form.terms_acceptance.errors }}
+            <label for="{{ user_form.terms_acceptance.id_for_label }}" class="control-label"><input type="checkbox" name="terms_acceptance" value="accept" id="{{ user_form.terms_acceptance.id_for_label }}"> {{ user_form.terms_acceptance.label }}  <span class="required">*</span></label>
         </div>
         <button type="submit" name="submit" class="btn btn-primary">Zarejestruj się</button>
     </form>

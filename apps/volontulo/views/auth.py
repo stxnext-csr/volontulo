@@ -106,7 +106,7 @@ class Register(View):
 
     @classmethod
     def post(cls, request):
-        u"""Method handes creation of new user.
+        u"""Method handles creation of new user.
 
         :param request: WSGIRequest instance
         """
@@ -115,7 +115,8 @@ class Register(View):
         if not user_form.is_valid():
             messages.error(
                 request,
-                u'Wprowadzono nieprawidłowy email lub hasło'
+                u'Wprowadzono nieprawidłowy email, hasło lub nie wyrażono '
+                u'zgody na przetwarzanie danych osobowych.'
             )
             return cls.get(request, user_form)
 
