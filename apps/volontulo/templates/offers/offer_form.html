@@ -1,4 +1,4 @@
-{% extends "common/col2.html" %}
+{% extends "common/col1.html" %}
 
 {% block title %}{{ offer.id|yesno:"Edycja,Tworzenie" }} oferty dla wolontariuszy{% endblock %}
 
@@ -21,183 +21,194 @@
         </div>
         {% endif %}
 
+        <div class="form-group form-group-sm {% if form.title.errors %}has-error{% endif %}">
+            <label class="col-xs-3 control-label" for="{{ form.title.id_for_label }}">Tytuł oferty</label>
+            <div class="col-xs-9">
+                <input type="text" value="{{ request.POST.title|default:offer.title }}" name="title" class="form-control" id="{{ form.title.id_for_label }}" />
+                {% if form.title.errors %}
+                    <div class="error-text">{{ form.title.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="form-group form-group-sm {% if form.location.errors %}has-error{% endif %}">
+            <label class="col-xs-3 control-label" for="{{ form.location.id_for_label }}">Miejsce odbywania wolontariatu</label>
+            <div class="col-xs-9">
+                <input type="text" value="{{ request.POST.location|default:offer.location }}" name="location" class="form-control" id="{{ form.location.id_for_label }}" />
+                {% if form.location.errors %}
+                    <div class="error-text">{{ form.location.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="form-group form-group-sm {% if form.organizations.errors %}has-error{% endif %}">
+            <label class="control-label col-xs-3" for="{{ form.organization.id_for_label }}">Z ramienia organizacji</label>
+            <div class="col-xs-9">
+                <select value="{{ user.userprofile.organizations.all.0.id }}" name="organization" class="form-control" id="{{ form.organization.id_for_label }}">
+                    {% for o in organizations %}
+                        <option value="{{ o.id }}">{{ o.name }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.organizations.errors %}
+                    <div class="error-text">{{ form.organizations.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="form-group form-group-sm {% if form.started_at.errors %}has-error{% endif %}">
+            <h3 class="lead col-xs-offset-3 col-xs-9">Realizacja akcji</h3>
+            <label class="col-xs-3 control-label" for="{{ form.started_at.id_for_label }}">Dzień rozpoczęcia</label>
+            <div class="col-xs-4">
+
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <input type="radio" value="date" name="action_start" checked="checked" />
+                    </span>
+                    <input type="text" value="{{ request.POST.started_at|date:"Y-m-d H:i:s"|default:offer.started_at|date:"Y-m-d H:i:s" }}" name="started_at" class="form-control" id="{{ form.started_at.id_for_label }}" />
+                </div>
+
+            </div>
+            <div class="col-xs-5">
+                <label for="action_ongoing_id">
+                    <input type="radio" value="action_ongoing" name="action_start" id="action_ongoing_id" />
+                    akcja już trwa
+                </label>
+            </div>
+            {% if form.started_at.errors %}
+                <div class="col-xs-offset-3 col-xs-9">{{ form.started_at.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group form-group-sm {% if form.finished_at.errors %}has-error{% endif %}">
+            <label class="col-xs-3 control-label" for="{{ form.finished_at.id_for_label }}">Dzień zakończenia</label>
+            <div class="col-xs-4">
+
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <input type="radio" value="date" name="action_finished" checked="checked" />
+                    </span>
+                    <input type="text" value="{{ request.POST.finished_at|date:"Y-m-d H:i:s"|default:offer.finished_at|date:"Y-m-d H:i:s" }}" name="finished_at" class="form-control" id="{{ form.finished_at.id_for_label }}" />
+                </div>
+
+            </div>
+            <div class="col-xs-5">
+                <label for="constant_coop_id">
+                    <input type="radio" value="constant_coop" name="action_finished" id="constant_coop_id" />
+                    akcja nie kończy się (ciągła współpraca)
+                </label>
+            </div>
+            {% if form.finished_at.errors %}
+                <div class="col-xs-offset-3 col-xs-9">{{ form.finished_at.errors }}</div>
+            {% endif %}
+        </div>
+
         <div class="row">
-            <div class="col-xs-12 {% if form.organizations.errors %}has-error{% endif %}">
-                {% if form.organizations.errors %}<div class="cols-xs-12">{{ form.organizations.errors }}</div>{% endif %}
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5"><label class="control-label" for="{{ form.organization.id_for_label }}">Organizacja</label></div>
-                    <div class="col-xs-7">
-                        <select value="{{ user.userprofile.organizations.all.0.id }}" name="organization" class="form-control" id="{{ form.organization.id_for_label }}">
-                            {% for o in organizations %}
-                                <option value="{{ o.id }}">{{ o.name }}</option>
-                            {% endfor %}
-                        </select>
+            <div class="col-sm-offset-3 col-sm-5 col-xs-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="lead">Rekrutacja podstawowa</span>
+                        </h3>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-xs-6 {% if form.title.errors %}has-error{% endif %}">
-                {% if form.title.errors %}<div class="col-xs-12">{{ form.title.errors }}</div>{% endif %}
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5"><label class="control-label" for="{{ form.title.id_for_label }}">Tytuł</label></div>
-                    <div class="col-xs-7"><input type="text" value="{{ request.POST.title|default:offer.title }}" name="title" class="form-control" id="{{ form.title.id_for_label }}" /></div>
-                </div>
-            </div>
-            <div class="col-xs-6 {% if form.location.errors %}has-error{% endif %}">
-                <div class="col-xs-12">{{ form.location.errors }}</div>
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5"><label class="control-label" for="{{ form.location.id_for_label }}">Lokalizacja</label></div>
-                    <div class="col-xs-7"><input type="text" value="{{ request.POST.location|default:offer.location }}" name="location" class="form-control" id="{{ form.location.id_for_label }}" /></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-xs-6 {% if form.time_commitment.errors %}has-error{% endif %}">
-                <div class="col-xs-12">{{ form.time_commitment.errors }}</div>
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5"><label class="control-label" for="{{ form.time_commitment.id_for_label }}">Wymagania czasowe</label></div>
-                    <div class="col-xs-7"><input type="text" value="{{ request.POST.time_commitment|default:offer.time_commitment }}" name="time_commitment" class="form-control" id="{{ form.time_commitment.id_for_label }}" /></div>
-                </div>
-            </div>
-            <div class="col-xs-6">
-                <div class="col-xs-12 {% if form.started_at.errors %}has-error{% endif %}">
-                    {% if form.started_at.errors %}<div class="col-xs-12">{{ form.started_at.errors }}</div>{% endif %}
-                    <div class="col-xs-6 form-group form-group-sm radio">
-                        <div class="col-xs-5">
-                            <input type="radio" value="date" name="action_start" checked="checked" />
-                            <label class="control-label" for="{{ form.started_at.id_for_label }}">Dzień rozpoczęcia</label>
+                    <div class="panel-body">
+                        <div class="form-group form-group-sm {% if form.recruitment_start_date.errors %}has-error{% endif %}">
+                            <label class="control-label col-xs-3" for="{{ form.organization.id_for_label }}">Początek</label>
+                            <div class="col-xs-9">
+                                <input type="text" value="{{ request.POST.recruitment_start_date|date:"Y-m-d H:i:s"|default:offer.recruitment_start_date|date:"Y-m-d H:i:s" }}" name="recruitment_start_date" class="form-control" id="{{ form.recruitment_start_date.id_for_label }}" />
+                                {% if form.recruitment_start_date.errors %}
+                                    <div class="error-text">{{ form.recruitment_start_date.errors }}</div>
+                                {% endif %}
+                            </div>
                         </div>
-                        <div class="col-xs-7">
-                            <input type="text" value="{{ request.POST.started_at|date:"Y-m-d H:i:s"|default:offer.started_at|date:"Y-m-d H:i:s" }}" name="started_at" class="form-control" id="{{ form.started_at.id_for_label }}" />
+                        <div class="form-group form-group-sm {% if form.recruitment_end_date.errors %}has-error{% endif %}">
+                            <label class="control-label col-xs-3" for="{{ form.organization.id_for_label }}">Koniec</label>
+                            <div class="col-xs-9">
+                                <input type="text" value="{{ request.POST.recruitment_end_date|date:"Y-m-d H:i:s"|default:offer.recruitment_end_date|date:"Y-m-d H:i:s" }}" name="recruitment_end_date" class="form-control" id="{{ form.recruitment_end_date.id_for_label }}" />
+                                {% if form.recruitment_end_date.errors %}
+                                    <div class="error-text">{{ form.recruitment_end_date.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm {% if form.volunteers_limit.errors %}has-error{% endif %}">
+                            <label class="control-label col-xs-5" for="{{ form.organization.id_for_label }}">Limit wolontariuszy</label>
+                            <div class="col-xs-7">
+                                <input type="text" value="{% if request.POST.volunteers_limit or offer.volunteers_limit %}{{ request.POST.volunteers_limit|default:offer.volunteers_limit }}{% else %}0{% endif %}" name="volunteers_limit" class="form-control" id="{{ form.volunteers_limit.id_for_label }}" />
+                                {% if form.volunteers_limit.errors %}
+                                    <div class="error-text">{{ form.volunteers_limit.errors }}</div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                    <div class="col-xs-6 form-group form-group-sm radio">
-                        <label for="action_ongoing_id">
-                            <input type="radio" value="action_ongoing" name="action_start" id="action_ongoing_id" /> akcja już trwa
-                        </label>
-                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-xs-6 {% if form.finished_at.errors %}has-error{% endif %}">
-                <div class="col-xs-12 {% if form.finished_at.errors %}has-error{% endif %}">
-                    {% if form.finished_at.errors %}<div class="col-xs-12">{{ form.finished_at.errors }}</div>{% endif %}
-                    <div class="col-xs-6 form-group form-group-sm">
-                        <div class="col-xs-5">
-                            <input type="radio" value="date" name="action_finished" checked="checked" />
-                            <label class="control-label" for="{{ form.finished_at.id_for_label }}">Dzień zakończenia</label>
+            <div class="col-sm-4 col-xs-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <label class="lead" for="{{ form.reserve_recruitment.id_for_label }}">
+                                Rekrutacja rezerwowa:
+                                <input type="checkbox" value="reserve_recruitment" name="reserve_recruitment" id="{{ form.reserve_recruitment.id_for_label }}" {% if request.POST.reserve_recruitment or offer.reserve_recruitment %}checked="checked"{% endif %} />
+                            </label>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group form-group-sm {% if form.reserve_recruitment_start_date.errors %}has-error{% endif %}">
+                            <label class="control-label col-xs-3" for="{{ form.organization.id_for_label }}">Początek</label>
+                            <div class="col-xs-9">
+                                <input type="text" value="{{ request.POST.reserve_recruitment_start_date|date:"Y-m-d H:i:s"|default:offer.reserve_recruitment_start_date|date:"Y-m-d H:i:s" }}" name="reserve_recruitment_start_date" class="form-control" id="{{ form.reserve_recruitment_start_date.id_for_label }}" />
+                                {% if form.reserve_recruitment_start_date.errors %}
+                                    <div class="error-text">{{ form.reserve_recruitment_start_date.errors }}</div>
+                                {% endif %}
+                            </div>
                         </div>
-                        <div class="col-xs-7">
-                            <input type="text" value="{{ request.POST.finished_at|date:"Y-m-d H:i:s"|default:offer.finished_at|date:"Y-m-d H:i:s" }}" name="finished_at" class="form-control" id="{{ form.finished_at.id_for_label }}" />
+                        <div class="form-group form-group-sm {% if form.reserve_recruitment_end_date.errors %}has-error{% endif %}">
+                            <label class="control-label col-xs-3" for="{{ form.organization.id_for_label }}">Koniec</label>
+                            <div class="col-xs-9">
+                                <input type="text" value="{{ request.POST.reserve_recruitment_end_date|date:"Y-m-d H:i:s"|default:offer.reserve_recruitment_end_date|date:"Y-m-d H:i:s" }}" name="reserve_recruitment_end_date" class="form-control" id="{{ form.reserve_recruitment_end_date.id_for_label }}" />
+                                {% if form.reserve_recruitment_end_date.errors %}
+                                    <div class="error-text">{{ form.reserve_recruitment_end_date.errors }}</div>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                    <div class="col-xs-6 form-group form-group-sm radio">
-                        <label for="constant_coop_id">
-                            <input type="radio" value="constant_coop" name="action_finished" id="constant_coop_id" /> akcja nie kończy się (ciągła współpraca)
-                        </label>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xs-12 {% if form.description.errors %}has-error{% endif %}">
-                {% if form.description.errors %}<div class="col-xs-12">{{ form.description.errors }}</div>{% endif %}
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5"><label class="control-label" for="{{ form.description.id_for_label }}">Opis</label></div>
-                    <div class="col-xs-7"><textarea class="form-control" rows="3" name="description" id="{{ form.description.id_for_label }}">{{ request.POST.description|default:offer.description }}</textarea></div>
-                </div>
+        <div class="form-group form-group-sm {% if form.description.errors %}has-error{% endif %}">
+            <label class="col-xs-3 control-label" for="{{ form.description.id_for_label }}">Opis oferty</label>
+            <div class="col-xs-9">
+                <textarea class="form-control" rows="3" name="description" id="{{ form.description.id_for_label }}">{{ request.POST.description|default:offer.description }}</textarea>
+                {% if form.description.errors %}
+                    <div class="error-text">{{ form.description.errors }}</div>
+                {% endif %}
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xs-4 {% if form.recruitment_start_date.errors %}has-error{% endif %}">
-                {% if form.title.errors %}<div class="col-xs-12">{{ form.recruitment_start_date.errors }}</div>{% endif %}
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5">
-                        <label class="control-label" for="{{ form.recruitment_start_date.id_for_label }}">Data rozpoczęcia rekrutacji</label>
-                    </div>
-                    <div class="col-xs-7">
-                        <input type="text" value="{{ request.POST.recruitment_start_date|date:"Y-m-d H:i:s"|default:offer.recruitment_start_date|date:"Y-m-d H:i:s" }}" name="recruitment_start_date" class="form-control" id="{{ form.recruitment_start_date.id_for_label }}" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-4 {% if form.recruitment_end_date.errors %}has-error{% endif %}">
-                <div class="col-xs-12">{{ form.recruitment_end_date.errors }}</div>
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5">
-                        <label class="control-label" for="{{ form.recruitment_end_date.id_for_label }}">Data zakończenia rekrutacji</label>
-                    </div>
-                    <div class="col-xs-7">
-                        <input type="text" value="{{ request.POST.recruitment_end_date|date:"Y-m-d H:i:s"|default:offer.recruitment_end_date|date:"Y-m-d H:i:s" }}" name="recruitment_end_date" class="form-control" id="{{ form.recruitment_end_date.id_for_label }}" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-4 {% if form.volunteers_limit.errors %}has-error{% endif %}">
-                <div class="col-xs-12">{{ form.volunteers_limit.errors }}</div>
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5">
-                        <label class="control-label" for="{{ form.volunteers_limit.id_for_label }}">Limit wolontariuszy</label>
-                    </div>
-                    <div class="col-xs-7">
-                        <input type="text" value="{% if request.POST.volunteers_limit or offer.volunteers_limit %}{{ request.POST.volunteers_limit|default:offer.volunteers_limit }}{% else %}0{% endif %}" name="volunteers_limit" class="form-control" id="{{ form.volunteers_limit.id_for_label }}" />
-                    </div>
-                </div>
+        <div class="form-group form-group-sm {% if form.time_commitment.errors %}has-error{% endif %}">
+            <label class="control-label col-xs-3" for="{{ form.organization.id_for_label }}">Wymagania czasowe</label>
+            <div class="col-xs-9">
+                <input type="text" value="{{ request.POST.time_commitment|default:offer.time_commitment }}" name="time_commitment" class="form-control" id="{{ form.time_commitment.id_for_label }}" />
+                {% if form.time_commitment.errors %}
+                    <div class="error-text">{{ form.time_commitment.errors }}</div>
+                {% endif %}
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xs-4 {% if form.reserve_recruitment.errors %}has-error{% endif %}">
-                {% if form.title.errors %}<div class="col-xs-12">{{ form.reserve_recruitment.errors }}</div>{% endif %}
-                <div class="col-xs-12 form-group form-group-sm checkbox">
-                    <label for="{{ form.reserve_recruitment.id_for_label }}">
-                        <input type="checkbox" value="reserve_recruitment" name="reserve_recruitment" id="{{ form.reserve_recruitment.id_for_label }}" {% if request.POST.reserve_recruitment or offer.reserve_recruitment %}checked="checked"{% endif %} /> Rekrutacja rezerwowa
-                    </label>
-                </div>
-            </div>
-            <div class="col-xs-4 {% if form.reserve_recruitment_start_date.errors %}has-error{% endif %}">
-                <div class="col-xs-12">{{ form.reserve_recruitment_start_date.errors }}</div>
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5">
-                        <label class="control-label" for="{{ form.reserve_recruitment_start_date.id_for_label }}">Data rozpoczęcia rekrutacji rezerwowej</label>
-                    </div>
-                    <div class="col-xs-7">
-                        <input type="text" value="{{ request.POST.reserve_recruitment_start_date|date:"Y-m-d H:i:s"|default:offer.reserve_recruitment_start_date|date:"Y-m-d H:i:s" }}" name="reserve_recruitment_start_date" class="form-control" id="{{ form.reserve_recruitment_start_date.id_for_label }}" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-4 {% if form.reserve_recruitment_end_date.errors %}has-error{% endif %}">
-                <div class="col-xs-12">{{ form.reserve_recruitment_end_date.errors }}</div>
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5">
-                        <label class="control-label" for="{{ form.reserve_recruitment_end_date.id_for_label }}">Data zakończenia rekrutacji rezerwowej</label>
-                    </div>
-                    <div class="col-xs-7">
-                        <input type="text" value="{{ request.POST.reserve_recruitment_end_date|date:"Y-m-d H:i:s"|default:offer.reserve_recruitment_end_date|date:"Y-m-d H:i:s" }}" name="reserve_recruitment_end_date" class="form-control" id="{{ form.reserve_recruitment_end_date.id_for_label }}" />
-                    </div>
-                </div>
+        <div class="form-group form-group-sm {% if form.benefits.errors %}has-error{% endif %}">
+            <label class="col-xs-3 control-label" for="{{ form.benefits.id_for_label }}">Korzyści</label>
+            <div class="col-xs-9">
+                <textarea class="form-control" rows="3" name="benefits" id="{{ form.benefits.id_for_label }}">{{ request.POST.benefits|default:offer.benefits }}</textarea>
+                {% if form.benefits.errors %}
+                    <div class="error-text">{{ form.benefits.errors }}</div>
+                {% endif %}
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-xs-6 {% if form.benefits.errors %}has-error{% endif %}">
-                {% if form.benefits.errors %}<div class="col-xs-12">{{ form.benefits.errors }}</div>{% endif %}
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5"><label class="control-label" for="{{ form.benefits.id_for_label }}">Korzyści</label></div>
-                    <div class="col-xs-7"><textarea class="form-control" rows="3" name="benefits" id="{{ form.benefits.id_for_label }}">{{ request.POST.benefits|default:offer.benefits }}</textarea></div>
-                </div>
-            </div>
-            <div class="col-xs-6 {% if form.requirements.errors %}has-error{% endif %}">
-                {% if form.requirements.errors %}<div class="col-xs-12">{{ form.requirements.errors }}</div>{% endif %}
-                <div class="col-xs-12 form-group form-group-sm">
-                    <div class="col-xs-5"><label class="control-label" for="{{ form.requirements.id_for_label }}">Wymagania</label></div>
-                    <div class="col-xs-7"><textarea class="form-control" rows="3" name="requirements" id="{{ form.requirements.id_for_label }}">{{ request.POST.requirements|default:offer.requirements }}</textarea></div>
-                </div>
+        <div class="form-group form-group-sm {% if form.requirements.errors %}has-error{% endif %}">
+            <label class="col-xs-3 control-label" for="{{ form.requirements.id_for_label }}">Wymagania wobec wolontariusza</label>
+            <div class="col-xs-9">
+                <textarea class="form-control" rows="3" name="requirements" id="{{ form.requirements.id_for_label }}">{{ request.POST.requirements|default:offer.requirements }}</textarea>
+                {% if form.requirements.errors %}
+                    <div class="error-text">{{ form.requirements.errors }}</div>
+                {% endif %}
             </div>
         </div>
 
