@@ -34,8 +34,8 @@ if not SECRET_KEY:
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'volontulo.org',
-    'volontuloapp.org'
+    '.volontulo.org',
+    '.volontuloapp.org',
 ]
 if LOCAL_CONFIG.get('allowed_host'):
     ALLOWED_HOSTS.append(LOCAL_CONFIG['allowed_host'])
