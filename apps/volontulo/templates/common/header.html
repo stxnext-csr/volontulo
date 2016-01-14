@@ -7,13 +7,13 @@
     {% block navigations %}
     <div class="row">
         <div class="col-xs-12">
-            <nav class="container-fluid">
+            <nav class="">
                 <h1 class="navbar-header">
                     <a href="{% url 'homepage' %}">
                         <img src="{% static "volontulo/img/volo_logo.svg" %}" alt="Volontulo" />
                     </a>
                 </h1>
-                <div class="navbar-right">
+                <div class="pull-right">
                 {% if user.is_anonymous and not user.is_authenticated %}
                     <a class="btn btn-primary navbar-btn" href="{% url 'register' %}">Załóż konto</a>
                     <span class="navbar-text">lub</span>
