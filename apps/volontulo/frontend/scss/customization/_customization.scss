@@ -58,10 +58,11 @@ label {
     .navbar-header {
         margin: 0;
     }
-    .navbar-right {
+    .pull-right {
         .navbar-text {
-            display: inline-block;
             float: none;
+            display: inline-block;
+            vertical-align: bottom;
         }
     }
     .messages {
