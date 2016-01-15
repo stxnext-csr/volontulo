@@ -117,7 +117,7 @@ label {
         }
         .caption {
             position: relative;
-            @include box-shadow(0 0 10px rgba(black, .8));
+            @include box-shadow(0 0 10px rgba($darkgray-dark, .5));
             background: linear-gradient(to bottom, 
                         rgba(white, .8) 0%, 
                         rgba(white, 1) 40%, 
@@ -127,7 +127,8 @@ label {
             float: right;
             margin-top: -52px;
             margin-bottom: 16px;
-            @include box-shadow(0 0 10px rgba(black, .8));
+            font-weight: 600;
+            @include box-shadow(0 0 2px rgba(black, .5));
         }
         .heading {
             font-size: 15px;

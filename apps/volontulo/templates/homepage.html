@@ -34,7 +34,7 @@
                                 <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
                             </div>
                             <div class="media-body panel-body">
-                                {{ o.started_at }} - {{ o.finished_at }}
+                                <span class="is-inline_block">{{ o.started_at }}</span> - <span class="is-inline_block">{{ o.finished_at }}</span>
                             </div>
                         </div>
                         <div class="text-right">Organizator: <a class="text-warning" href="{% url 'organization_view' slug=o.organization.name|slugify id_=o.organization.id %}">{{ o.organization.name }}</a></div>
