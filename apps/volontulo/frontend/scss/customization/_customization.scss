@@ -35,15 +35,34 @@ label {
     padding-right: 0;
 }
 
+// Cookielaw Banner
+#CookielawBanner {
+    margin-bottom: 5px;
+    background: #fff;
+    color: $darkgray-light;
+    font-size: 0.9em;
+    @include box-shadow(inset 0 -20px 20px -20px rgba($darkgray-dark, .1));
+    h6 {
+        display: none;
+    }
+    p {
+        margin: 5px 0;
+    }
+    .btn {
+        margin-left: 10px;
+    }
+}
+
 // section header
 .header {
     .navbar-header {
         margin: 0;
     }
-    .navbar-right {
+    .pull-right {
         .navbar-text {
-            display: inline-block;
             float: none;
+            display: inline-block;
+            vertical-align: bottom;
         }
     }
     .messages {
