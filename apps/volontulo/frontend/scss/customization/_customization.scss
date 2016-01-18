@@ -35,7 +35,7 @@ label {
     padding-right: 0;
 }
 input.form-control[required] {
-    @extend %asterix-icon;
+    @extend %asterisk-icon;
     background-size: 16px;
     padding-right: 26px;
     background-position: right 5px center;
