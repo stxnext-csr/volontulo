@@ -17,9 +17,10 @@
                 <div class="thumbnail">
                     <div class="heading-image" style="background-image:url({{ MEDIA_URL }}{{ o.images.all|main_image }})"></div>
                     <div class="caption">
-                        <div class="text-right">
-                            <a role="button" class="btn btn-warning" href="{% url 'offers_view' o.title|slugify o.id %}">Pomóż</a>
-                        </div>
+                        <a role="button" class="btn btn-warning join-btn" href="{% url 'offers_view' o.title|slugify o.id %}">Pomóż</a>
+                        <h3 class="heading">
+                            <a class="" href="{% url 'offers_view' o.title|slugify o.id %}">{{ o.title }}</a>
+                        </h3>
                         <div class="media panel-default">
                             <div class="media-left panel-heading">
                                 <span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>
@@ -33,10 +34,9 @@
                                 <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
                             </div>
                             <div class="media-body panel-body">
-                                {{ o.started_at }} - {{ o.finished_at }}
+                                <span class="is-inline_block">{{ o.started_at }}</span> - <span class="is-inline_block">{{ o.finished_at }}</span>
                             </div>
                         </div>
-                        <h3><a class="text-warning" href="{% url 'offers_view' o.title|slugify o.id %}">{{ o.title }}</a></h3>
                         <div class="text-right">Organizator: <a class="text-warning" href="{% url 'organization_view' slug=o.organization.name|slugify id_=o.organization.id %}">{{ o.organization.name }}</a></div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 {% block footer %}
     <h2 class="hide">Nawigacja</h2>
     <div class="row">
-        <div class="col-xs-4">
+        <div class="col-xs-12 col-sm-4">
             <h3 class="nav-title">Ogólne</h3>
             <ul class="nav-list list-unstyled">
                 <li><a href="{% url 'homepage' %}">Strona główna</a></li>
@@ -15,14 +15,14 @@
                 <li><a href="{% url 'static_page' 'regulations' %}">Regulamin</a></li>
             </ul>
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-12 col-sm-4">
             <h3 class="nav-title">Organizacje</h3>
             <ul class="nav-list list-unstyled">
                 <li><a href="{% url 'organizations_list' %}">Lista organizacji</a></li>
                 <li><a href="{% url 'organizations_create' %}">Załóż organizację</a></li>
             </ul>
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-12 col-sm-4">
             <h3 class="nav-title">Oferty</h3>
             <ul class="nav-list list-unstyled">
                 <li><a href="{% url 'offers_list' %}">Lista ofert</a></li>
