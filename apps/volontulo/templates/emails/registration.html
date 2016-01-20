@@ -1,12 +1,18 @@
 {% extends "emails/base.html" %}
 
+{% load staticfiles %}
+
 {% block title %}Rejestracja{% endblock %}
 
 {% block email_content %}
 
-    Dziękujemy za rejestrację.
-
-    Zweryfikuj swoje konto na Volontulo wchodząc w poniższy link:
-    <a href="{{ protocol }}://{{ domain }}{% url 'activate' uuid %}">Aktywuj</a>
+    <center>
+        <img src="{{ protocol }}://{{ domain }}{% static 'volontulo/img/doodle_reg_confirm.png' %}"><br>
+        <br>
+        <b>Dziękujemy za rejestrację.</b><br>
+        <br>
+        Zweryfikuj swoje konto na Volontulo wchodząc w poniższy link:<br>
+        <a href="{{ protocol }}://{{ domain }}{% url 'activate' uuid %}">Aktywuj</a>
+    </center>
 
 {% endblock %}
