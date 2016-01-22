@@ -1,11 +1,10 @@
-{% extends "emails/base.html" %}
+{% extends "emails/user_layout.html" %}
 
 {% load staticfiles %}
 
 {% block title %}Rejestracja{% endblock %}
 
 {% block email_content %}
-
     <center>
         <img src="{{ protocol }}://{{ domain }}{% static 'volontulo/img/doodle_reg_confirm.png' %}"><br>
         <br>
@@ -14,5 +13,8 @@
         Zweryfikuj swoje konto na Volontulo wchodząc w poniższy link:<br>
         <a href="{{ protocol }}://{{ domain }}{% url 'activate' uuid %}">Aktywuj</a>
     </center>
+{% endblock %}
 
+{% block email_info_details %}
+    {% include "emails/site_owner_details.html" %}
 {% endblock %}

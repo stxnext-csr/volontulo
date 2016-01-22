@@ -1,13 +1,52 @@
-{% extends "emails/base.html" %}
+{% extends "emails/user_layout.html" %}
+
+{% load staticfiles %}
 
 {% block title %}Zgłoszenie wolontariusza w ofercie{% endblock %}
 
 {% block email_content %}
+<center>
+    <img src="{{ protocol }}://{{ domain }}{% static 'volontulo/img/doodle_help.png' %}"><br>
+    <br>
+    <b>Witaj</b><br>
+</center>
+  <br>
+  Wolontariusz zgłosił się na pomoc w <a href="{{ protocol }}://{{ domain }}{% url 'offers_view' offer.title|slugify offer.id %}">tej ofercie</a>.<br>
+  <br>
+  Prosimy o wzajemny kontakt w celu ustalenia wszystkich szczegółów wolontariatu.<br>
+  <br>
+  <table cellpadding="0" cellspacing="2" border="0" style="font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height: 130%;">
+    <tbody>
+      <tr>
+        <td width=""><b>Imię i nazwisko: &nbsp;</b></td>
+        <td>{{ fullname }}</td>
+      </tr>
+      <tr>
+        <td width=""><b>Email: &nbsp;</b></td>
+        <td>{{ email }}</td>
+      </tr>
+      <tr>
+        <td width=""><b>Numer telefonu: &nbsp;</b></td>
+        <td>{{ phone_no }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table cellpadding="0" cellspacing="2" border="0" width="100%">
+    <tbody>
+      <tr>
+        <td style="font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height: 130%;">
+          <b>Uwagi:</b>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height: 130%;">
+          {{ comments }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+{% endblock %}
 
-Email wolontariusza: {{ email }}<br />
-Numer telefonu: {{ phone_no }}<br />
-Imię i nazwisko: {{ fullname }}<br />
-Uwagi: {{ comments }}<br />
-ID oferty: <a href="{{ protocol }}://{{ domain }}{% url 'offers_view' offer.title|slugify offer.id %}">{{ offer.id }}</a><br />
-
+{% block email_info_details %}
+    {% include "emails/site_owner_details.html" %}
 {% endblock %}
