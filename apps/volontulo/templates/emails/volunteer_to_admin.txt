@@ -1,8 +1,14 @@
 {% extends "emails/base.txt" %}
 {% block email_content %}
+Witaj
+
+Dziękujemy za pytanie. Nasz doradca skontaktuje się z Tobą mailowo lub telefonicznie.
+Twoja wiadomość znajduje się poniżej:
+
 Imię i nazwisko: {{ name}},
 Email: {{ email }},
 Numer telefonu: {{ phone_no }},
 Aplikant: {{ applicant }},
-Wiadomość: {{ message }}
+Wiadomość: 
+{{ message }}
 {% endblock %}
