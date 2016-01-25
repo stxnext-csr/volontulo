@@ -20,6 +20,7 @@ ACCEPT_TERMS = u"""Wyrażam zgodę na przetwarzanie moich danych osobowych"""
 
 
 class UserForm(forms.ModelForm):
+
     u"""Form reposponsible for authorization."""
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
@@ -31,21 +32,39 @@ class UserForm(forms.ModelForm):
 
 
 class EditProfileForm(forms.Form):
+
     u"""Form reposponsible for edit user details on profile page."""
-    first_name = forms.CharField(max_length=128, required=False)
-    last_name = forms.CharField(max_length=128, required=False)
-    email = forms.EmailField(label="Email")
-    phone_no = forms.CharField(label=u"Phone number", required=False)
+    first_name = forms.CharField(
+        label="Imię",
+        max_length=128,
+        required=False
+    )
+    last_name = forms.CharField(
+        label="Nazwisko",
+        max_length=128,
+        required=False
+    )
+    email = forms.EmailField(
+        label="Email",
+        required=True
+    )
+    phone_no = forms.CharField(
+        label=u"Numer telefonu",
+        required=False
+    )
     current_password = forms.CharField(
         widget=forms.PasswordInput(),
+        label='Aktualne hasło',
         required=False
     )
     new_password = forms.CharField(
         widget=forms.PasswordInput(),
+        label="Nowe hasło",
         required=False
     )
     confirm_new_password = forms.CharField(
         widget=forms.PasswordInput(),
+        label="Powtórz nowe hasło",
         required=False
     )
     user = forms.CharField(widget=forms.HiddenInput())
@@ -75,6 +94,7 @@ class EditProfileForm(forms.Form):
 
 
 class CreateOfferForm(forms.ModelForm):
+
     u"""Form reposponsible for creating offer by organization."""
 
     def __init__(self, *args, **kwargs):
@@ -109,6 +129,7 @@ class CreateOfferForm(forms.ModelForm):
 
 
 class UserGalleryForm(forms.ModelForm):
+
     u"""Form used for changing user profile of user."""
     image = forms.ImageField(label=u"Wybierz grafikę")
     is_avatar = forms.BooleanField(
@@ -124,6 +145,7 @@ class UserGalleryForm(forms.ModelForm):
 
 
 class OrganizationGalleryForm(forms.ModelForm):
+
     u"""Form used for changing organization profiel."""
     path = forms.ImageField(label=u"Wybierz grafikę")
     organization = forms.ModelChoiceField(
@@ -152,6 +174,7 @@ class OrganizationGalleryForm(forms.ModelForm):
 
 
 class OfferImageForm(forms.ModelForm):
+
     u"""Form used for upload offer image."""
     path = forms.ImageField(label=u"Dodaj zdjęcie")
     is_main = forms.BooleanField(
@@ -167,8 +190,8 @@ class OfferImageForm(forms.ModelForm):
 
 
 class OfferApplyForm(forms.Form):
-    u"""Form for applying for join to offer ."""
 
+    u"""Form for applying for join to offer ."""
     email = forms.CharField(max_length=80)
     phone_no = forms.CharField(max_length=80)
     fullname = forms.CharField(max_length=80)
@@ -176,8 +199,8 @@ class OfferApplyForm(forms.Form):
 
 
 class ContactForm(forms.Form):
-    u"""Basic contact form."""
 
+    u"""Basic contact form."""
     email = forms.CharField(max_length=150)
     message = forms.CharField(widget=forms.Textarea())
     name = forms.CharField(max_length=150)
@@ -185,11 +208,13 @@ class ContactForm(forms.Form):
 
 
 class VolounteerToOrganizationContactForm(ContactForm):
+
     U"""Contact form specified for volounteers to mail to organization."""
     organization = forms.CharField(widget=forms.HiddenInput())
 
 
 class AdministratorContactForm(ContactForm):
+
     U"""Contact form specified for anyone to mail to administrator."""
     APPLICANTS = (
         ('VOLUNTEER', u'wolontariusz'),
