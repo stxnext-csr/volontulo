@@ -34,6 +34,13 @@ label {
 .form-horizontal .control-label[class*="col-"] {
     padding-right: 0;
 }
+input.form-control[required] {
+    @extend %asterisk-icon;
+    background-size: 16px;
+    padding-right: 26px;
+    background-position: right 5px center;
+    text-overflow: ellipsis;
+}
 
 // Cookielaw Banner
 #CookielawBanner {
