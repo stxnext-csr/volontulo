@@ -1,0 +1,8 @@
+{% block content %}
+    <div class="btn-toolbar" role="toolbar">
+        <a class="btn btn-default" href="{% url 'homepage' %}"><span aria-hidden="true" class="glyphicon glyphicon-hourglass"></span> Niezweryfikowane oferty</a>
+        <a class="btn btn-default" href="{% url 'offers_reorder' %}"><span aria-hidden="true" class="glyphicon glyphicon-sort"></span> Kolejność ofert strony głównej</a>
+        <a class="btn btn-default" href="{% url 'offers_list' %}">Lista ofert</a>
+        <a class="btn btn-default" href="{% url 'offers_archived' %}">Oferty archiwizowane</a></li>
+    </div>
+{% endblock %}

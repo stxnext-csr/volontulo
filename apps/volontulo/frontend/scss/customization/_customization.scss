@@ -24,10 +24,13 @@
     }
 }
 
-b, // strong is 700
+b,
 th,
 label {
     font-weight: 600;
+}
+strong {
+    font-weight: 700;
 }
 
 // forms
@@ -138,8 +141,10 @@ input.form-control[required] {
         font-size: 13px;
         overflow: hidden;
         .heading-image {
+            display: block;
             position: relative;
-            margin-bottom: -30%;
+            margin: -10% -15% -30%;
+            padding-top: 100%;
         }
         .caption {
             position: relative;
@@ -189,6 +194,23 @@ input.form-control[required] {
         }
         .media-body {
             padding: 6px;
+        }
+    }
+}
+// offer tables
+.offer-table {
+    .img-circle {
+        width: 34px;
+        height: 34px;
+    }
+    .btn {
+        padding-left: 8px;
+        padding-right: 8px;
+        &:first-child {
+            margin-left: -8px;
+        }
+        &:last-child {
+            margin-right: -8px;
         }
     }
 }

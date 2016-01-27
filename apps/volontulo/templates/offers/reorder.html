@@ -1,36 +1,52 @@
 {% extends "common/col1.html" %}
+{% load offer_utilities %}
 
 {% block title %}Kolejność ofert{% endblock %}
 
 {% block content %}
+    {% include 'admin/offers_nav.html' %}
     {% if offers %}
         <h2>Kolejność ofert</h2>
         <form action="" method="post">
-        {% csrf_token %}
-        <div class="btn-group">
-            <button type="submit" class="btn btn-default" name="submit" value="reorder">Zapisz</button>
-        </div>
-        <table class="table table-striped">
-            <tr>
-                <th>ID</th>
-                <th>Tytuł</th>
-                <th>Miejsce</th>
-                <th>Nazwa organizacji</th>
-                <th>Waga</th>
-            </tr>
-        {% for o in offers %}
-            <tr class="draggable {% if id == o.id %}latest{% endif %}">
-                <td>{{ o.id }}</td>
-                <td>{{ o.title }}</td>
-                <td>{{ o.location }}</td>
-                <td>{{ o.organization.name }}</td>
-                <td><input type="text" size="3" name="weight_{{ o.id }}" value="{{ o.weight }}" class="form-control" /></td>
-            </tr>
-        {% endfor %}
-        </table>
-        <div class="btn-group">
-            <button type="submit" class="btn btn-default" name="submit" value="reorder">Zapisz</button>
-        </div>
+            {% csrf_token %}
+            <div class="form-group">
+                <button type="submit" class="btn btn-default" name="submit" value="reorder">Zapisz</button>
+            </div>
+            <table class="table table-striped offer-table">
+                <tr>
+                    <th></th>
+                    <th>Tytuł</th>
+                    <th>Miejsce</th>
+                    <th>Rozpoczęcie</th>
+                    <th>Nazwa organizacji</th>
+                    <th>Waga</th>
+                </tr>
+            {% for o in offers %}
+                <tr class="draggable {% if id == o.id %}latest{% endif %}">
+                    <td>
+                        <a href="{% url 'offers_view' o.title|slugify o.id  %}">
+                            <img class="img-circle" src="{{ MEDIA_URL }}{{ o.main_image|default:o.title }}" alt="{{ o.title }}" />
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-link" href="{% url 'offers_view' o.title|slugify o.id  %}">{{ o.title }}</a>
+                    </td>
+                    <td>
+                        <div class="form-control-static">{{ o.location }}</div>
+                    </td>
+                    <td>
+                        <div class="form-control-static">{{ o.started_at }}</div>
+                    </td>
+                    <td>
+                        <div class="form-control-static">{{ o.organization.name }}</div>
+                    </td>
+                    <td><input type="text" size="3" name="weight_{{ o.id }}" value="{{ o.weight }}" class="form-control" /></td>
+                </tr>
+            {% endfor %}
+            </table>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default" name="submit" value="reorder">Zapisz</button>
+            </div>
         </form>
     {% else %}
         <p>Brak ofert spełniających podane kryteria</p>
