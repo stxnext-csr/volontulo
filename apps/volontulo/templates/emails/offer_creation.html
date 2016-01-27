@@ -1,9 +1,23 @@
-{% extends "emails/base.html" %}
+{% extends "emails/user_layout.html" %}
+
+{% load staticfiles %}
 
 {% block title %}Zgłoszenie oferty{% endblock %}
 
 {% block email_content %}
+  <center>
+    <img src="{{ protocol }}://{{ domain }}{% static 'volontulo/img/doodle_create.png' %}"><br>
+    <br>
+    <b>Witaj</b><br>
+  </center>
+  <br>
+  Dziękujemy za skorzystanie z naszego portalu.<br>
+  <br>
+  Twoja <a href="{{ protocol }}://{{ domain }}{% url 'offers_view' offer.title|slugify offer.id %}">oferta</a> czeka na weryfikację administratora i w ciągu 48h pojawi się w sieci.<br>
+  <br>
+  W wolnej chwili serdecznie zapraszamy do naszego Centrum Wolontariatu.<br>
+{% endblock %}
 
-ID oferty: <a href="{{ protocol }}://{{ domain }}{% url 'offers_view' offer.title|slugify offer.id %}">{{ offer.id }}</a>
-
+{% block email_info_details %}
+    {% include "emails/site_owner_details.html" %}
 {% endblock %}

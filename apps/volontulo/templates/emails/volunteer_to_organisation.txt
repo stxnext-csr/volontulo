@@ -1,7 +1,10 @@
 {% extends "emails/base.txt" %}
 {% block email_content %}
+Wolontariusz chce skontaktować się z Twoją organizacją.
+
 Imię i nazwisko: {{ name }},
 Email: {{ email }},
-Telefon: {{ phone_no }},
-Wiadomość: {{ message}},
+Numer telefonu: {{ phone_no }},
+Wiadomość: 
+{{ message}},
 {% endblock %}

@@ -1,8 +1,14 @@
 {% extends "emails/base.txt" %}
 {% block email_content %}
+Witaj
+
+Wolontariusz zgłosił się na pomoc w ofercie:
+{{ protocol }}://{{ domain }}{% url 'offers_view' offer.title|slugify offer.id %}
+Prosimy o wzajemny kontakt w celu ustalenia wszystkich szczegółów wolontariatu.
+
+Imię i nazwisko: {{ fullname }}
 Email wolontariusza: {{ email }}
 Numer telefonu: {{ phone_no }}
-Imię i nazwisko: {{ fullname }}
-Uwagi: {{ comments }}
-ID oferty: {{ offer_id }}
+Uwagi wolontariusza: 
+{{ comments }}
 {% endblock %}

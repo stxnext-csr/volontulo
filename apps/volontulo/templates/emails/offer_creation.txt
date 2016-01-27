@@ -1,4 +1,10 @@
 {% extends "emails/base.txt" %}
 {% block email_content %}
-ID oferty: {{ offer.id }}.
+Witaj
+
+Dziękujemy za skorzystanie z naszego portalu.
+Twoja oferta czeka na weryfikację administratora i w ciągu 48h pojawi się w sieci.
+Adres: {{ protocol }}://{{ domain }}{% url 'offers_view' offer.title|slugify offer.id %}
+
+W wolnej chwili serdecznie zapraszamy do naszego Centrum Wolontariatu.
 {% endblock %}
