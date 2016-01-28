@@ -15,7 +15,7 @@
             <div class="col-sm-6 col-md-3">
 
                 <div class="thumbnail">
-                    <a class="heading-image" style="background-image:url({{ MEDIA_URL }}{{ o.images.all|main_image }})" href="{% url 'offers_view' o.title|slugify o.id %}"></a>
+                    <div class="heading-image" style="background-image:url({{ MEDIA_URL }}{{ o.images.all|main_image }})"></div>
                     <div class="caption">
                         <a role="button" class="btn btn-warning join-btn" href="{% url 'offers_view' o.title|slugify o.id %}">Włącz się</a>
                         <h3 class="heading">

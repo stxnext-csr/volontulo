@@ -1,42 +1,25 @@
 {% extends "common/col1.html" %}
-{% load offer_utilities %}
 
 {% block title %}Lista ofert Volontulo{% endblock %}
 
 {% block content %}
     {% if offers %}
         <h2>Lista ofert</h2>
-        <table class="table table-striped offer-table">
+        <table class="table table-striped">
             <tr>
-                <th></th>
-                <th>Tytuł</th>
                 <th>Miejsce</th>
-                <th>Czas obowiązywania</th>
+                <th>Tytuł</th>
                 <th>Nazwa organizacji</th>
+                <th>Czas obowiązywania</th>
                 <th></th>
             </tr>
         {% for o in offers %}
             <tr>
+                <td>{{ o.location }}</td>
+                <td>{{ o.title }}</td>
+                <td>{{ o.organization.name }}</td>
+                <td>{{ o.time_period }}</td>
                 <td>
-                    <a href="{% url 'offers_view' o.title|slugify o.id  %}">
-                        <img class="img-circle" src="{{ MEDIA_URL }}{{ main_image|default:'' }}" />
-                    </a>
-                </td>
-                <td>
-                    <a class="btn btn-link" href="{% url 'offers_view' o.title|slugify o.id  %}">{{ o.title }}</a>
-                </td>
-                <td>
-                    <div class="form-control-static">{{ o.location }}</div>
-                </td>
-                <td>
-                    <div class="form-control-static">
-                        <span class="is-inline_block">{{ o.started_at }}</span> - <span class="is-inline_block">{{ o.finished_at }}</span>
-                    </div>
-                </td>
-                <td>
-                    <a href="{% url 'organization_view' o.organization.name|slugify o.organization.id %}" class="btn btn-link">{{ o.organization.name }}</a>
-                </td>
-                <td class="text-right">
                 {% if user.userprofile.is_administrator %}
                     {% if o.offer_status == 'unpublished' %}
                     <form id="offer_{{ o.id }}_activate" method="post" action="{% url 'offers_list' %}" enctype="multipart/form-data">
@@ -47,7 +30,7 @@
                     </form>
                     {% endif %}
                 {% elif o.offer_status == 'published' %}
-                    <a class="btn btn-warning" href="{% url 'offers_view' o.title|slugify o.id %}"><b>Włącz się</b></a>
+                    <a href="{% url 'offers_view' o.title|slugify o.id %}">Pomóż</a>
                 {% endif %}
                 </td>
             </tr>

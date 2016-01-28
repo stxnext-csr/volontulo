@@ -97,9 +97,7 @@
                     <h3 class="panel-title">Organizator</h3>
                 </div>
                 <div class="panel-body">
-                    <p>
-                        <a class="btn btn-link" href="{% url 'organization_view' offer.organization.name|slugify offer.organization.id %}">{{ offer.organization.name }}</a>
-                    </p>
+                    <p>{{ offer.organization.name }}</p>
                 </div>
             </div>
          </div>

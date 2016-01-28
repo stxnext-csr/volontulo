@@ -3,50 +3,29 @@
 {% block title %}Administracja: Lista ofert Volontulo{% endblock %}
 
 {% block content %}
-    {% include 'admin/offers_nav.html' %}
     {% if offers %}
         <h2>Lista ofert wymagających moderacji/akceptacji</h2>
-        <table class="table table-striped offer-table">
+        <table class="table table-striped">
             <tr>
-                <th></th>
+                <th>ID</th>
                 <th>Tytuł</th>
-                <th>Miejsce</th>
-                <th>Rozpoczęcie</th>
                 <th>Organizacja zgłaszająca</th>
                 <th class="text-center">Status</th>
-                <th class="text-right">Akcje</th>
+                <th class="text-center">Akcje</th>
             </tr>
         {% for offer in offers %}
             <tr>
+                <td>{{ offer.id }}</td>
+                <td><a href="{% url 'offers_view' offer.title|slugify offer.id  %}">{{ offer.title }}</a></td>
                 <td>
-                    <a href="{% url 'offers_view' offer.title|slugify offer.id  %}">
-                        <img class="img-circle" src="{{ MEDIA_URL }}{{ main_image|default:'' }}" />
-                    </a>
-                </td>
-                <td>
-                    <a class="btn btn-link" href="{% url 'offers_view' offer.title|slugify offer.id  %}">{{ offer.title }}</a>
-                </td>
-                <td>
-                    <div class="form-control-static">{{ offer.location }}</div>
-                </td>
-                <td>
-                    <div class="form-control-static">{{ offer.started_at }}</div>
-                </td>
-                <td>
-                    <a class="btn btn-link" href="{% url 'organization_view' offer.organization.name|slugify offer.organization.id %}">{{ offer.organization.name }}</a>
+                    <a href="{% url 'organization_view' offer.organization.name|slugify offer.organization.id %}" class="btn btn-link">{{ offer.organization.name }}</a>
                 </td>
                 <td class="text-center">
-                    <div class="form-control-static">
-                        {% include 'common/labeled_status.html' with status=offer.status_old %}
-                    </div>
+                    {% include 'common/labeled_status.html' with status=offer.status_old %}
                 </td>
-                <td class="text-right">
-                    <a href="{% url 'offers_edit' offer.title|slugify offer.id  %}" class="btn btn-info">
-                        <span aria-hidden="true" class="glyphicon glyphicon-edit"></span> Edycja
-                    </a>
-                    <a href="{% url 'offers_view' offer.title|slugify offer.id  %}" class="btn btn-default">
-                        <span aria-hidden="true" class="glyphicon glyphicon-eye-open"></span> Podgląd
-                    </a>
+                <td class="text-center">
+                    <a href="{% url 'offers_edit' offer.title|slugify offer.id  %}" class="btn btn-link">Edycja</a>
+                    <a href="{% url 'offers_view' offer.title|slugify offer.id  %}" class="btn btn-link">Podgląd</a>
                 </td>
             </tr>
         {% endfor %}
