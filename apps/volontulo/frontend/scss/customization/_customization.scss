@@ -199,9 +199,23 @@ input.form-control[required] {
 }
 // offer tables
 .offer-table {
-    .img-circle {
+    .crop-circle {
+        display: block;
+        overflow:hidden;
+        position: relative;
         width: 34px;
         height: 34px;
+        border-radius: 50%;
+        img {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 200%;
+            top: 50%;
+            &[alt=""] {
+                height: 100%;
+                background: $mediumgray-light;
+            }
+        }
     }
     .btn {
         padding-left: 8px;
@@ -223,10 +237,8 @@ input.form-control[required] {
     img {
         position: absolute;
         transform: translate(0%, -50%);
-        top: 50%;
-        right: 0px;
-        left: 0px;
         width: 100%;
+        top: 50%;
     }
     .offer-title {
         float: left;

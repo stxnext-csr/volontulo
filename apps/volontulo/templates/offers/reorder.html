@@ -1,5 +1,5 @@
 {% extends "common/col1.html" %}
-{% load offer_utilities %}
+{% load main_image %}
 
 {% block title %}Kolejność ofert{% endblock %}
 
@@ -24,9 +24,9 @@
             {% for o in offers %}
                 <tr class="draggable {% if id == o.id %}latest{% endif %}">
                     <td>
-                        <a href="{% url 'offers_view' o.title|slugify o.id  %}">
-                            <img class="img-circle" src="{{ MEDIA_URL }}{{ o.main_image|default:o.title }}" alt="{{ o.title }}" />
-                        </a>
+                <a class="crop-circle" href="{% url 'offers_view' o.title|slugify o.id  %}">
+                    <img src="/media/{{ o.images.all|main_image }}" alt="{{o.images.all|main_image|slugify|default:''}}" />
+                </a>
                     </td>
                     <td>
                         <a class="btn btn-link" href="{% url 'offers_view' o.title|slugify o.id  %}">{{ o.title }}</a>
