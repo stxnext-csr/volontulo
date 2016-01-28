@@ -67,7 +67,7 @@
                             <p>{{ offer.requirements }}</p>
                         </div>
                         <div class="panel-heading">
-                            <p>Zaangażowanie czasowe</p>
+                            <h3>Zaangażowanie czasowe</h3>
                         </div>
                         <div class="panel-body">
                             <p>{{ offer.time_commitment }}</p>
@@ -89,7 +89,7 @@
                     <a href="{% url "offers_join" offer.title|slugify offer.id %}" class="btn btn-default btn-lg">Zgłoś się na ten wolontariat</a>
                 </div>
                 <div class="panel-footer">
-                    <p>Rekrutacja trwa do <b>{data końca zgłoszeń}</b></p>
+                    <p>Rekrutacja trwa do <b>{{offer.recruitment_end_date}}</b></p>
                 </div>
             </div>
             <div class="panel panel-default">
