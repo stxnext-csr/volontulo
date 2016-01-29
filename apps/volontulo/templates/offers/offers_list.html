@@ -34,7 +34,7 @@
                     </div>
                 </td>
                 <td>
-                    <a href="{% url 'organization_view' offer.organization.name|slugify offer.organization.id %}" class="btn btn-link">{{ offer.organization.name }}</a>
+                    <div class="form-control-static">{{ offer.organization.name }}</div>
                 </td>
                 <td class="text-right">
                 {% if user.userprofile.is_administrator %}
