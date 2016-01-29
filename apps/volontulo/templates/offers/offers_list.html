@@ -15,39 +15,39 @@
                 <th>Nazwa organizacji</th>
                 <th></th>
             </tr>
-        {% for o in offers %}
+        {% for offer in offers %}
             <tr>
                 <td>
-                    <a class="crop-circle" href="{% url 'offers_view' o.title|slugify o.id  %}">
-                        <img src="/media/{{ o.images.all|main_image }}" alt="{{o.images.all|slugify|default:''}}" />
+                    <a class="crop-circle" href="{% url 'offers_view' offer.title|slugify offer.id  %}">
+                        <img src="/media/{{ offer.images.all|main_image }}" alt="{{offer.images.all|slugify|default:''}}" />
                     </a>
                 </td>
                 <td>
-                    <a class="btn btn-link" href="{% url 'offers_view' o.title|slugify o.id  %}">{{ o.title }}</a>
+                    <a class="btn btn-link" href="{% url 'offers_view' offer.title|slugify offer.id  %}">{{ offer.title }}</a>
                 </td>
                 <td>
-                    <div class="form-control-static">{{ o.location }}</div>
+                    <div class="form-control-static">{{ offer.location }}</div>
                 </td>
                 <td>
                     <div class="form-control-static">
-                        <span class="is-inline_block">{{ o.started_at }}</span> - <span class="is-inline_block">{{ o.finished_at }}</span>
+                        <span class="is-inline_block">{{ offer.started_at }}</span> - <span class="is-inline_block">{{ offer.finished_at }}</span>
                     </div>
                 </td>
                 <td>
-                    <a href="{% url 'organization_view' o.organization.name|slugify o.organization.id %}" class="btn btn-link">{{ o.organization.name }}</a>
+                    <a href="{% url 'organization_view' offer.organization.name|slugify offer.organization.id %}" class="btn btn-link">{{ offer.organization.name }}</a>
                 </td>
                 <td class="text-right">
                 {% if user.userprofile.is_administrator %}
-                    {% if o.offer_status == 'unpublished' %}
-                    <form id="offer_{{ o.id }}_activate" method="post" action="{% url 'offers_list' %}" enctype="multipart/form-data">
+                    {% if offer.offer_status == 'unpublished' %}
+                    <form id="offer_{{ offer.id }}_activate" method="post" action="{% url 'offers_list' %}" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <input type="hidden" value="{{ o.id }}" name="offer_id" />
+                        <input type="hidden" value="{{ offer.id }}" name="offer_id" />
                         <input type="hidden" value="status_change" name="edit_type" />
                         <button type="submit" name="submit" class="btn btn-primary">Aktywuj</button>
                     </form>
                     {% endif %}
-                {% elif o.offer_status == 'published' %}
-                    <a class="btn btn-warning" href="{% url 'offers_view' o.title|slugify o.id %}"><b>Włącz się</b></a>
+                {% elif offer.offer_status == 'published' %}
+                    <a class="btn btn-warning" href="{% url 'offers_view' offer.title|slugify offer.id %}"><b>Włącz się</b></a>
                 {% endif %}
                 </td>
             </tr>
