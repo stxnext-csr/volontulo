@@ -153,6 +153,13 @@ input.form-control[required] {
                         rgba(white, .8) 0%, 
                         rgba(white, 1) 40%, 
                         rgba(white, 1) 100%);
+            sub, sup {
+                color: $darkgray-light;
+                font-variant: small-caps;
+            }
+            sub {
+                bottom: -0.05em;
+            }
         }
         .join-btn {
             float: right;
@@ -165,7 +172,7 @@ input.form-control[required] {
             font-size: 15px;
             font-weight: 600;
             margin: 0 0 8px;
-            padding: 8px 0;
+            padding: 4px 0;
             color: black;
             text-align:center;
             a {
