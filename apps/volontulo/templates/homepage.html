@@ -34,8 +34,8 @@
                                 <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
                             </div>
                             <div class="media-body panel-body">
-                                <span class="is-inline_block"><sup>od </sup>{{ o.started_at|date:'j E Y, G:m'|default:' Teraz' }}</span>
-                                <span class="is-inline_block"><sub>do </sub>{{ o.finished_at|date:'j E Y, G:m'|default:' Ustalenia' }}</span>
+                                <span class="is-inline_block"><sup>od </sup>{{ o.started_at|date:'j E Y, G:m'|default:' teraz' }}</span>
+                                <span class="is-inline_block"><sub>do </sub>{{ o.finished_at|date:'j E Y, G:m'|default:' ustalenia' }}</span>
                             </div>
                         </div>
                         <div class="text-right">Organizator: <a class="text-warning" href="{% url 'organization_view' slug=o.organization.name|slugify id_=o.organization.id %}">{{ o.organization.name }}</a></div>
