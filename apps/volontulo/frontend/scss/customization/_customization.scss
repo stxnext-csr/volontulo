@@ -24,10 +24,13 @@
     }
 }
 
-b, // strong is 700
+b,
 th,
 label {
     font-weight: 600;
+}
+strong {
+    font-weight: 700;
 }
 
 // forms
@@ -138,8 +141,10 @@ input.form-control[required] {
         font-size: 13px;
         overflow: hidden;
         .heading-image {
+            display: block;
             position: relative;
-            margin-bottom: -30%;
+            margin: -10% -15% -30%;
+            padding-top: 100%;
         }
         .caption {
             position: relative;
@@ -192,6 +197,37 @@ input.form-control[required] {
         }
     }
 }
+// offer tables
+.offer-table {
+    .crop-circle {
+        display: block;
+        overflow:hidden;
+        position: relative;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        img {
+            position: absolute;
+            transform: translate(-25%, -50%);
+            width: 200%;
+            top: 50%;
+            &[alt=""] {
+                height: 100%;
+                background: $mediumgray-light;
+            }
+        }
+    }
+    .btn {
+        padding-left: 8px;
+        padding-right: 8px;
+        &:first-child {
+            margin-left: -8px;
+        }
+        &:last-child {
+            margin-right: -8px;
+        }
+    }
+}
 
 // offer_view
 .offer_view {
@@ -201,10 +237,8 @@ input.form-control[required] {
     img {
         position: absolute;
         transform: translate(0%, -50%);
-        top: 50%;
-        right: 0px;
-        left: 0px;
         width: 100%;
+        top: 50%;
     }
     .offer-title {
         float: left;
