@@ -3,8 +3,10 @@
 
 {% block title %}Strona użytkownika {{ user.email }}{% endblock %}
 
+{% block name %}user-profile{% endblock %}
+
 {% block content-heading %}
-    <div class="media user-heading">
+    <div class="media">
         <div class="media-left">
             <div class="cover-image" style="background-image:url({{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}"></div>
         </div>
@@ -61,10 +63,10 @@
             Aktywność
         </h3>
         <div class="panel-body">
-        {% if offers %}
+        {% if participated_offers %}
             <h4>Oferty w których zamierzasz wziąć udział</h4>
-            {% endif %}
-            {% include 'users/my_offers.html' with offers=participated_offers%}
+        {% endif %}
+        {% include 'users/my_offers.html' with offers=participated_offers%}
         </div>
     </div>
 

@@ -3,6 +3,8 @@
 
 {% block title %}Volontulo - podejmij pracę jako wolontariusz{% endblock %}
 
+{% block name %}home-page{% endblock %}
+
 {% block content-heading %}
     <img class="img-responsive center-block" src="http://placehold.it/1260x260?text=Albo+jeden+duży+banner" />
 {% endblock %}
@@ -15,7 +17,7 @@
             <div class="col-sm-6 col-md-4 col-lg-3">
 
                 <div class="thumbnail">
-                    <div class="heading-image" style="background-image:url({{ MEDIA_URL }}{{ o.images.all|main_image }})"></div>
+                    <a href="{% url 'offers_view' o.title|slugify o.id %}" class="heading-image" style="background-image:url({{ MEDIA_URL }}{{ o.images.all|main_image }})"></a>
                     <div class="caption">
                         <a role="button" class="btn btn-warning join-btn" href="{% url 'offers_view' o.title|slugify o.id %}">Włącz się</a>
                         <h3 class="heading">
