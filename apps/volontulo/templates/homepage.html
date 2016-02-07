@@ -4,15 +4,15 @@
 {% block title %}Volontulo - podejmij pracę jako wolontariusz{% endblock %}
 
 {% block content-heading %}
-    <img class="img-responsive center-block" src="http://placehold.it/1140x260?text=Albo+jeden+duży+banner" />
+    <img class="img-responsive center-block" src="http://placehold.it/1260x260?text=Albo+jeden+duży+banner" />
 {% endblock %}
 {% block content %}
     {% if offers %}
         <h2>Pomóż w jednej z ofert:</h2>
-        <div class="row offer-thumbnails">
+        <div class="row offer-thumbnails auto-clear">
         {% for o in offers %}
             {{ o.image }}
-            <div class="col-sm-6 col-md-3">
+            <div class="col-sm-6 col-md-4 col-lg-3">
 
                 <div class="thumbnail">
                     <div class="heading-image" style="background-image:url({{ MEDIA_URL }}{{ o.images.all|main_image }})"></div>
@@ -34,7 +34,8 @@
                                 <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
                             </div>
                             <div class="media-body panel-body">
-                                <span class="is-inline_block">{{ o.started_at }}</span> - <span class="is-inline_block">{{ o.finished_at }}</span>
+                                <span class="is-inline_block"><sup>od </sup>{{ o.started_at|date:'j E Y, G:m'|default:' teraz' }}</span>
+                                <span class="is-inline_block"><sub>do </sub>{{ o.finished_at|date:'j E Y, G:m'|default:' ustalenia' }}</span>
                             </div>
                         </div>
                         <div class="text-right">Organizator: <a class="text-warning" href="{% url 'organization_view' slug=o.organization.name|slugify id_=o.organization.id %}">{{ o.organization.name }}</a></div>

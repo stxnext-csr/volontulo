@@ -30,7 +30,8 @@
                 </td>
                 <td>
                     <div class="form-control-static">
-                        <span class="is-inline_block">{{ offer.started_at }}</span> - <span class="is-inline_block">{{ offer.finished_at }}</span>
+                        <span class="is-inline_block">{{ offer.started_at|date:'j E Y, G:m'|default:' teraz' }}</span> -
+                        <span class="is-inline_block">{{ offer.finished_at|date:'j E Y, G:m'|default:' do ustalenia' }}</span>
                     </div>
                 </td>
                 <td>
