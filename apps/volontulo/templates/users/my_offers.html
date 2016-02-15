@@ -1,22 +1,60 @@
+{% load main_image %}
+
 {% if offers %}
-    <table class="table table-stripped table-bordered">
-        <tr>
-            <th>ID</th>
-            <th>Tytuł oferty</th>
-            <th>Rozpoczęcie akcji</th>
-            <th>Czas trwania</th>
-            <th>Organizator</th>
-        </tr>
-    {% for offer in offers %}
-        <tr>
-            <th>{{ offer.id }}</th>
-            <th><a href="{% url 'offers_view' offer.title|slugify offer.id %}" class="btn btn-link btn-sm">{{ offer.title }}</a></th>
-            <th>{{ offer.time_commitment }}</th>
-            <th>{{ offer.time_period }}</th>
-            <th><a href="{% url 'organization_view' offer.organization.name|slugify offer.organization.id %}" class="btn btn-link btn-sm">{{ offer.organization.name }}</a></th>
-        </tr>
-    {% endfor %}
-    </table>
+    <div class="row offer-thumbnails auto-clear">
+        {% for offer in offers %}
+            <div class="col-sm-6">
+                <div class="thumbnail">
+                    <a href="{% url 'offers_view' offer.title|slugify offer.id %}" class="heading-image" style="background-image:url({{ MEDIA_URL }}{{ offer.images.all|main_image }})"></a>
+                    <a href="{% url 'offers_view' offer.title|slugify offer.id %}">
+                        <div class="panels">
+                            <div class="offer-title">
+                                <h2 class="title">
+                                    {{ offer.title }}
+                                </h2>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="media panel-default">
+                                <div class="media-left panel-heading">
+                                    <span aria-hidden="true" class="glyphicon glyphicon-map-marker"></span>
+                                </div>
+                                <div class="media-body panel-body">
+                                    {{ offer.location }}
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="media panel-default">
+                                <div class="media-left panel-heading">
+                                    <span aria-hidden="true" class="glyphicon glyphicon-time"></span>
+                                </div>
+                                <div class="media-body panel-body">
+                                    <span class="is-inline_block">{{ offer.started_at|date:'j E Y, G:m'|default:' teraz' }}</span> -
+                                    <span class="is-inline_block">{{ offer.finished_at|date:'j E Y, G:m'|default:' do ustalenia' }}</span>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                    <div class="caption">
+                        {% if offer.benefits %}
+                            <h4 class="">Twoje korzyści</h4>
+                            <p>{{ offer.benefits }}</p>
+                        {% endif %}
+                        {% if offer.requirements %}
+                            <h3 class="">Wymagania wobec Ciebie</h3>
+                            <p>{{ offer.requirements }}</p>
+                        {% endif %}
+                        {% if offer.time_commitment %}
+                            <h3 class="panel-title">Zaangażowanie czasowe</h3>
+                            <p>{{ offer.time_commitment }}</p>
+                        {% endif %}
+                        <div class="text-right">Organizator: <a class="text-warning" href="{% url 'organization_view' slug=offer.organization.name|slugify id_=offer.organization.id %}">{{ offer.organization.name }}</a></div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    
 {% else %}
     <p>Zgłoś się w jednej z dostępnych ofert wolontariuatu i zapełnij to miejsce.</p>
 {% endif %}
