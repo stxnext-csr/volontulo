@@ -88,6 +88,12 @@ Otherwise
 ```
 gulp build
 ```
+To convert svg icons to base64 format that ultimately is compiled to CSS, use:
+```
+gulp build_icons
+```
+Icons in .svg format should be placed at `\volontulo\apps\volontulo\frontend\icons\`.  
+That will allow their usage in SCSS like so: `@extend %asterisk-icon;` as an element background.
 
 ### Running the App in development mode
 Choose the appriopriate settings file  
