@@ -1,4 +1,4 @@
-{% extends "common/col2.html" %}
+{% extends "common/col1.html" %}
 
 {% block title %}Wyświetlanie organizacji{% endblock %}
 
@@ -21,16 +21,15 @@
                 {{ organization.description }}
             </div>
         </div>
-    </div>
-
-    <div class="form-horizontal">
-        <div class="col-xs-offset-2 col-xs-10">
-            {% if allow_edit %}
-            <a href="{% url 'organization_form' organization.name|slugify organization.id %}" class="btn btn-primary">Edytuj organizację</a>
-            {% endif %}
-            {% if allow_offer_create %}
-            <a href="{% url 'offers_create' %}" class="btn btn-primary">Dodaj ofertę</a>
-            {% endif %}
+        <div class="form-group form-group-sm">
+            <div class="col-xs-offset-2 col-xs-10">
+                {% if allow_edit %}
+                <a href="{% url 'organization_form' organization.name|slugify organization.id %}" class="btn btn-primary">Edytuj organizację</a>
+                {% endif %}
+                {% if allow_offer_create %}
+                <a href="{% url 'offers_create' %}" class="btn btn-primary">Dodaj ofertę</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 
