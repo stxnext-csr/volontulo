@@ -1,0 +1,19 @@
+#!/bin/bash -e
+
+BASEDIR=`dirname $0`/..
+
+if [ ! -d "$BASEDIR/env" ]; then
+    virtualenv -p python3 -q $BASEDIR/env --no-site-packages
+    echo "Virtualenv created."
+fi
+
+$BASEDIR/env/bin/pip install -r $BASEDIR/requirements/dev.txt
+echo "Requirements installed."
+
+cp $BASEDIR/etc/local_config.yaml.sample $BASEDIR/local_config.yaml
+
+UUID=$(cat /proc/sys/kernel/random/uuid)
+echo "secret_key: $UUID" >> $BASEDIR/local_config.yaml
+
+$BASEDIR/env/bin/python manage.py migrate --settings=volontulo_org.settings.dev
+cd $BASEDIR/apps/volontulo && npm install && gulp build
