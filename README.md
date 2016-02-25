@@ -95,14 +95,8 @@ Now you able to access the development site:
 ### Running tests
 To run the project tests:
 ```
-python manage.py test --settings=volontulo_org.settings.test_settings -v 3
+python manage.py test --settings=volontulo_org.settings.dev -v 3
 ```
-
-You can run the tests locally using SQLite, which is faster:
-```
-python manage.py test --settings=volontulo_org.settings.test_settings_sqlite -v 3
-```
-Don't forget to run the tests on the production RDBMS (test_settings) before pushing your changes!
 
 ### Populate badges in database
 To populate database with 3 required badges (volunteer, participant, prominent-participant) run followin command:

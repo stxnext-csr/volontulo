@@ -12,6 +12,7 @@ echo "Requirements installed."
 
 cp $BASEDIR/etc/local_config.yaml.sample $BASEDIR/local_config.yaml
 
+sed '/^secret_key/ d' $BASEDIR/local_config.yaml > $BASEDIR/tmp.yaml && mv tmp.yaml local_config.yaml
 UUID=$(cat /proc/sys/kernel/random/uuid)
 echo "secret_key: $UUID" >> $BASEDIR/local_config.yaml
 
