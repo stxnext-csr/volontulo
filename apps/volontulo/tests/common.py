@@ -6,10 +6,8 @@ u"""
 
 from django.contrib.auth.models import User
 
-from apps.volontulo.models import Badge
 from apps.volontulo.models import Offer
 from apps.volontulo.models import Organization
-from apps.volontulo.models import UserBadges
 from apps.volontulo.models import UserProfile
 
 COMMON_OFFER_DATA = {
@@ -74,21 +72,6 @@ def initialize_filled_volunteer_and_organization():
     )
     volunteer_user2.save()
     user_profile2 = UserProfile.objects.create(user=volunteer_user2)
-
-    # create 3 badges with different priorities
-    for i in range(1, 4):
-        badge = Badge.objects.create(
-            name='Badge {}'.format(i),
-            slug='badge-{}'.format(i),
-            priority=i,
-        )
-        badge.save()
-        usersbadge = UserBadges.objects.create(
-            userprofile=user_profile2,
-            badge=badge,
-            counter=i,
-        )
-        usersbadge.save()
 
     # create organization user to create offers
     organization2 = Organization.objects.create(name=u'Organization 2')

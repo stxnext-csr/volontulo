@@ -19,7 +19,7 @@ class TestUsersProfile(TestCase):
         common.initialize_empty_volunteer()
         # organization user - no offers
         common.initialize_empty_organization()
-        # volunteer user - badges, offers, organizations
+        # volunteer user - offers, organizations
         common.initialize_filled_volunteer_and_organization()
 
     def setUp(self):
@@ -69,9 +69,6 @@ class TestUsersProfile(TestCase):
         response = self.client.get('/me')
 
         # pylint: disable=no-member
-        self.assertIn('badges', response.context)
-        self.assertContains(response, u'Nie masz jeszcze odznak')
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertContains(
             response,
@@ -88,9 +85,6 @@ class TestUsersProfile(TestCase):
         })
         response = self.client.get('/me')
 
-        # pylint: disable=no-member
-        self.assertIn('badges', response.context)
-        self.assertContains(response, u'Nie masz jeszcze odznak')
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertContains(
