@@ -8,7 +8,7 @@
 
 Web portal for collaboration of community volunteers with organizations and institutions. 
 
-## Semi-automated Project setup
+## Semi-automated Project Set Up
 
 Install system dependecies (NOTE: it will install node in your system directory)
 ```
