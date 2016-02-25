@@ -8,7 +8,7 @@
 
 Web portal for collaboration of community volunteers with organizations and institutions. 
 
-## Automated Project setup
+## Semi-automated Project setup
 
 Install system dependecies (NOTE: it will install node in your system directory)
 ```
@@ -26,7 +26,6 @@ Django commands
 ```
 python manage.py COMMAND --settings=volontulo_org.settings.dev
 ```
-
 
 ## Manual Project Set Up
 
