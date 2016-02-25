@@ -2,7 +2,7 @@ language: python
 python:
   - "3.4"
 install:
-  - "pip install -r requirements/travis.txt"
+  - "pip install -r requirements/dev.txt"
 script:
   - "cp etc/local_config.yaml.sample local_config.yaml"
   - "sed -i 's/secret_key:.*/secret_key: classified_secret_key/g' local_config.yaml"
