@@ -1,5 +1,6 @@
 # Fill the values
 
+secret_key: # generate the key using unix "head -c 64 /dev/urandom | base64 -w 0"
 allowed_host: # Site's domain. Important in production mode
 
 # Database Credentials
