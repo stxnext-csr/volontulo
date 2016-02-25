@@ -1,4 +1,4 @@
--r travis.txt  # includes travis.txt requirements file
+-r base.txt  # includes travis.txt requirements file
 
 colorama==0.3.3
 django-coverage==1.2
