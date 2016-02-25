@@ -24,24 +24,24 @@ def update():
 
     # Django app refresh:
     with contextlib.nested(
-        cd('/var/www/volontuloapp_org/volontulo'),
-        prefix('workon volontulo')
+        cd('/var/www/volontuloapp_org'),
+        prefix('workon volontuloapp_org')
     ):
         run('git checkout master')
         run('git pull')
-        run('pip install -r requirements.txt')
+        run('pip install -r requirements/production.txt')
 
     # Gulp frontend refresh:
     with contextlib.nested(
-        cd('/var/www/volontuloapp_org/volontulo/volontulo')
+        cd('/var/www/volontuloapp_org/apps/volontulo')
     ):
         run('npm install .')
-        run('./node_modules/gulp/bin/gulp.js build')
+        run('./node_modules/.bin/gulp build')
 
     # Django site refresh:
     with contextlib.nested(
         cd('/var/www/volontuloapp_org'),
-        prefix('workon volontulo')
+        prefix('workon volontuloapp_org')
     ):
         run('python manage.py migrate --traceback')
         run('service apache2 restart')
