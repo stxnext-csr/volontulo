@@ -20,11 +20,14 @@
             </ul>
         </div>
         <div class="col-xs-12 col-sm-4">
-            <h3 class="nav-title">Oferty</h3>
+            <h3 class="nav-title">Strefa wolontariusza</h3>
             <ul class="nav-list list-unstyled">
-                <li><a href="{% url 'offers_list' %}">Lista ofert</a></li>
-                <li><a href="{% url 'offers_create' %}">Tworzenie oferty</a></li>
-                <li><a href="{% url 'offers_archived' %}">Oferty archiwizowane</a></li>
+                 <li><a href="{% url 'register' %}">Załóż konto</a></li>
+                 <li><a href="{% url 'offers_list' %}">Lista aktualnych ofert</a></li>
+                 <li><a href="{% url 'offers_archived' %}">Archiwum ofert</a></li>
+                 <li><a href="{% url 'organizations_list' %}">Lista organizacji i instytucji</a></li>
+                 <li><a href="{% url 'static_page' 'faq-volunteers' %}">FAQ dla wolontariuszy</a></li>
+                 <li><a href="{% url 'office' %}">Przyjdź na dyżur</a></li>
             </ul>
         </div>
     </div>
