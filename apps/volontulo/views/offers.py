@@ -10,7 +10,6 @@ from django.contrib.admin.models import ADDITION
 from django.contrib.admin.models import CHANGE
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.utils import IntegrityError
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
