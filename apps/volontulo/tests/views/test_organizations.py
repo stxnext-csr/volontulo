@@ -41,10 +41,11 @@ class TestOrganizations(TestCase):
 
     # pylint: disable=invalid-name
     def test__ensure_status_is_displayed_in_profile_view(self):
-        u"""Test if offer status is displayed in a profile view."""
+        """Test if offer status is displayed in a profile view."""
         self.client.login(
-            username=u'volunteer2@example.com', 
-            password=u'volunteer2')
+            username=u'volunteer2@example.com',
+            password=u'volunteer2'
+        )
         response = self.client.get('/me', follow=True)
         self.assertTemplateUsed(response, 'users/my_offers.html')
         # pylint: disable=no-member
@@ -55,10 +56,11 @@ class TestOrganizations(TestCase):
 
     # pylint: disable=invalid-name
     def test__ensure_status_is_displayed_in_organisations_view(self):
-        u"""Test if offer status is displayed in an organisation view."""
+        """Test if offer status is displayed in an organisation view."""
         self.client.login(
-            username=u'volunteer2@example.com', 
-            password=u'volunteer2')
+            username=u'volunteer2@example.com',
+            password=u'volunteer2'
+        )
         response = self.client.get('/me', follow=True)
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
