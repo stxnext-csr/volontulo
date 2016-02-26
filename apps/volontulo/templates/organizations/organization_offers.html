@@ -34,8 +34,9 @@
             <td class="text-right">
             {% if o.status_old == 'STAGED' %}
                 <a href="{% url 'offers_view' o.title|slugify o.id %}" class="btn btn-primary">Włącz się</a>
-                <a href="{% url 'offers_edit' o.title|slugify o.id %}" class="btn btn-info">Edytuj</a>
-            {% else %}
+            {% endif %}
+            {# Only the user that can edit the organization can edit its offers #}
+            {% if allow_edit %}
                 <a href="{% url 'offers_edit' o.title|slugify o.id %}" class="btn btn-info">Edytuj</a>
             {% endif %}
             </td>

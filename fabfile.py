@@ -43,5 +43,6 @@ def update():
         cd('/var/www/volontuloapp_org'),
         prefix('workon volontuloapp_org')
     ):
-        run('python manage.py migrate --traceback')
+        run('python manage.py migrate --traceback'
+            ' --settings=volontulo_org.settings.production')
         run('service apache2 restart')

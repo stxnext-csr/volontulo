@@ -94,9 +94,9 @@ input.form-control[required] {
         right: 0px;
         max-height: 100%;
         height: 4em;
-        background: linear-gradient(to bottom, 
-                    rgba(black, 0) 0%, 
-                    rgba(black, .06) 80%, 
+        background: linear-gradient(to bottom,
+                    rgba(black, 0) 0%,
+                    rgba(black, .06) 80%,
                     rgba(black, .1) 100%);
     }
 }
@@ -111,8 +111,6 @@ input.form-control[required] {
 
 // section footer
 .footer {
-    min-height: 35vh;
-    padding-bottom: 5vh;
     background-color: $darkgray-dark;
     color: $mediumgray-dark;
     .nav-title {
@@ -132,6 +130,20 @@ input.form-control[required] {
                 }
             }
         }
+    }
+}
+
+.sub-footer{
+    min-height: 20vh;
+    padding: 15px;
+    .cooperation-info{
+        font-size: 18px;
+        text-align: center;
+        color: $darkgray-light;
+        font-weight: bold;
+    }
+    .logos{
+        padding: 15px 0;
     }
 }
 
@@ -184,9 +196,9 @@ input.form-control[required] {
         .caption {
             position: relative;
             @include box-shadow(0 0 10px rgba($darkgray-dark, .5));
-            background: linear-gradient(to bottom, 
-                        rgba(white, .8) 0%, 
-                        rgba(white, 1) 40%, 
+            background: linear-gradient(to bottom,
+                        rgba(white, .8) 0%,
+                        rgba(white, 1) 40%,
                         rgba(white, 1) 100%);
             sub, sup {
                 color: $darkgray-light;
@@ -256,7 +268,7 @@ input.form-control[required] {
             font-weight: 700;
             color: $lightgray-light;
             text-shadow: 0 0 10px rgba(black, .2),
-                         0 0px 1px rgba(black, .6), 
+                         0 0px 1px rgba(black, .6),
                          0 1px 0 rgba(black, .6);
             vertical-align: middle;
         }
@@ -345,6 +357,12 @@ input.form-control[required] {
             margin-right: 30px;
             background-position: center;
             background-size: cover;
+        }
+    }
+    .user-photo {
+        img {
+            width: 100%;
+            max-height: 300px;
         }
     }
     .thumbnail {

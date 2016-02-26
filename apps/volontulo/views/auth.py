@@ -10,9 +10,11 @@ from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db.utils import IntegrityError
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.utils.http import is_safe_url
 from django.views.generic import View
 
 from apps.volontulo.forms import UserForm
@@ -22,18 +24,20 @@ from apps.volontulo.models import UserProfile
 
 
 def login(request):
-    u"""Login view.
+    """Login view.
 
     :param request: WSGIRequest instance
     """
     if request.user.is_authenticated():
         messages.success(
             request,
-            u'Jesteś już zalogowany.'
+            'Jesteś już zalogowany.'
         )
         return redirect('homepage')
 
+    redirect_to = request.POST.get('next', request.GET.get('next', 'homepage'))
     user_form = UserForm()
+
     if request.method == 'POST':
         username = request.POST.get('email')
         password = request.POST.get('password')
@@ -43,24 +47,30 @@ def login(request):
                 auth.login(request, user)
                 messages.success(
                     request,
-                    u"Poprawnie zalogowano"
+                    'Poprawnie zalogowano'
                 )
-                return redirect('homepage')
+
+                # Ensure the user-originating redirection url is safe.
+                if not is_safe_url(url=redirect_to, host=request.get_host()):
+                    redirect_to = reverse('homepage')
+
+                return redirect(redirect_to)
             else:
                 messages.info(
                     request,
-                    u"Konto jest nieaktywne, skontaktuj się z administratorem."
+                    'Konto jest nieaktywne, skontaktuj się z administratorem.'
                 )
         else:
             messages.error(
                 request,
-                u"Nieprawidłowy email lub hasło!"
+                'Nieprawidłowy email lub hasło!'
             )
     return render(
         request,
         'auth/login.html',
         {
-            'user_form': user_form
+            'user_form': user_form,
+            'next': redirect_to,
         }
     )
 

@@ -56,7 +56,7 @@ class TestPages(TestCase):
         })
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'admin/list_offers.html')
+        self.assertTemplateUsed(response, 'homepage.html')
         # pylint: disable=no-member
         self.assertIn('offers', response.context)
         # pylint: disable=no-member
@@ -69,13 +69,6 @@ class TestPages(TestCase):
         self.assertEqual(offers[u'ACTIVE'], 0)
         self.assertEqual(offers[u'NEW'], 5)
         self.assertEqual(offers[u'SUSPENDED'], 5)
-
-    def test__get_site_news_staticpage(self):
-        u"""Site news static page"""
-        response = self.client.get('/pages/site-news')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'pages/site-news.html')
-        self.assertContains(response, u'Informacje o działaniu portalu')
 
     # pylint: disable=invalid-name
     def test__get_organization_faq_staticpage(self):
