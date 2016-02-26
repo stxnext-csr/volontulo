@@ -349,12 +349,12 @@ class OffersView(View):
 
 
 class OffersJoin(View):
-    u"""Class view supporting joining offer."""
+    """Class view supporting joining offer."""
 
     @staticmethod
     @correct_slug(Offer, 'offers_join', 'title')
     def get(request, slug, id_):  # pylint: disable=unused-argument
-        u"""View responsible for showing join form for particular offer."""
+        """View responsible for showing join form for particular offer."""
         if request.user.is_authenticated():
             has_applied = Offer.objects.filter(
                 volunteers=request.user,
@@ -363,7 +363,7 @@ class OffersJoin(View):
             if has_applied:
                 messages.error(
                     request,
-                    u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
+                    'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
                 )
                 return redirect('offers_list')
 
@@ -411,17 +411,10 @@ class OffersJoin(View):
                 except IntegrityError:
                     messages.info(
                         request,
-                        u'Użytkownik o podanym emailu już istnieje.'
-                        u' Zaloguj się.'
+                        'Zaloguj się, aby zapisać się do oferty.'
                     )
-                    return render(
-                        request,
-                        'offers/offer_apply.html',
-                        {
-                            'offer': offer,
-                            'form': form,
-                            'volunteer_user': UserProfile(),
-                        }
+                    return redirect(
+                        reverse('login') + '?next={}'.format(request.path)
                     )
 
             has_applied = Offer.objects.filter(
