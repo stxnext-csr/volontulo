@@ -22,4 +22,4 @@ $BASEDIR/env/bin/python manage.py loaddata initial/data.json --settings=volontul
 # if npm command gives error "/usr/bin/env: node: No such file or directory
 # sudo ln -s /usr/bin/nodejs /usr/bin/node
 
-cd $BASEDIR/apps/volontulo && npm install && gulp build
+cd $BASEDIR/apps/volontulo && npm install && node_modules/.bin/gulp build
