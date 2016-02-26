@@ -196,6 +196,7 @@ class TestOffersCreate(TestCase):
         )
 
     def test_create_offer_without_date(self):
+        """Test for creating offer without date."""
         self.client.post('/login', {
             'email': u'organization@example.com',
             'password': '123org',
@@ -214,6 +215,7 @@ class TestOffersCreate(TestCase):
             'finished_at': '',
         }, follow=True)
 
+        self.assertEqual(response.status_code, 200)
         offer = Offer.objects.get(description='desc')
         self.assertEqual(offer.action_status, 'ongoing')
 
