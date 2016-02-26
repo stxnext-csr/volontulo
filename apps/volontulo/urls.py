@@ -120,4 +120,9 @@ urlpatterns = [  # pylint: disable=invalid-name
         admin_views.main_panel,
         name='admin_panel'
     ),
+    url(
+        r'^newsletter$',
+        views.newsletter_signup,
+        name='newsletter_signup'
+    ),
 ]
