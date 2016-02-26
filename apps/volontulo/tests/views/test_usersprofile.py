@@ -157,3 +157,18 @@ class TestUsersProfile(TestCase):
         self.assertIn('profile_form', response.context)
         self.assertContains(response, u'Grzegorz')
         self.assertContains(response, u'Brzęczyszczykiewicz')
+
+    def test__no_email_field_on_edit_profile_form(self):
+        u"""Test if Email field is not visible edit profile form"""
+
+        self.client.post('/login', {
+            'email': u'volunteer1@example.com',
+            'password': 'volunteer1',
+        })
+        response = self.client.get('/me')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/user_profile.html')
+        # pylint: disable=no-member
+        self.assertIn('profile_form', response.context)
+        self.assertNotContains(response, u'Email')
