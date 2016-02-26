@@ -216,7 +216,6 @@ class TestOffersCreate(TestCase):
 
         offer = Offer.objects.get(description='desc')
         self.assertEqual(offer.action_status, 'ongoing')
-        
 
     def test_offers_create_valid_form(self):
         u"""Test attempt of creation of new offer with valid form."""

@@ -169,7 +169,6 @@ class Offer(models.Model):
         if self.started_at or self.finished_at:
             self.action_status = self.determine_action_status()
 
-
     def determine_action_status(self):
         u"""Determine action status by offer dates."""
         if (
