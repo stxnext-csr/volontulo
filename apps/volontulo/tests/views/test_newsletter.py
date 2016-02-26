@@ -8,7 +8,8 @@ from django.test import TestCase
 
 from apps.volontulo.tests import common
 
-class TestAboutus(TestCase):
+
+class TestNewsletter(TestCase):
     u"""Class responsible for testing newsletter specific views."""
 
     # pylint: disable=invalid-name
