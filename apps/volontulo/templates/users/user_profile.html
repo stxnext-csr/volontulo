@@ -17,10 +17,6 @@
                 <li><b>UserProfile ID:</b> <span class="badge">{{ user.userprofile.id }}</span></li>
             </ul>
         </div>
-        <div class="media-body media-top">
-            <h2 class="lead">Odznaki</h2>
-            {% include 'common/badges.html' with badges=badges %}
-        </div>
     </div>
 {% endblock %}
 
@@ -86,5 +82,4 @@
         </div>
     </div>
 
-    <p class="pull-right"><a href="{% url 'logout' %}" class="btn btn-default">Wyloguj</a></p>
 {% endblock %}

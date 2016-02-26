@@ -27,7 +27,7 @@ class TestPages(TestCase):
         cls.volunteer = common.initialize_empty_volunteer()
         # organization user - no offers
         common.initialize_empty_organization()
-        # volunteer user - badges, offers, organizations
+        # volunteer user - offers, organizations
         common.initialize_filled_volunteer_and_organization()
 
     def setUp(self):

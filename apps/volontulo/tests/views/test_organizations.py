@@ -20,7 +20,7 @@ class TestOrganizations(TestCase):
         cls.volunteer = common.initialize_empty_volunteer()
         # organization user - no offers
         cls.organization = common.initialize_empty_organization()
-        # volunteer user - badges, offers, organizations
+        # volunteer user - offers, organizations
         cls.volunteer2, cls.organization2 = \
             common.initialize_filled_volunteer_and_organization()
 

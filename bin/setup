@@ -17,4 +17,9 @@ UUID=$(cat /proc/sys/kernel/random/uuid)
 echo "secret_key: $UUID" >> $BASEDIR/local_config.yaml
 
 $BASEDIR/env/bin/python manage.py migrate --settings=volontulo_org.settings.dev
-cd $BASEDIR/apps/volontulo && npm install && gulp build
+$BASEDIR/env/bin/python manage.py loaddata initial/data.json --settings=volontulo_org.settings.dev
+
+# if npm command gives error "/usr/bin/env: node: No such file or directory
+# sudo ln -s /usr/bin/nodejs /usr/bin/node
+
+cd $BASEDIR/apps/volontulo && npm install && node_modules/.bin/gulp build

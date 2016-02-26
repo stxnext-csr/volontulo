@@ -19,7 +19,6 @@ from apps.volontulo.forms import UserGalleryForm
 from apps.volontulo.lib.email import send_mail
 from apps.volontulo.models import Offer
 from apps.volontulo.models import OrganizationGallery
-from apps.volontulo.models import UserBadges
 from apps.volontulo.models import UserProfile
 
 
@@ -206,7 +205,6 @@ def logged_user_profile(request):
             profile_form = _save_userprofile()
 
     ctx = dict(
-        badges=UserBadges.get_user_badges(userprofile),
         profile_form=profile_form,
         user_avatar_form=UserGalleryForm(),
         organization_image_form=OrganizationGalleryForm(userprofile),

@@ -9,7 +9,6 @@ from django.contrib import messages
 from django.contrib.admin.models import ADDITION
 from django.contrib.admin.models import CHANGE
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db.utils import IntegrityError
 from django.http import Http404
@@ -25,7 +24,6 @@ from apps.volontulo.forms import OfferImageForm
 from apps.volontulo.lib.email import send_mail
 from apps.volontulo.models import Offer
 from apps.volontulo.models import OfferImage
-from apps.volontulo.models import UserBadges
 from apps.volontulo.models import UserProfile
 from apps.volontulo.utils import correct_slug
 from apps.volontulo.utils import save_history
@@ -341,24 +339,6 @@ class OffersView(View):
         if post_data.get('submit'):
             del post_data['submit']
 
-        offer_content_type = ContentType.objects.get(
-            app_label='volontulo',
-            model='offer'
-        )
-        for award in post_data:
-            userprofile_id = award.split('_')[1]
-            volunteer_user = UserProfile.objects.get(id=userprofile_id)
-            award_value = request.POST.get('award_%s' % userprofile_id)
-            if award_value == 'PROMINENT-PARTICIPANT':
-                UserBadges.apply_prominent_participant_badge(
-                    offer_content_type,
-                    volunteer_user,
-                )
-            elif award_value == 'NOT-APPLY':
-                UserBadges.decrease_user_participant_badge(
-                    offer_content_type,
-                    volunteer_user,
-                )
         offer.votes = True
         offer.save()
 
@@ -455,16 +435,7 @@ class OffersJoin(View):
                 )
                 return redirect('offers_list')
 
-            offer_content_type = ContentType.objects.get(
-                app_label='volontulo',
-                model='offer'
-            )
-
             offer.volunteers.add(user)
-            UserBadges.apply_participant_badge(
-                offer_content_type,
-                user.userprofile,
-            )
             offer.save()
 
             send_mail(
