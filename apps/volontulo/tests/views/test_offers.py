@@ -20,7 +20,7 @@ class TestOffersList(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         cls.organization = Organization.objects.create(
-            name=u'',
+            name=u'Organization Name',
             address=u'',
             description=u'',
         )
@@ -149,7 +149,7 @@ class TestOffersCreate(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         cls.organization = Organization.objects.create(
-            name=u'',
+            name=u'Organization Name',
             address=u'',
             description=u'',
         )
@@ -167,6 +167,15 @@ class TestOffersCreate(TestCase):
         # pylint: disable=no-member
         cls.organization_profile.organizations.add(cls.organization)
 
+        no_org_user = User.objects.create_user(
+            u'no_organ@example.com',
+            u'no_organ@example.com',
+            u'123no_org'
+        )
+        UserProfile.objects.create(
+            user=no_org_user,
+        )
+
     def setUp(self):
         u"""Set up each test."""
         self.client = Client()
@@ -180,6 +189,21 @@ class TestOffersCreate(TestCase):
         response = self.client.get('/offers/create')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offer_form.html')
+
+    def test_offers_create_no_organization_get_method(self):
+        u"""Test page for offer creation - tendering template with form."""
+        self.client.post('/login', {
+            'email': u'no_organ@example.com',
+            'password': '123no_org',
+        })
+        response = self.client.get('/offers/create', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            u"Nie masz jeszcze żadnej założonej organizacji"
+            u" na volontuloapp.org."
+        )
+        self.assertTemplateUsed(response, 'offers/offers_list.html')
 
     def test_offers_create_invalid_form(self):
         u"""Test attempt of creation of new offer with invalid form."""
@@ -244,7 +268,7 @@ class TestOffersEdit(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         cls.organization = Organization.objects.create(
-            name=u'',
+            name=u'Organization Name',
             address=u'',
             description=u'',
         )
@@ -418,7 +442,7 @@ class TestOffersView(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         organization = Organization.objects.create(
-            name=u'',
+            name=u'Organization Name',
             address=u'',
             description=u'',
         )
@@ -506,7 +530,7 @@ class TestOffersJoin(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         organization = Organization.objects.create(
-            name=u'',
+            name=u'Organization Name',
             address=u'',
             description=u'',
         )
