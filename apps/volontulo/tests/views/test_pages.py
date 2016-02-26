@@ -106,4 +106,5 @@ class TestPages(TestCase):
         response = self.client.get('/office')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'pages/office.html')
-        self.assertContains(response, u'Dyżury dla wolontariuszy oraz organizacji')
+        self.assertContains(response,
+                            u'Dyżury dla wolontariuszy oraz organizacji')
