@@ -410,7 +410,7 @@ class OffersJoin(View):
                         'Zaloguj się, aby zapisać się do oferty.'
                     )
                     return redirect(
-                        reverse('login') + '?next={}'.format(request.path)
+                        '{}?next={}'.format(reverse('login'), request.path)
                     )
                 else:
                     messages.info(
