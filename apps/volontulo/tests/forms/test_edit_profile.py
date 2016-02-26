@@ -83,3 +83,14 @@ class TestEditProfileForm(TransactionTestCase):
         )
         form = EditProfileForm(data=form_data)
         self.assertRaises(ValidationError, form.is_valid)
+
+    def test__no_email_field_on_edit_profile_form(self):
+        u"""Test if Is Avatar field is not visible."""
+
+        self.client.post('/login', {
+            'email': u'volunteer1@example.com',
+            'password': 'volunteer1',
+        })
+        response = self.client.get('/me')
+        # pylint: disable=no-member
+        self.assertNotContains(response, u'is_avatar')
