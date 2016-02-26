@@ -1,0 +1,31 @@
+[
+{
+    "pk": 1,
+    "model": "auth.user",
+    "fields": {
+        "is_staff": false,
+        "email": "admin@volontuloapp.org",
+        "first_name": "",
+        "groups": [],
+        "password": "pbkdf2_sha256$20000$Fx7eRDo1AO2W$zT3fpIdrZ0DXOGVslPOfNfTyQnlGGouGTDclllMykdw=",
+        "last_login": "2016-02-25T11:47:59.562Z",
+        "last_name": "",
+        "username": "admin@volontuloapp.org",
+        "is_superuser": false,
+        "is_active": true,
+        "date_joined": "2016-02-05T09:34:43.382Z",
+        "user_permissions": []
+    }
+},
+{
+    "pk": 1,
+    "model": "volontulo.userprofile",
+    "fields": {
+        "user": 1,
+        "organizations": [],
+        "is_administrator": true,
+        "phone_no": "",
+        "uuid": "aa28f486-532b-4530-8fc4-ad3692f2fb49"
+    }
+}
+]

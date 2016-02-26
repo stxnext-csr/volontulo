@@ -18,3 +18,10 @@ INSTALLED_APPS += (
 )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
+    }
+}
