@@ -25,7 +25,7 @@
                             <li>
                                 <a href="{% url 'logged_user_profile' %}">Moje konto</a>
                             </li>
-                            {% if user.is_admin %}
+                            {% if user.is_staff %}
                             <li>
 				                <a href="{% url 'admin_panel' %}">Panel administracyjny</a>
                             </li>
