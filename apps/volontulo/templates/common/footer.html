@@ -2,31 +2,31 @@
     <h2 class="hide">Nawigacja</h2>
     <div class="row">
         <div class="col-xs-12 col-sm-4">
-            <h3 class="nav-title">Ogólne</h3>
+            <h3 class="nav-title">Informacje</h3>
             <ul class="nav-list list-unstyled">
                 <li><a href="{% url 'homepage' %}">Strona główna</a></li>
-                <li><a href="{% url 'register' %}">Rejestracja</a></li>
+                <li><a href="{% url 'register' %}">Załóż konto</a></li>
                 <li><a href="{% url 'contact_form' %}">Kontakt z administratorem</a></li>
-            </ul>
-            <ul class="nav-list list-unstyled">
-                <li><a href="{% url 'static_page' 'faq-volunteers' %}">FAQ dla wolontariuszy</a></li>
-                <li><a href="{% url 'static_page' 'faq-organizations' %}">FAQ dla organizacji</a></li>
+                <li><a href="{% url 'about-us' %}">O nas</a></li>
+                <li><a href="{% url 'newsletter_signup' %}">Zapisz się do newslettera</a></li>
                 <li><a href="{% url 'static_page' 'regulations' %}">Regulamin</a></li>
             </ul>
         </div>
         <div class="col-xs-12 col-sm-4">
             <h3 class="nav-title">Organizacje</h3>
             <ul class="nav-list list-unstyled">
-                <li><a href="{% url 'organizations_list' %}">Lista organizacji</a></li>
                 <li><a href="{% url 'organizations_create' %}">Załóż organizację</a></li>
             </ul>
         </div>
         <div class="col-xs-12 col-sm-4">
-            <h3 class="nav-title">Oferty</h3>
+            <h3 class="nav-title">Strefa wolontariusza</h3>
             <ul class="nav-list list-unstyled">
-                <li><a href="{% url 'offers_list' %}">Lista ofert</a></li>
-                <li><a href="{% url 'offers_create' %}">Tworzenie oferty</a></li>
-                <li><a href="{% url 'offers_archived' %}">Oferty archiwizowane</a></li>
+                <li><a href="{% url 'register' %}">Załóż konto</a></li>
+                <li><a href="{% url 'offers_list' %}">Lista aktualnych ofert</a></li>
+                <li><a href="{% url 'offers_archived' %}">Archiwum ofert</a></li>
+                <li><a href="{% url 'organizations_list' %}">Lista organizacji</a></li>
+                <li><a href="{% url 'static_page' 'faq-volunteers' %}">FAQ dla wolontariuszy</a></li>
+                <li><a href="{% url 'office' %}">Przyjdź na dyżur</a></li>
             </ul>
         </div>
     </div>

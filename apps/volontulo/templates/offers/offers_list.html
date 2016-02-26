@@ -4,6 +4,7 @@
 {% block title %}Lista ofert Volontulo{% endblock %}
 
 {% block content %}
+    {% include 'admin/offers_nav.html' %}
     {% if offers %}
         <h2>Lista ofert</h2>
         <table class="table table-striped offer-table">
@@ -35,7 +36,7 @@
                     </div>
                 </td>
                 <td>
-                    <div class="form-control-static">{{ offer.organization.name }}</div>
+                    <div class="form-control-static"><a href="{% url 'organization_view' offer.organization.name|slugify offer.organization.id %}" class="btn btn-link">{{ offer.organization.name }}</a></div>
                 </td>
                 <td class="text-right">
                 {% if user.userprofile.is_administrator %}

@@ -3,6 +3,7 @@
 {% block title %}Lista ofert w archiwum{% endblock %}
 
 {% block content %}
+    {% include 'admin/offers_nav.html' %}
     {% if offers %}
         <h2>Lista ofert</h2>
         <table class="table table-striped">

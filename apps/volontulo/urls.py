@@ -8,6 +8,7 @@ from django.conf.urls import url
 
 from apps.volontulo import views
 from apps.volontulo.views import auth as auth_views
+from apps.volontulo.views import admin_panel as admin_views
 from apps.volontulo.views import offers as offers_views
 from apps.volontulo.views import organizations as orgs_views
 
@@ -41,6 +42,16 @@ urlpatterns = [  # pylint: disable=invalid-name
 
     # offers' namesapce:
     url(r'^offers$', offers_views.OffersList.as_view(), name='offers_list'),
+    url(
+        r'^offers/delete/(?P<pk>[0-9]+)$',
+        offers_views.OffersDelete.as_view(),
+        name='offers_delete'
+    ),
+    url(
+        r'^offers/accept/(?P<pk>[0-9]+)$',
+        offers_views.OffersAccept.as_view(),
+        name='offers_accept'
+    ),
     url(
         r'^offers/create$',
         offers_views.OffersCreate.as_view(),
@@ -105,6 +116,18 @@ urlpatterns = [  # pylint: disable=invalid-name
 
     # others:
     url(
+        r'^o-nas$',
+        views.static_pages,
+        kwargs={'template_name': 'about-us'},
+        name='about-us'
+    ),
+    url(
+        r'^office$',
+        views.static_pages,
+        kwargs={'template_name': 'office'},
+        name='office'
+    ),
+    url(
         r'^pages/(?P<template_name>[\w-]+)$',
         views.static_pages,
         name='static_page'
@@ -113,5 +136,15 @@ urlpatterns = [  # pylint: disable=invalid-name
         r'^contact$',
         views.contact_form,
         name='contact_form'
+    ),
+    url(
+        r'^panel$',
+        admin_views.main_panel,
+        name='admin_panel'
+    ),
+    url(
+        r'^newsletter$',
+        views.newsletter_signup,
+        name='newsletter_signup'
     ),
 ]
