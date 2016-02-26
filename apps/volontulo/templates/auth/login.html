@@ -18,6 +18,7 @@
         <div class="form-group">
             <a href="{% url 'password_reset' %}">Nie pamiętasz hasła? Możemy pomóc!</a>
         </div>
+        <input type="hidden" name="next" value="{{ next }}" />
         <button type="submit" name="submit" class="btn btn-primary">Zaloguj</button>
     </form>
 {% endblock %}

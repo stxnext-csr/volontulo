@@ -645,16 +645,20 @@ class TestOffersJoin(TestCase):
         )
 
     def test_offers_join_valid_form_and_anonymous_user(self):
-        u"""Test attempt of joining offer with valid form and anon user."""
+        """Test attempt of joining offer with valid form and anon user."""
+        post_data = {
+            'email': 'anon@example.com',
+            'phone_no': '+42 42 42 42',
+            'fullname': 'Mister Anonymous',
+            'comments': 'Some important staff.',
+        }
+
         # successfull joining offer:
-        response = self.client.post('/offers/volontulo-offer/{}/join'.format(
-            self.offer.id
-        ), {
-            'email': u'anon@example.com',
-            'phone_no': u'+42 42 42 42',
-            'fullname': u'Mister Anonymous',
-            'comments': u'Some important staff.',
-        }, follow=True)
+        response = self.client.post(
+            '/offers/volontulo-offer/{}/join'.format(self.offer.id),
+            post_data,
+            follow=True,
+        )
         self.assertRedirects(
             response,
             '/offers/volontulo-offer/{}'.format(self.offer.id),
@@ -663,19 +667,18 @@ class TestOffersJoin(TestCase):
         )
 
         # unsuccessfull joining the same offer for the second time:
-        response = self.client.post('/offers/volontulo-offer/{}/join'.format(
-            self.offer.id
-        ), {
-            'email': u'anon@example.com',
-            'phone_no': u'+42 42 42 42',
-            'fullname': u'Mister Anonymous',
-            'comments': u'Some important staff.',
-        }, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'offers/offer_apply.html')
-        self.assertContains(
+        response = self.client.post(
+            '/offers/volontulo-offer/{}/join'.format(self.offer.id),
+            post_data,
+            follow=True,
+        )
+        self.assertRedirects(
             response,
-            u'Użytkownik o podanym emailu już istnieje. Zaloguj się.',
+            '/login?next=/offers/volontulo-offer/{}/join'.format(
+                self.offer.id
+            ),
+            302,
+            200,
         )
 
 
