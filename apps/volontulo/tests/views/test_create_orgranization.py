@@ -146,3 +146,18 @@ class TestCreateOrganization(TestOrganizations):
         self.assertEqual(record.name, org_name)
         self.assertEqual(record.address, u'East Street 123')
         self.assertEqual(record.description, u'User unfriendly organization')
+
+    # pylint: disable=invalid-name
+    def test__create_organization_one_column_template(self):
+        """Test validate one column template on create page."""
+        # Disable for anonymous user
+        self.client.post('/login', {
+            'email': u'volunteer1@example.com',
+            'password': 'volunteer1',
+        })
+        response = self.client.get('/organizations/create')
+
+        self.assertTemplateUsed(
+            response,
+            'common/col1.html'
+        )
