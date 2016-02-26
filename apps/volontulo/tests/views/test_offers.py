@@ -428,6 +428,30 @@ class TestOffersCreate(TestCase):
             'Formularz zawiera niepoprawnie wypełnione pola'
         )
 
+    def test_create_offer_without_date(self):
+        """Test for creating offer without date."""
+        self.client.post('/login', {
+            'email': u'organization@example.com',
+            'password': '123org',
+        })
+
+        response = self.client.post('/offers/create', {
+            'organization': self.organization.id,
+            'description': 'desc',
+            'requirements': u'required requirements',
+            'time_commitment': u'required time_commitment',
+            'benefits': u'required benefits',
+            'location': u'required location',
+            'title': u'volontulo offer',
+            'time_period': u'required time_period',
+            'started_at': '',
+            'finished_at': '',
+        }, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        offer = Offer.objects.get(description='desc')
+        self.assertEqual(offer.action_status, 'ongoing')
+
     def test_offers_create_valid_form(self):
         u"""Test attempt of creation of new offer with valid form."""
         self.client.post('/login', {
