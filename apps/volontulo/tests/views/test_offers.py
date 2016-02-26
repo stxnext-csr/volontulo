@@ -128,7 +128,7 @@ class TestOffersList(TestCase):
         return self._test_offers_list_for_standard_user()
 
     def test_offers_list_for_admin(self):
-        u"""Test offers' list for account of admin."""
+        """Test offers' list for account of admin."""
         self.client.post('/login', {
             'email': u'admin@example.com',
             'password': '123admin',
@@ -140,6 +140,234 @@ class TestOffersList(TestCase):
         self.assertIn('offers', response.context)
         # pylint: disable=no-member
         self.assertEqual(len(response.context['offers']), 2)
+
+
+class TestOfferDelete(TestCase):
+    """Class responsible for testing offers deletion."""
+
+    @classmethod
+    def setUpTestData(cls):
+        u"""Set up data for all tests."""
+        cls.organization = Organization.objects.create(
+            name=u'',
+            address=u'',
+            description=u'',
+        )
+        cls.organization.save()
+
+        common_offer_data = {
+            'organization': cls.organization,
+            'description': u'',
+            'requirements': u'',
+            'time_commitment': u'',
+            'benefits': u'',
+            'location': u'',
+            'title': u'volontulo offer',
+            'time_period': u'',
+            'started_at': '2105-10-24 09:10:11',
+            'finished_at': '2105-11-28 12:13:14',
+            'offer_status': 'unpublished',
+            'recruitment_status': 'closed',
+            'action_status': 'ongoing',
+        }
+
+        cls.inactive_offer = Offer.objects.create(
+            status_old='NEW',
+            **common_offer_data
+        )
+        cls.inactive_offer.save()
+        cls.active_offer = Offer.objects.create(
+            status_old='ACTIVE',
+            **common_offer_data
+        )
+        cls.active_offer.save()
+
+        volunteer_user = User.objects.create_user(
+            u'volunteer@example.com',
+            u'volunteer@example.com',
+            u'123volunteer'
+        )
+        volunteer_user.save()
+        cls.volunteer = UserProfile(user=volunteer_user)
+        cls.volunteer.save()
+
+        organization_user = User.objects.create_user(
+            u'cls.organization@example.com',
+            u'cls.organization@example.com',
+            u'123org'
+        )
+        organization_user.save()
+        cls.organization_profile = UserProfile(
+            user=organization_user,
+        )
+        cls.organization_profile.save()
+        cls.organization_profile.organizations.add(cls.organization)
+
+        admin_user = User.objects.create_user(
+            u'admin@example.com',
+            u'admin@example.com',
+            u'123admin'
+        )
+        admin_user.save()
+        cls.admin = UserProfile(
+            user=admin_user,
+            is_administrator=True,
+        )
+        cls.admin.save()
+
+    def setUp(self):
+        u"""Set up each test."""
+        self.client = Client()
+
+    def test_offer_deletion_for_anonymous_user(self):
+        """Test deletion for anonymous users"""
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
+        self.assertEqual(response.status_code, 403)
+
+    def test_offers_list_for_volunteer(self):
+        u"""Test deletion for account of volunteer."""
+        self.client.post('/login', {
+            'email': u'volunteer@example.com',
+            'password': '123volunteer',
+        })
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
+        self.assertEqual(response.status_code, 403)
+
+    def test_offers_list_for_organization(self):
+        u"""Test deletion for account of organization."""
+        self.client.post('/login', {
+            'email': u'organization@example.com',
+            'password': '123org',
+        })
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
+        self.assertEqual(response.status_code, 403)
+
+    def test_offers_list_for_admin(self):
+        """Test deletion for account of admin."""
+        self.client.post('/login', {
+            'email': u'admin@example.com',
+            'password': '123admin',
+        })
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
+        self.assertEqual(response.status_code, 302)
+
+
+class TestOfferAccept(TestCase):
+    """Class responsible for testing offers acceptance."""
+
+    @classmethod
+    def setUpTestData(cls):
+        u"""Set up data for all tests."""
+        cls.organization = Organization.objects.create(
+            name=u'',
+            address=u'',
+            description=u'',
+        )
+        cls.organization.save()
+
+        common_offer_data = {
+            'organization': cls.organization,
+            'description': u'',
+            'requirements': u'',
+            'time_commitment': u'',
+            'benefits': u'',
+            'location': u'',
+            'title': u'volontulo offer',
+            'time_period': u'',
+            'started_at': '2105-10-24 09:10:11',
+            'finished_at': '2105-11-28 12:13:14',
+            'offer_status': 'unpublished',
+            'recruitment_status': 'closed',
+            'action_status': 'ongoing',
+        }
+
+        cls.inactive_offer = Offer.objects.create(
+            status_old='NEW',
+            **common_offer_data
+        )
+        cls.inactive_offer.save()
+        cls.active_offer = Offer.objects.create(
+            status_old='ACTIVE',
+            **common_offer_data
+        )
+        cls.active_offer.save()
+
+        volunteer_user = User.objects.create_user(
+            u'volunteer@example.com',
+            u'volunteer@example.com',
+            u'123volunteer'
+        )
+        volunteer_user.save()
+        cls.volunteer = UserProfile(user=volunteer_user)
+        cls.volunteer.save()
+
+        organization_user = User.objects.create_user(
+            u'cls.organization@example.com',
+            u'cls.organization@example.com',
+            u'123org'
+        )
+        organization_user.save()
+        cls.organization_profile = UserProfile(
+            user=organization_user,
+        )
+        cls.organization_profile.save()
+        cls.organization_profile.organizations.add(cls.organization)
+
+        admin_user = User.objects.create_user(
+            u'admin@example.com',
+            u'admin@example.com',
+            u'123admin'
+        )
+        admin_user.save()
+        cls.admin = UserProfile(
+            user=admin_user,
+            is_administrator=True,
+        )
+        cls.admin.save()
+
+    def setUp(self):
+        u"""Set up each test."""
+        self.client = Client()
+
+    def test_offer_deletion_for_anonymous_user(self):
+        """Test offer acceptance for anonymous users"""
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
+        self.assertEqual(response.status_code, 403)
+
+    def test_offers_list_for_volunteer(self):
+        u"""Test offer acceptance for account of volunteer."""
+        self.client.post('/login', {
+            'email': u'volunteer@example.com',
+            'password': '123volunteer',
+        })
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
+        self.assertEqual(response.status_code, 403)
+
+    def test_offers_list_for_organization(self):
+        u"""Test offer acceptance for account of organization."""
+        self.client.post('/login', {
+            'email': u'organization@example.com',
+            'password': '123org',
+        })
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
+        self.assertEqual(response.status_code, 403)
+
+    def test_offers_list_for_admin(self):
+        """Test offer acceptance for account of admin."""
+        self.client.post('/login', {
+            'email': u'admin@example.com',
+            'password': '123admin',
+        })
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
+        self.assertEqual(response.status_code, 302)
 
 
 class TestOffersCreate(TestCase):

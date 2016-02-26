@@ -42,6 +42,16 @@ urlpatterns = [  # pylint: disable=invalid-name
     # offers' namesapce:
     url(r'^offers$', offers_views.OffersList.as_view(), name='offers_list'),
     url(
+        r'^offers/delete/(?P<pk>[0-9]+)$',
+        offers_views.OffersDelete.as_view(),
+        name='offers_delete'
+    ),
+    url(
+        r'^offers/accept/(?P<pk>[0-9]+)$',
+        offers_views.OffersAccept.as_view(),
+        name='offers_accept'
+    ),
+    url(
         r'^offers/create$',
         offers_views.OffersCreate.as_view(),
         name='offers_create'
@@ -114,4 +124,5 @@ urlpatterns = [  # pylint: disable=invalid-name
         views.contact_form,
         name='contact_form'
     ),
+
 ]
