@@ -201,6 +201,7 @@ class TestOfferDelete(TestCase):
             user=organization_user,
         )
         cls.organization_profile.save()
+        # pylint: disable=no-member
         cls.organization_profile.organizations.add(cls.organization)
 
         admin_user = User.objects.create_user(
@@ -315,6 +316,7 @@ class TestOfferAccept(TestCase):
             user=organization_user,
         )
         cls.organization_profile.save()
+        # pylint: disable=no-member
         cls.organization_profile.organizations.add(cls.organization)
 
         admin_user = User.objects.create_user(
