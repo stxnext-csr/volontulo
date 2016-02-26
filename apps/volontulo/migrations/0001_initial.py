@@ -16,6 +16,15 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Badge',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('name', models.CharField(max_length=150)),
+                ('slug', models.CharField(max_length=150)),
+                ('priority', models.IntegerField(default=1)),
+            ],
+        ),
+        migrations.CreateModel(
             name='Offer',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
@@ -74,6 +83,17 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='UserBadges',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
+                ('created_at', models.DateTimeField(blank=True, default=django.utils.timezone.now)),
+                ('description', models.CharField(max_length=255)),
+                ('counter', models.IntegerField(blank=True, default=0)),
+                ('badge', models.ForeignKey(to='volontulo.Badge')),
+                ('content_type', models.ForeignKey(null=True, to='contenttypes.ContentType')),
+            ],
+        ),
+        migrations.CreateModel(
             name='UserGallery',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
@@ -87,6 +107,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', auto_created=True, primary_key=True, serialize=False)),
                 ('is_administrator', models.BooleanField(default=False)),
                 ('uuid', models.UUIDField(default=uuid.uuid4, unique=True)),
+                ('badges', models.ManyToManyField(to='volontulo.Badge', through='volontulo.UserBadges', related_name='user_profile')),
                 ('organizations', models.ManyToManyField(to='volontulo.Organization', related_name='userprofiles')),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
@@ -95,6 +116,11 @@ class Migration(migrations.Migration):
             model_name='usergallery',
             name='userprofile',
             field=models.ForeignKey(to='volontulo.UserProfile', related_name='images'),
+        ),
+        migrations.AddField(
+            model_name='userbadges',
+            name='userprofile',
+            field=models.ForeignKey(to='volontulo.UserProfile', db_column='userprofile_id'),
         ),
         migrations.AddField(
             model_name='organizationgallery',
