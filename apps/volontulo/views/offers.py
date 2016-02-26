@@ -295,7 +295,7 @@ class OffersDelete(View):
     """ Class view responsible for deletion of offers """
 
     @staticmethod
-    def get(request, pk): # pylint: disable=invalid-name
+    def get(request, pk):  # pylint: disable=invalid-name
         """Method which allows to delete selected offer
 
         :param request: WSGIRequest instance
@@ -317,7 +317,7 @@ class OffersAccept(View):
     """ Class view responsible for acceptance of offers """
 
     @staticmethod
-    def get(request, pk): # pylint: disable=invalid-name
+    def get(request, pk):  # pylint: disable=invalid-name
         """Method which allows to delete selected offer
 
         :param request: WSGIRequest instance
