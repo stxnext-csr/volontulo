@@ -25,9 +25,11 @@
                             <li>
                                 <a href="{% url 'logged_user_profile' %}">Moje konto</a>
                             </li>
-                            <!-- <li>
+                            {% if user.is_admin %}
+                            <li>
 				                <a href="{% url 'admin_panel' %}">Panel administracyjny</a>
-                            </li> -->
+                            </li>
+                            {% endif %}
                         </ul>
                     </div>
                     <a class="btn btn-info navbar-btn"href="{% url 'logout' %}">Wyloguj <span aria-hidden="true" class="glyphicon glyphicon-log-out"></span></a>
