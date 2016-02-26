@@ -347,6 +347,12 @@ input.form-control[required] {
             background-size: cover;
         }
     }
+    .user-photo {
+        img {
+            width: 100%;
+            max-height: 300px;
+        }
+    }
     .thumbnail {
         position: relative;
         .heading-image {
