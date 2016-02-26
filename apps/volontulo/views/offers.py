@@ -8,14 +8,16 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse
 from django.db.utils import IntegrityError
 from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
 from django.views.generic import View
 
-from apps.volontulo.forms import CreateOfferForm, OfferApplyForm, OfferImageForm
+from apps.volontulo.forms import (
+    CreateOfferForm, OfferApplyForm, OfferImageForm
+)
 from apps.volontulo.lib.email import send_mail
 from apps.volontulo.models import Offer, OfferImage, UserProfile
 from apps.volontulo.utils import correct_slug, save_history
@@ -301,7 +303,10 @@ class OffersDelete(View):
         :param pk: Offer id
         """
         offer = get_object_or_404(Offer, pk=pk)
-        if request.user.is_authenticated() and request.user.userprofile.is_administrator:
+        if (
+                request.user.is_authenticated() and
+                request.user.userprofile.is_administrator
+        ):
             offer.reject()
             messages.info(request, 'Oferta została odrzucona.')
             return redirect('homepage')
@@ -320,13 +325,15 @@ class OffersAccept(View):
         :param pk: Offer id
         """
         offer = get_object_or_404(Offer, pk=pk)
-        if request.user.is_authenticated() and request.user.userprofile.is_administrator:
+        if (
+                request.user.is_authenticated() and
+                request.user.userprofile.is_administrator
+        ):
             offer.publish()
             messages.info(request, 'Oferta została zaakceptowana.')
             return redirect('homepage')
         else:
             return HttpResponseForbidden()
-
 
 
 class OffersView(View):

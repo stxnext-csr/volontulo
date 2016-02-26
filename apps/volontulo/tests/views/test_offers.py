@@ -221,7 +221,8 @@ class TestOfferDelete(TestCase):
 
     def test_offer_deletion_for_anonymous_user(self):
         """Test deletion for anonymous users"""
-        response = self.client.get('/offers/delete/{}'.format(self.inactive_offer.id))
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
     def test_offers_list_for_volunteer(self):
@@ -230,7 +231,8 @@ class TestOfferDelete(TestCase):
             'email': u'volunteer@example.com',
             'password': '123volunteer',
         })
-        response = self.client.get('/offers/delete/{}'.format(self.inactive_offer.id))
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
     def test_offers_list_for_organization(self):
@@ -239,7 +241,8 @@ class TestOfferDelete(TestCase):
             'email': u'organization@example.com',
             'password': '123org',
         })
-        response = self.client.get('/offers/delete/{}'.format(self.inactive_offer.id))
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
     def test_offers_list_for_admin(self):
@@ -248,7 +251,8 @@ class TestOfferDelete(TestCase):
             'email': u'admin@example.com',
             'password': '123admin',
         })
-        response = self.client.get('/offers/delete/{}'.format(self.inactive_offer.id))
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 302)
 
 
@@ -331,7 +335,8 @@ class TestOfferAccept(TestCase):
 
     def test_offer_deletion_for_anonymous_user(self):
         """Test offer acceptance for anonymous users"""
-        response = self.client.get('/offers/delete/{}'.format(self.inactive_offer.id))
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
     def test_offers_list_for_volunteer(self):
@@ -340,7 +345,8 @@ class TestOfferAccept(TestCase):
             'email': u'volunteer@example.com',
             'password': '123volunteer',
         })
-        response = self.client.get('/offers/delete/{}'.format(self.inactive_offer.id))
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
     def test_offers_list_for_organization(self):
@@ -349,7 +355,8 @@ class TestOfferAccept(TestCase):
             'email': u'organization@example.com',
             'password': '123org',
         })
-        response = self.client.get('/offers/delete/{}'.format(self.inactive_offer.id))
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
     def test_offers_list_for_admin(self):
@@ -358,7 +365,8 @@ class TestOfferAccept(TestCase):
             'email': u'admin@example.com',
             'password': '123admin',
         })
-        response = self.client.get('/offers/delete/{}'.format(self.inactive_offer.id))
+        response = self.client.get('/offers/delete/{}'
+                                   .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 302)
 
 
