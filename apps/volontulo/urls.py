@@ -116,6 +116,18 @@ urlpatterns = [  # pylint: disable=invalid-name
 
     # others:
     url(
+        r'^o-nas$',
+        views.static_pages,
+        kwargs={'template_name': 'about-us'},
+        name='about-us'
+    ),
+    url(
+        r'^office$',
+        views.static_pages,
+        kwargs={'template_name': 'office'},
+        name='office'
+    ),
+    url(
         r'^pages/(?P<template_name>[\w-]+)$',
         views.static_pages,
         name='static_page'

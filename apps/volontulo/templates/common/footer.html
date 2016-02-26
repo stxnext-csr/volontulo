@@ -7,7 +7,7 @@
                 <li><a href="{% url 'homepage' %}">Strona główna</a></li>
                 <li><a href="{% url 'register' %}">Załóż konto</a></li>
                 <li><a href="{% url 'contact_form' %}">Kontakt z administratorem</a></li>
-                <li><a href="{% url 'static_page' 'about-us' %}">O nas</a></li>
+                <li><a href="{% url 'about-us' %}">O nas</a></li>
                 <li><a href="{% url 'newsletter_signup' %}">Zapisz się do newslettera</a></li>
                 <li><a href="{% url 'static_page' 'regulations' %}">Regulamin</a></li>
             </ul>
@@ -16,7 +16,6 @@
             <h3 class="nav-title">Organizacje</h3>
             <ul class="nav-list list-unstyled">
                 <li><a href="{% url 'organizations_create' %}">Załóż organizację</a></li>
-                <li><a href="{% url 'offers_create' %}">Tworzenie oferty</a></li>
             </ul>
         </div>
         <div class="col-xs-12 col-sm-4">
@@ -27,7 +26,7 @@
                 <li><a href="{% url 'offers_archived' %}">Archiwum ofert</a></li>
                 <li><a href="{% url 'organizations_list' %}">Lista organizacji</a></li>
                 <li><a href="{% url 'static_page' 'faq-volunteers' %}">FAQ dla wolontariuszy</a></li>
-                <li><a href="{% url 'static_page' 'office' %}">Przyjdź na dyżur</a></li>
+                <li><a href="{% url 'office' %}">Przyjdź na dyżur</a></li>
             </ul>
         </div>
     </div>
