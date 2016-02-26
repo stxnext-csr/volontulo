@@ -1,7 +1,6 @@
 """
 .. module:: admin_panel
 """
-
 from django.shortcuts import render
 
 def main_panel(request):
