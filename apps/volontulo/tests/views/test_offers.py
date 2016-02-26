@@ -920,12 +920,6 @@ class TestOffersJoin(TestCase):
             ),
             302,
             200,
-            response,
-            '/login?next=/offers/volontulo-offer/{}/join'.format(
-                self.offer.id
-            ),
-            302,
-            200,
         )
         self.assertContains(
             response,
