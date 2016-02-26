@@ -71,7 +71,6 @@ def initialize_filled_volunteer_and_organization():
         'volunteer2'
     )
     volunteer_user2.save()
-    user_profile2 = UserProfile.objects.create(user=volunteer_user2)
 
     # create organization user to create offers
     organization2 = Organization.objects.create(name=u'Organization 2')

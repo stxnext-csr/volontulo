@@ -9,7 +9,6 @@ from django.contrib import messages
 from django.contrib.admin.models import ADDITION
 from django.contrib.admin.models import CHANGE
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db.utils import IntegrityError
 from django.http import Http404
@@ -340,10 +339,6 @@ class OffersView(View):
         if post_data.get('submit'):
             del post_data['submit']
 
-        offer_content_type = ContentType.objects.get(
-            app_label='volontulo',
-            model='offer'
-        )
         offer.votes = True
         offer.save()
 
@@ -439,11 +434,6 @@ class OffersJoin(View):
                     u'Już wyraziłeś chęć uczestnictwa w tej ofercie.'
                 )
                 return redirect('offers_list')
-
-            offer_content_type = ContentType.objects.get(
-                app_label='volontulo',
-                model='offer'
-            )
 
             offer.volunteers.add(user)
             offer.save()
