@@ -159,7 +159,7 @@ class TestUsersProfile(TestCase):
         self.assertContains(response, u'Brzęczyszczykiewicz')
 
     def test__no_email_field_on_edit_profile_form(self):
-        u"""Test if Email field is not visible edit profile form"""
+        u"""Test if Email field is not visible edit profile form."""
 
         self.client.post('/login', {
             'email': u'volunteer1@example.com',
