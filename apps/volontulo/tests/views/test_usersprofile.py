@@ -144,9 +144,9 @@ class TestUsersProfile(TestCase):
         self.assertContains(response, u'333666999')
 
     def test__userprofile_first_and_last_name(self):
-        u"""Testing user profile page for filled first and last name."""
+        """Testing user profile page for filled first and last name."""
         self.client.post('/login', {
-            'email': u'volunteer1@example.com',
+            'email': 'volunteer1@example.com',
             'password': 'volunteer1',
         })
         response = self.client.get('/me')
@@ -155,14 +155,14 @@ class TestUsersProfile(TestCase):
         self.assertTemplateUsed(response, 'users/user_profile.html')
         # pylint: disable=no-member
         self.assertIn('profile_form', response.context)
-        self.assertContains(response, u'Grzegorz')
-        self.assertContains(response, u'Brzęczyszczykiewicz')
+        self.assertContains(response, 'Grzegorz')
+        self.assertContains(response, 'Brzęczyszczykiewicz')
 
     def test__no_email_field_on_edit_profile_form(self):
-        u"""Test if Email field is not visible edit profile form."""
+        """Test if Email field is not visible edit profile form."""
 
         self.client.post('/login', {
-            'email': u'volunteer1@example.com',
+            'email': 'volunteer1@example.com',
             'password': 'volunteer1',
         })
         response = self.client.get('/me')
@@ -171,4 +171,4 @@ class TestUsersProfile(TestCase):
         self.assertTemplateUsed(response, 'users/user_profile.html')
         # pylint: disable=no-member
         self.assertIn('profile_form', response.context)
-        self.assertNotContains(response, u'Email')
+        self.assertNotContains(response, 'Email')
