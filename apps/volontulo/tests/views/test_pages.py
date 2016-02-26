@@ -101,6 +101,13 @@ class TestPages(TestCase):
         self.assertTemplateUsed(response, 'pages/regulations.html')
         self.assertContains(response, u'Regulamin')
 
+    def test_office_subpage(self):
+        u"""Test office subpage."""
+        response = self.client.get('/office')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/office.html')
+        self.assertContains(response, u'Dyżury dla wolontariuszy oraz organizacji')
+
     def test_about_us(self):
         u"""Test about us."""
         response = self.client.get('/o-nas')
