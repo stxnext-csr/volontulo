@@ -64,20 +64,4 @@
             <a class="btn btn-primary" href="{% url 'offers_create' %}">Zgłoś ofertę</a>
         {% endif %}
     {% endif %}
-
-    <div class="row">
-        <div class="col-xs-4 text-center">
-            <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Załóż+konto" />
-            <p><a href="{% url 'register' %}">Załóż konto</a></p>
-        </div>
-        <div class="col-xs-4 text-center">
-            <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Wybierz ofertę" />
-            <p><a href="{% url 'offers_list' %}">Wybierz ofertę</a></p>
-        </div>
-        <div class="col-xs-4 text-center">
-            <img class="img-responsive center-block" src="http://placehold.it/260x260?text=Podziel+się" />
-            <p><a href="#">Podziel się...</a></p>
-        </div>
-    </div>
-
 {% endblock %}
