@@ -430,17 +430,17 @@ class TestOffersCreate(TestCase):
         self.assertTemplateUsed(response, 'offers/offer_form.html')
 
     def test_offers_create_no_organization_get_method(self):
-        u"""Test page for offer creation - tendering template with form."""
+        """Test page for offer creation - tendering template with form."""
         self.client.post('/login', {
-            'email': u'no_organ@example.com',
+            'email': 'no_organ@example.com',
             'password': '123no_org',
         })
         response = self.client.get('/offers/create', follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertContains(
             response,
-            u"Nie masz jeszcze żadnej założonej organizacji"
-            u" na volontuloapp.org."
+            "Nie masz jeszcze żadnej założonej organizacji"
+            " na volontuloapp.org."
         )
         self.assertTemplateUsed(response, 'offers/offers_list.html')
 
