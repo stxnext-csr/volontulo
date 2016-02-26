@@ -8,7 +8,26 @@
 
 Web portal for collaboration of community volunteers with organizations and institutions. 
 
-## Project Set Up
+## Semi-automated Project Set Up
+
+Install system dependecies (NOTE: it will install node in your system directory)
+```
+sudo bin/install_dependencies
+```
+Setup virtualenv, python packages, run migration and gulp.
+```
+bin/setup
+```
+Activate virtualenv.
+```
+source env/bin/activate
+```
+Django commands
+```
+python manage.py COMMAND --settings=volontulo_org.settings.dev
+```
+
+## Manual Project Set Up
 
 Usage of virtualenv is recommended. Assuming you use Virtualenvwrapper:
 ```
@@ -36,37 +55,6 @@ python -c "import uuid; print str(uuid.uuid4()).replace('-', '')"
 If the site is supposed to be served under different domain than volontulo.org or volontuloapp.org
 and you are not in development environment, fill the "allowed_host" value. Otherwise
 it can be left blank.
-
-## Database Set Up
-
-The project uses PostgreSQL 9.4 database.
-
-In Debian / Ubuntu systems:
-```
-# apt-get install postgresql-9.4
-```
-Install psycopg2 driver dependency:
-```
-# apt-get install libpq-dev
-```
-
-### Create application database
-```
-# su - postgres
-$ psql
-postgres=# CREATE ROLE <database_user> WITH ENCRYPTED PASSWORD <db_user_password>;
-postgres=# CREATE DATABASE <database_name> WITH OWNER <database_user>;
-```
-While running tests each time the database is created and destroyed.
-To allow that:
-```
-postgres=# ALTER USER <database_user> CREATEDB;
-```
-To leave postgres command line:
-```
-postgres=# \q
-```
-Don't forget to fill the database credential in the `local_config.yaml` file.
 
 ### Gulp Instalation
 
@@ -107,14 +95,8 @@ Now you able to access the development site:
 ### Running tests
 To run the project tests:
 ```
-python manage.py test --settings=volontulo_org.settings.test_settings -v 3
+python manage.py test --settings=volontulo_org.settings.dev -v 3
 ```
-
-You can run the tests locally using SQLite, which is faster:
-```
-python manage.py test --settings=volontulo_org.settings.test_settings_sqlite -v 3
-```
-Don't forget to run the tests on the production RDBMS (test_settings) before pushing your changes!
 
 ### Populate badges in database
 To populate database with 3 required badges (volunteer, participant, prominent-participant) run followin command:
