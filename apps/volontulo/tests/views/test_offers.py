@@ -889,12 +889,25 @@ class TestOffersJoin(TestCase):
         )
         self.assertRedirects(
             response,
-            '/offers/volontulo-offer/{}'.format(self.offer.id),
+            '/register',
             302,
             200,
         )
+        self.assertContains(
+            response,
+            'Zarejestruj się, aby zapisać się do oferty.',
+        )
 
-        # unsuccessfull joining the same offer for the second time:
+    def test_offers_join_valid_form_with_existing_email(self):
+        """Test attempt of joining offer with valid form and existing email."""
+        post_data = {
+            'email': 'volunteer@example.com',
+            'phone_no': '+42 42 42 42',
+            'fullname': 'Mister Anonymous',
+            'comments': 'Some important staff.',
+        }
+
+        # successfull joining offer:
         response = self.client.post(
             '/offers/volontulo-offer/{}/join'.format(self.offer.id),
             post_data,
@@ -907,6 +920,16 @@ class TestOffersJoin(TestCase):
             ),
             302,
             200,
+            response,
+            '/login?next=/offers/volontulo-offer/{}/join'.format(
+                self.offer.id
+            ),
+            302,
+            200,
+        )
+        self.assertContains(
+            response,
+            'Zaloguj się, aby zapisać się do oferty.',
         )
 
 
