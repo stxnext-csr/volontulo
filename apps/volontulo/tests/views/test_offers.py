@@ -20,21 +20,21 @@ class TestOffersList(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         cls.organization = Organization.objects.create(
-            name=u'',
-            address=u'',
-            description=u'',
+            name='',
+            address='',
+            description='',
         )
         cls.organization.save()
 
         common_offer_data = {
             'organization': cls.organization,
-            'description': u'',
-            'requirements': u'',
-            'time_commitment': u'',
-            'benefits': u'',
-            'location': u'',
-            'title': u'volontulo offer',
-            'time_period': u'',
+            'description': '',
+            'requirements': '',
+            'time_commitment': '',
+            'benefits': '',
+            'location': '',
+            'title': 'volontulo offer',
+            'time_period': '',
             'started_at': '2105-10-24 09:10:11',
             'finished_at': '2105-11-28 12:13:14',
             'offer_status': 'unpublished',
@@ -54,18 +54,18 @@ class TestOffersList(TestCase):
         cls.active_offer.save()
 
         volunteer_user = User.objects.create_user(
-            u'volunteer@example.com',
-            u'volunteer@example.com',
-            u'123volunteer'
+            'volunteer@example.com',
+            'volunteer@example.com',
+            '123volunteer'
         )
         volunteer_user.save()
         cls.volunteer = UserProfile(user=volunteer_user)
         cls.volunteer.save()
 
         organization_user = User.objects.create_user(
-            u'cls.organization@example.com',
-            u'cls.organization@example.com',
-            u'123org'
+            'cls.organization@example.com',
+            'cls.organization@example.com',
+            '123org'
         )
         organization_user.save()
         cls.organization_profile = UserProfile(
@@ -76,9 +76,9 @@ class TestOffersList(TestCase):
         cls.organization_profile.organizations.add(cls.organization)
 
         admin_user = User.objects.create_user(
-            u'admin@example.com',
-            u'admin@example.com',
-            u'123admin'
+            'admin@example.com',
+            'admin@example.com',
+            '123admin'
         )
         admin_user.save()
         cls.admin = UserProfile(
@@ -114,7 +114,7 @@ class TestOffersList(TestCase):
     def test_offers_list_for_volunteer(self):
         u"""Test offers' list for account of volunteer."""
         self.client.post('/login', {
-            'email': u'volunteer@example.com',
+            'email': 'volunteer@example.com',
             'password': '123volunteer',
         })
         return self._test_offers_list_for_standard_user()
@@ -122,7 +122,7 @@ class TestOffersList(TestCase):
     def test_offers_list_for_organization(self):
         u"""Test offers' list for account of organization."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
+            'email': 'organization@example.com',
             'password': '123org',
         })
         return self._test_offers_list_for_standard_user()
@@ -130,7 +130,7 @@ class TestOffersList(TestCase):
     def test_offers_list_for_admin(self):
         """Test offers' list for account of admin."""
         self.client.post('/login', {
-            'email': u'admin@example.com',
+            'email': 'admin@example.com',
             'password': '123admin',
         })
         response = self.client.get('/offers')
@@ -149,21 +149,21 @@ class TestOfferDelete(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         cls.organization = Organization.objects.create(
-            name=u'',
-            address=u'',
-            description=u'',
+            name='',
+            address='',
+            description='',
         )
-        cls.organization.save()
+
 
         common_offer_data = {
             'organization': cls.organization,
-            'description': u'',
-            'requirements': u'',
-            'time_commitment': u'',
-            'benefits': u'',
-            'location': u'',
-            'title': u'volontulo offer',
-            'time_period': u'',
+            'description': '',
+            'requirements': '',
+            'time_commitment': '',
+            'benefits': '',
+            'location': '',
+            'title': 'volontulo offer',
+            'time_period': '',
             'started_at': '2105-10-24 09:10:11',
             'finished_at': '2105-11-28 12:13:14',
             'offer_status': 'unpublished',
@@ -175,28 +175,28 @@ class TestOfferDelete(TestCase):
             status_old='NEW',
             **common_offer_data
         )
-        cls.inactive_offer.save()
+
         cls.active_offer = Offer.objects.create(
             status_old='ACTIVE',
             **common_offer_data
         )
-        cls.active_offer.save()
+
 
         volunteer_user = User.objects.create_user(
-            u'volunteer@example.com',
-            u'volunteer@example.com',
-            u'123volunteer'
+            'volunteer@example.com',
+            'volunteer@example.com',
+            '123volunteer'
         )
-        volunteer_user.save()
+
         cls.volunteer = UserProfile(user=volunteer_user)
         cls.volunteer.save()
 
         organization_user = User.objects.create_user(
-            u'cls.organization@example.com',
-            u'cls.organization@example.com',
-            u'123org'
+            'cls.organization@example.com',
+            'cls.organization@example.com',
+            '123org'
         )
-        organization_user.save()
+
         cls.organization_profile = UserProfile(
             user=organization_user,
         )
@@ -205,11 +205,11 @@ class TestOfferDelete(TestCase):
         cls.organization_profile.organizations.add(cls.organization)
 
         admin_user = User.objects.create_user(
-            u'admin@example.com',
-            u'admin@example.com',
-            u'123admin'
+            'admin@example.com',
+            'admin@example.com',
+            '123admin'
         )
-        admin_user.save()
+
         cls.admin = UserProfile(
             user=admin_user,
             is_administrator=True,
@@ -226,30 +226,30 @@ class TestOfferDelete(TestCase):
                                    .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
-    def test_offers_list_for_volunteer(self):
+    def test_offer_deletion_for_volunteer(self):
         u"""Test deletion for account of volunteer."""
         self.client.post('/login', {
-            'email': u'volunteer@example.com',
+            'email': 'volunteer@example.com',
             'password': '123volunteer',
         })
         response = self.client.get('/offers/delete/{}'
                                    .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
-    def test_offers_list_for_organization(self):
+    def test_offer_deletion_for_organization(self):
         u"""Test deletion for account of organization."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
+            'email': 'organization@example.com',
             'password': '123org',
         })
         response = self.client.get('/offers/delete/{}'
                                    .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
-    def test_offers_list_for_admin(self):
+    def test_offer_deletion_for_admin(self):
         """Test deletion for account of admin."""
         self.client.post('/login', {
-            'email': u'admin@example.com',
+            'email': 'admin@example.com',
             'password': '123admin',
         })
         response = self.client.get('/offers/delete/{}'
@@ -264,21 +264,20 @@ class TestOfferAccept(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         cls.organization = Organization.objects.create(
-            name=u'',
-            address=u'',
-            description=u'',
+            name='',
+            address='',
+            description='',
         )
-        cls.organization.save()
 
         common_offer_data = {
             'organization': cls.organization,
-            'description': u'',
-            'requirements': u'',
-            'time_commitment': u'',
-            'benefits': u'',
-            'location': u'',
-            'title': u'volontulo offer',
-            'time_period': u'',
+            'description': '',
+            'requirements': '',
+            'time_commitment': '',
+            'benefits': '',
+            'location': '',
+            'title': 'volontulo offer',
+            'time_period': '',
             'started_at': '2105-10-24 09:10:11',
             'finished_at': '2105-11-28 12:13:14',
             'offer_status': 'unpublished',
@@ -295,23 +294,22 @@ class TestOfferAccept(TestCase):
             status_old='ACTIVE',
             **common_offer_data
         )
-        cls.active_offer.save()
 
         volunteer_user = User.objects.create_user(
-            u'volunteer@example.com',
-            u'volunteer@example.com',
-            u'123volunteer'
+            'volunteer@example.com',
+            'volunteer@example.com',
+            '123volunteer'
         )
-        volunteer_user.save()
+
         cls.volunteer = UserProfile(user=volunteer_user)
         cls.volunteer.save()
 
         organization_user = User.objects.create_user(
-            u'cls.organization@example.com',
-            u'cls.organization@example.com',
-            u'123org'
+            'cls.organization@example.com',
+            'cls.organization@example.com',
+            '123org'
         )
-        organization_user.save()
+
         cls.organization_profile = UserProfile(
             user=organization_user,
         )
@@ -320,11 +318,10 @@ class TestOfferAccept(TestCase):
         cls.organization_profile.organizations.add(cls.organization)
 
         admin_user = User.objects.create_user(
-            u'admin@example.com',
-            u'admin@example.com',
-            u'123admin'
+            'admin@example.com',
+            'admin@example.com',
+            '123admin'
         )
-        admin_user.save()
         cls.admin = UserProfile(
             user=admin_user,
             is_administrator=True,
@@ -335,36 +332,36 @@ class TestOfferAccept(TestCase):
         u"""Set up each test."""
         self.client = Client()
 
-    def test_offer_deletion_for_anonymous_user(self):
+    def test_offer_acceptance_for_anonymous_user(self):
         """Test offer acceptance for anonymous users"""
         response = self.client.get('/offers/delete/{}'
                                    .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
-    def test_offers_list_for_volunteer(self):
+    def test_offer_acceptance_for_volunteer(self):
         u"""Test offer acceptance for account of volunteer."""
         self.client.post('/login', {
-            'email': u'volunteer@example.com',
+            'email': 'volunteer@example.com',
             'password': '123volunteer',
         })
         response = self.client.get('/offers/delete/{}'
                                    .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
-    def test_offers_list_for_organization(self):
+    def test_offer_acceptance_for_organization(self):
         u"""Test offer acceptance for account of organization."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
+            'email': 'organization@example.com',
             'password': '123org',
         })
         response = self.client.get('/offers/delete/{}'
                                    .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
-    def test_offers_list_for_admin(self):
+    def test_offer_acceptance_for_admin(self):
         """Test offer acceptance for account of admin."""
         self.client.post('/login', {
-            'email': u'admin@example.com',
+            'email': 'admin@example.com',
             'password': '123admin',
         })
         response = self.client.get('/offers/delete/{}'
@@ -379,15 +376,15 @@ class TestOffersCreate(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         cls.organization = Organization.objects.create(
-            name=u'',
-            address=u'',
-            description=u'',
+            name='',
+            address='',
+            description='',
         )
         cls.organization.save()
         organization_user = User.objects.create_user(
-            u'organization@example.com',
-            u'organization@example.com',
-            u'123org'
+            'organization@example.com',
+            'organization@example.com',
+            '123org'
         )
         organization_user.save()
         cls.organization_profile = UserProfile(
@@ -404,7 +401,7 @@ class TestOffersCreate(TestCase):
     def test_offers_create_get_method(self):
         u"""Test page for offer creation - tendering template with form."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
+            'email': 'organization@example.com',
             'password': '123org',
         })
         response = self.client.get('/offers/create')
@@ -414,7 +411,7 @@ class TestOffersCreate(TestCase):
     def test_offers_create_invalid_form(self):
         u"""Test attempt of creation of new offer with invalid form."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
+            'email': 'organization@example.com',
             'password': '123org',
         })
         response = self.client.post('/offers/create', {})
@@ -422,25 +419,25 @@ class TestOffersCreate(TestCase):
         self.assertTemplateUsed(response, 'offers/offer_form.html')
         self.assertContains(
             response,
-            u'Formularz zawiera niepoprawnie wypełnione pola'
+            'Formularz zawiera niepoprawnie wypełnione pola'
         )
 
     def test_offers_create_valid_form(self):
         u"""Test attempt of creation of new offer with valid form."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
+            'email': 'organization@example.com',
             'password': '123org',
         })
         for i in range(1, 4):
             response = self.client.post('/offers/create', {
                 'organization': self.organization.id,
                 'description': str(i),
-                'requirements': u'required requirements',
-                'time_commitment': u'required time_commitment',
-                'benefits': u'required benefits',
-                'location': u'required location',
-                'title': u'volontulo offer',
-                'time_period': u'required time_period',
+                'requirements': 'required requirements',
+                'time_commitment': 'required time_commitment',
+                'benefits': 'required benefits',
+                'location': 'required location',
+                'title': 'volontulo offer',
+                'time_period': 'required time_period',
                 'started_at': '2015-11-01 11:11:11',
                 'finished_at': '2015-11-01 11:11:11',
             }, follow=True)
@@ -456,15 +453,15 @@ class TestOffersCreate(TestCase):
                 self.organization_profile.organizations.all()[0],
             )
             self.assertEqual(offer.description, str(i))
-            self.assertEqual(offer.requirements, u'required requirements')
+            self.assertEqual(offer.requirements, 'required requirements')
             self.assertEqual(
                 offer.time_commitment,
-                u'required time_commitment'
+                'required time_commitment'
             )
-            self.assertEqual(offer.benefits, u'required benefits')
-            self.assertEqual(offer.location, u'required location')
-            self.assertEqual(offer.title, u'volontulo offer')
-            self.assertEqual(offer.time_period, u'required time_period')
+            self.assertEqual(offer.benefits, 'required benefits')
+            self.assertEqual(offer.location, 'required location')
+            self.assertEqual(offer.title, 'volontulo offer')
+            self.assertEqual(offer.time_period, 'required time_period')
 
 
 class TestOffersEdit(TestCase):
@@ -474,13 +471,13 @@ class TestOffersEdit(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         cls.organization = Organization.objects.create(
-            name=u'',
-            address=u'',
-            description=u'',
+            name='',
+            address='',
+            description='',
         )
         cls.organization.save()
-        cls.organization_user_email = u'organization@example.com'
-        cls.organization_user_password = u'123org'
+        cls.organization_user_email = 'organization@example.com'
+        cls.organization_user_password = '123org'
         organization_user = User.objects.create_user(
             cls.organization_user_email,
             cls.organization_user_email,
@@ -495,13 +492,13 @@ class TestOffersEdit(TestCase):
         cls.organization_profile.organizations.add(cls.organization)
         cls.offer = Offer.objects.create(
             organization=cls.organization,
-            description=u'',
-            requirements=u'',
-            time_commitment=u'',
-            benefits=u'',
-            location=u'',
-            title=u'volontulo offer',
-            time_period=u'',
+            description='',
+            requirements='',
+            time_commitment='',
+            benefits='',
+            location='',
+            title='volontulo offer',
+            time_period='',
             status_old='NEW',
             started_at='2015-10-10 21:22:23',
             finished_at='2015-12-12 11:12:13',
@@ -518,7 +515,7 @@ class TestOffersEdit(TestCase):
     def test_for_non_existing_offer(self):
         u"""Test if error 404 will be raised when offer dosn't exits."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
+            'email': 'organization@example.com',
             'password': '123org',
         })
         response = self.client.get('/offers/some-slug/42/edit')
@@ -527,7 +524,7 @@ class TestOffersEdit(TestCase):
     def test_for_different_slug(self):
         u"""Test if redirect will be raised when offer has different slug."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
+            'email': 'organization@example.com',
             'password': '123org',
         })
         response = self.client.get(
@@ -553,7 +550,7 @@ class TestOffersEdit(TestCase):
     def test_offers_edit_invalid_form(self):
         u"""Test attempt of edition of offer with invalid form."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
+            'email': 'organization@example.com',
             'password': '123org',
         })
         response = self.client.post('/offers/volontulo-offer/{}/edit'.format(
@@ -565,28 +562,28 @@ class TestOffersEdit(TestCase):
         self.assertTemplateUsed(response, 'offers/offer_form.html')
         self.assertContains(
             response,
-            u'Formularz zawiera niepoprawnie wypełnione pola'
+            'Formularz zawiera niepoprawnie wypełnione pola'
         )
         offer = Offer.objects.get(id=self.offer.id)
         self.assertEqual(
             offer.organization,
             self.organization_profile.organizations.all()[0],
         )
-        self.assertEqual(offer.description, u'')
-        self.assertEqual(offer.requirements, u'')
+        self.assertEqual(offer.description, '')
+        self.assertEqual(offer.requirements, '')
         self.assertEqual(
             offer.time_commitment,
-            u''
+            ''
         )
-        self.assertEqual(offer.benefits, u'')
-        self.assertEqual(offer.location, u'')
-        self.assertEqual(offer.title, u'volontulo offer')
-        self.assertEqual(offer.time_period, u'')
+        self.assertEqual(offer.benefits, '')
+        self.assertEqual(offer.location, '')
+        self.assertEqual(offer.title, 'volontulo offer')
+        self.assertEqual(offer.time_period, '')
 
     def test_offers_edit_valid_form(self):
         u"""Test attempt of edition of offer with valid form."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
+            'email': 'organization@example.com',
             'password': '123org',
         })
         response = self.client.post('/offers/volontulo-offer/{}/edit'.format(
@@ -594,40 +591,40 @@ class TestOffersEdit(TestCase):
         ), {
             'edit_type': 'full_edit',
             'organization': self.organization.id,
-            'description': u'required description',
-            'requirements': u'required requirements',
-            'time_commitment': u'required time_commitment',
-            'benefits': u'required benefits',
-            'location': u'required location',
-            'title': u'another volontulo offer',
-            'time_period': u'required time_period',
+            'description': 'required description',
+            'requirements': 'required requirements',
+            'time_commitment': 'required time_commitment',
+            'benefits': 'required benefits',
+            'location': 'required location',
+            'title': 'another volontulo offer',
+            'time_period': 'required time_period',
         })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offer_form.html')
         self.assertContains(
             response,
-            u'Oferta została zmieniona.'
+            'Oferta została zmieniona.'
         )
         offer = Offer.objects.get(id=self.offer.id)
         self.assertEqual(
             offer.organization,
             self.organization_profile.organizations.all()[0],
         )
-        self.assertEqual(offer.description, u'required description')
-        self.assertEqual(offer.requirements, u'required requirements')
+        self.assertEqual(offer.description, 'required description')
+        self.assertEqual(offer.requirements, 'required requirements')
         self.assertEqual(
             offer.time_commitment,
-            u'required time_commitment'
+            'required time_commitment'
         )
-        self.assertEqual(offer.benefits, u'required benefits')
-        self.assertEqual(offer.location, u'required location')
-        self.assertEqual(offer.title, u'another volontulo offer')
-        self.assertEqual(offer.time_period, u'required time_period')
+        self.assertEqual(offer.benefits, 'required benefits')
+        self.assertEqual(offer.location, 'required location')
+        self.assertEqual(offer.title, 'another volontulo offer')
+        self.assertEqual(offer.time_period, 'required time_period')
 
     def test_offers_status_change(self):
         u"""Test status change made using offers/edit."""
         self.client.post('/login', {
-            'email': u'organization@example.com',
+            'email': 'organization@example.com',
             'password': '123org',
         })
         response = self.client.post('/offers/volontulo-offer/{}/edit'.format(
@@ -638,7 +635,7 @@ class TestOffersEdit(TestCase):
         })
         self.assertEqual(response.status_code, 200)
         offer = Offer.objects.get(id=self.offer.id)
-        self.assertEqual(offer.status_old, u'NEW')
+        self.assertEqual(offer.status_old, 'NEW')
 
 
 class TestOffersView(TestCase):
@@ -648,15 +645,15 @@ class TestOffersView(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         organization = Organization.objects.create(
-            name=u'',
-            address=u'',
-            description=u'',
+            name='',
+            address='',
+            description='',
         )
         organization.save()
         administrator = User.objects.create_user(
-            u'admin@example.com',
-            u'admin@example.com',
-            u'123admin'
+            'admin@example.com',
+            'admin@example.com',
+            '123admin'
         )
         administrator.save()
         cls.administrator_profile = UserProfile(
@@ -666,13 +663,13 @@ class TestOffersView(TestCase):
         cls.administrator_profile.save()
         cls.offer = Offer.objects.create(
             organization=organization,
-            description=u'',
-            requirements=u'',
-            time_commitment=u'',
-            benefits=u'',
-            location=u'',
-            title=u'volontulo offer',
-            time_period=u'',
+            description='',
+            requirements='',
+            time_commitment='',
+            benefits='',
+            location='',
+            title='volontulo offer',
+            time_period='',
             status_old='NEW',
             started_at='2105-10-24 09:10:11',
             finished_at='2105-11-28 12:13:14',
@@ -683,9 +680,9 @@ class TestOffersView(TestCase):
         cls.offer.save()
 
         volunteers = [User.objects.create_user(
-            u'v{}@example.com'.format(i),
-            u'v{}@example.com'.format(i),
-            u'v{}'.format(i),
+            'v{}@example.com'.format(i),
+            'v{}@example.com'.format(i),
+            'v{}'.format(i),
         ) for i in range(10)]
         for i in range(10):
             volunteers[i].save()
@@ -736,21 +733,21 @@ class TestOffersJoin(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         organization = Organization.objects.create(
-            name=u'',
-            address=u'',
-            description=u'',
+            name='',
+            address='',
+            description='',
         )
         organization.save()
 
         cls.offer = Offer.objects.create(
             organization=organization,
-            description=u'',
-            requirements=u'',
-            time_commitment=u'',
-            benefits=u'',
-            location=u'',
-            title=u'volontulo offer',
-            time_period=u'',
+            description='',
+            requirements='',
+            time_commitment='',
+            benefits='',
+            location='',
+            title='volontulo offer',
+            time_period='',
             status_old='NEW',
             started_at='2015-10-10 21:22:23',
             finished_at='2015-12-12 11:12:13',
@@ -758,9 +755,9 @@ class TestOffersJoin(TestCase):
         cls.offer.save()
 
         cls.volunteer = User.objects.create_user(
-            u'volunteer@example.com',
-            u'volunteer@example.com',
-            u'vol123',
+            'volunteer@example.com',
+            'volunteer@example.com',
+            'vol123',
         )
         cls.volunteer.save()
         cls.volunteer_profile = UserProfile(user=cls.volunteer)
@@ -804,8 +801,8 @@ class TestOffersJoin(TestCase):
     def test_correct_slug_for_logged_in_user(self):
         u"""Test get method of offer join for logged in user."""
         self.client.post('/login', {
-            'email': u'volunteer@example.com',
-            'password': u'vol123',
+            'email': 'volunteer@example.com',
+            'password': 'vol123',
         })
         response = self.client.get('/offers/volontulo-offer/{}/join'.format(
             self.offer.id
@@ -817,7 +814,7 @@ class TestOffersJoin(TestCase):
         self.assertIn('volunteer_user', response.context)
         self.assertEqual(response.context['volunteer_user'].pk,
                          self.volunteer_profile.id)
-        self.assertContains(response, u'volunteer@example.com')
+        self.assertContains(response, 'volunteer@example.com')
 
     def test_offers_join_invalid_form(self):
         u"""Test attempt of joining offer with invalid form."""
@@ -828,24 +825,24 @@ class TestOffersJoin(TestCase):
         self.assertTemplateUsed(response, 'offers/offer_apply.html')
         self.assertContains(
             response,
-            u'Formularz zawiera nieprawidłowe dane',
+            'Formularz zawiera nieprawidłowe dane',
         )
 
     def test_offers_join_valid_form_and_logged_user(self):
         u"""Test attempt of joining offer with valid form and logged user."""
         self.client.post('/login', {
-            'email': u'volunteer@example.com',
-            'password': u'vol123',
+            'email': 'volunteer@example.com',
+            'password': 'vol123',
         })
 
         # successfull joining offer:
         response = self.client.post('/offers/volontulo-offer/{}/join'.format(
             self.offer.id
         ), {
-            'email': u'volunteer@example.com',
-            'phone_no': u'+42 42 42 42',
-            'fullname': u'Mister Volunteer',
-            'comments': u'Some important staff.',
+            'email': 'volunteer@example.com',
+            'phone_no': '+42 42 42 42',
+            'fullname': 'Mister Volunteer',
+            'comments': 'Some important staff.',
         }, follow=True)
         self.assertRedirects(
             response,
@@ -858,10 +855,10 @@ class TestOffersJoin(TestCase):
         response = self.client.post('/offers/volontulo-offer/{}/join'.format(
             self.offer.id
         ), {
-            'email': u'volunteer@example.com',
-            'phone_no': u'+42 42 42 42',
-            'fullname': u'Mister Volunteer',
-            'comments': u'Some important staff.',
+            'email': 'volunteer@example.com',
+            'phone_no': '+42 42 42 42',
+            'fullname': 'Mister Volunteer',
+            'comments': 'Some important staff.',
         }, follow=True)
         self.assertRedirects(
             response,
@@ -871,7 +868,7 @@ class TestOffersJoin(TestCase):
         )
         self.assertContains(
             response,
-            u'Już wyraziłeś chęć uczestnictwa w tej ofercie.',
+            'Już wyraziłeś chęć uczestnictwa w tej ofercie.',
         )
 
     def test_offers_join_valid_form_and_anonymous_user(self):
@@ -937,18 +934,18 @@ class TestOffersArchived(TestCase):
         u"""Set up data for all tests."""
         for i in range(1, 6):
             Organization.objects.create(
-                name=u'Organization {0} name'.format(i),
-                address=u'Organization {0} address'.format(i),
-                description=u'Organization {0} description'.format(i),
+                name='Organization {0} name'.format(i),
+                address='Organization {0} address'.format(i),
+                description='Organization {0} description'.format(i),
             )
 
         organizations = Organization.objects.all()
         for idx, org in enumerate(organizations):
             for i in range(1, 6):
                 user = User.objects.create_user(
-                    u'volunteer{0}{1}@example.com'.format(idx + 1, i),
-                    u'volunteer{0}{1}@example.com'.format(idx + 1, i),
-                    u'password',
+                    'volunteer{0}{1}@example.com'.format(idx + 1, i),
+                    'volunteer{0}{1}@example.com'.format(idx + 1, i),
+                    'password',
                 )
                 userprofile = UserProfile(user=user)
                 userprofile.save()
@@ -959,13 +956,13 @@ class TestOffersArchived(TestCase):
             for i in range(0, idx + 1):
                 Offer.objects.create(
                     organization=org,
-                    benefits=u'Offer {0}-{1} benefits'.format(idx + 1, i),
-                    location=u'Offer {0}-{1} location'.format(idx + 1, i),
-                    title=u'Offer {0}-{1} title'.format(idx + 1, i),
-                    time_period=u'',
-                    description=u'',
-                    requirements=u'',
-                    time_commitment=u'',
+                    benefits='Offer {0}-{1} benefits'.format(idx + 1, i),
+                    location='Offer {0}-{1} location'.format(idx + 1, i),
+                    title='Offer {0}-{1} title'.format(idx + 1, i),
+                    time_period='',
+                    description='',
+                    requirements='',
+                    time_commitment='',
                     offer_status='published',
                     recruitment_status='closed',
                     action_status='finished',
@@ -988,5 +985,5 @@ class TestOffersArchived(TestCase):
         self.assertEqual(len(response.context['offers']), 15)
         self.assertNotContains(
             response,
-            u'Brak ofert spełniających podane kryteria',
+            'Brak ofert spełniających podane kryteria',
         )
