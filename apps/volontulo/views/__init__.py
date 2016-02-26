@@ -263,16 +263,6 @@ def contact_form(request):
         }
     )
 
-def about_us(request):
-    u"""About us page
-
-    :param request: WSGIRequest instance
-    """
-    return render(
-        request,
-        'about_us.html'
-    )
-
 def newsletter_signup(request):
     u"""Newsletter signup page
 
@@ -282,17 +272,6 @@ def newsletter_signup(request):
         request,
         'newsletter_signup.html'
     )
-
-def regulations(request):
-    u"""Regulations page
-
-    :param request: WSGIRequest instance
-    """
-    return render(
-        request,
-        'regulations.html'
-    )
-
 
 def page_not_found(request):
     u"""Page not found - 404 error handler.
