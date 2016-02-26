@@ -10,7 +10,6 @@ from django.contrib.admin.models import ADDITION
 from django.contrib.admin.models import CHANGE
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.utils import IntegrityError
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -393,29 +392,31 @@ class OffersJoin(View):
     @staticmethod
     @correct_slug(Offer, 'offers_join', 'title')
     def post(request, slug, id_):  # pylint: disable=unused-argument
-        u"""View responsible for saving join for particular offer."""
+        """View responsible for saving join for particular offer."""
         form = OfferApplyForm(request.POST)
         offer = Offer.objects.get(id=id_)
         if form.is_valid():
             if request.user.is_authenticated():
                 user = request.user
             else:
-                try:
-                    user = User.objects.create_user(
-                        username=request.POST.get('email'),
-                        email=request.POST.get('email'),
-                        password=User.objects.make_random_password(),
-                    )
-                    profile = UserProfile(user=user)
-                    profile.save()
-                except IntegrityError:
+                user = User.objects.filter(
+                    email=request.POST.get('email')
+                ).exists()
+
+                if user:
                     messages.info(
                         request,
                         'Zaloguj się, aby zapisać się do oferty.'
                     )
                     return redirect(
-                        reverse('login') + '?next={}'.format(request.path)
+                        '{}?next={}'.format(reverse('login'), request.path)
                     )
+                else:
+                    messages.info(
+                        request,
+                        'Zarejestruj się, aby zapisać się do oferty.'
+                    )
+                    return redirect('register')
 
             has_applied = Offer.objects.filter(
                 volunteers=user,
