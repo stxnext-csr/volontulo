@@ -9,13 +9,8 @@ from django.contrib import messages
 from django.contrib.admin.models import ADDITION, CHANGE
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.db.utils import IntegrityError
 from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import Http404
-from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
-from django.shortcuts import render
 from django.utils.text import slugify
 from django.views.generic import View
 
