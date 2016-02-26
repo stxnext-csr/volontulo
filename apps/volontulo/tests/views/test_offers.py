@@ -20,7 +20,7 @@ class TestOffersList(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         cls.organization = Organization.objects.create(
-            name=u'',
+            name=u'Organization Name',
             address=u'',
             description=u'',
         )

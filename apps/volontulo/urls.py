@@ -8,6 +8,7 @@ from django.conf.urls import url
 
 from apps.volontulo import views
 from apps.volontulo.views import auth as auth_views
+from apps.volontulo.views import admin_panel as admin_views
 from apps.volontulo.views import offers as offers_views
 from apps.volontulo.views import organizations as orgs_views
 
@@ -123,6 +124,11 @@ urlpatterns = [  # pylint: disable=invalid-name
         r'^contact$',
         views.contact_form,
         name='contact_form'
+    ),
+    url(
+        r'^panel$',
+        admin_views.main_panel,
+        name='admin_panel'
     ),
     url(
         r'^newsletter$',

@@ -44,9 +44,6 @@ def homepage(request):  # pylint: disable=unused-argument
     """
     if logged_as_admin(request):
         offers = Offer.objects.get_for_administrator()
-        return render(request, "admin/list_offers.html", context={
-            'offers': offers,
-        })
     else:
         offers = Offer.objects.get_weightened()
 
