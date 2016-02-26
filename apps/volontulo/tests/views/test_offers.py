@@ -195,7 +195,7 @@ class TestOffersCreate(TestCase):
             u'Formularz zawiera niepoprawnie wypełnione pola'
         )
 
-    def test_offers_create_valid_form_without_dates(self):
+    def test_create_offer_without_date(self):
         self.client.post('/login', {
             'email': u'organization@example.com',
             'password': '123org',
