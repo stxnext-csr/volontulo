@@ -154,7 +154,6 @@ class TestOfferDelete(TestCase):
             description='',
         )
 
-
         common_offer_data = {
             'organization': cls.organization,
             'description': '',
@@ -180,7 +179,6 @@ class TestOfferDelete(TestCase):
             status_old='ACTIVE',
             **common_offer_data
         )
-
 
         volunteer_user = User.objects.create_user(
             'volunteer@example.com',
