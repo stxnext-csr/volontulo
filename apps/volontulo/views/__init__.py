@@ -263,6 +263,7 @@ def contact_form(request):
         }
     )
 
+
 def newsletter_signup(request):
     u"""Newsletter signup page
 
@@ -272,6 +273,7 @@ def newsletter_signup(request):
         request,
         'newsletter_signup.html'
     )
+
 
 def page_not_found(request):
     u"""Page not found - 404 error handler.
