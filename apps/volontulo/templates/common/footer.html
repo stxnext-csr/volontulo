@@ -2,11 +2,14 @@
     <h2 class="hide">Nawigacja</h2>
     <div class="row">
         <div class="col-xs-12 col-sm-4">
-            <h3 class="nav-title">Ogólne</h3>
+            <h3 class="nav-title">Informacje</h3>
             <ul class="nav-list list-unstyled">
                 <li><a href="{% url 'homepage' %}">Strona główna</a></li>
                 <li><a href="{% url 'register' %}">Rejestracja</a></li>
                 <li><a href="{% url 'contact_form' %}">Kontakt z administratorem</a></li>
+                <li><a href="{% url 'about_us' %}">O nas</a></li>
+                <li><a href="{% url 'newsletter_signup' %}">Zapisz się do newslettera</a></li>
+                <li><a href="{% url 'regulations' %}">Regulamin</a></li>
             </ul>
             <ul class="nav-list list-unstyled">
                 <li><a href="{% url 'static_page' 'site-news' %}">Aktualności o stronie</a></li>
