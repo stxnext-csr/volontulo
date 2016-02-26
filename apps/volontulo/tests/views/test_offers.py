@@ -12,6 +12,7 @@ from apps.volontulo.models import (
     Offer, Organization, UserProfile
 )
 
+
 class TestOffersList(TestCase):
     u"""Class responsible for testing offers' list."""
 
