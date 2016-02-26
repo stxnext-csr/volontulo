@@ -44,10 +44,6 @@ class EditProfileForm(forms.Form):
         max_length=128,
         required=False
     )
-    email = forms.EmailField(
-        label="Email",
-        required=True
-    )
     phone_no = forms.CharField(
         label=u"Numer telefonu",
         required=False
