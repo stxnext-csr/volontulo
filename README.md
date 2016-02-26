@@ -98,8 +98,6 @@ To run the project tests:
 python manage.py test --settings=volontulo_org.settings.dev -v 3
 ```
 
-### Populate badges in database
-To populate database with 3 required badges (volunteer, participant, prominent-participant) run followin command:
-```
-python manage.py addbadges --settings=volontulo_org.settings.dev
-```
+### Initial admin credentials
+ * user: admin@volontuloapp.org
+ * pass: stx123
