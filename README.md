@@ -10,7 +10,7 @@ Web portal for collaboration of community volunteers with organizations and inst
 
 ## Semi-automated Project Set Up
 
-Install system dependecies (NOTE: it will install node in your system directory)
+Install system dependecies
 ```
 sudo bin/install_dependencies
 ```
