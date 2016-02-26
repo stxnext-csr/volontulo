@@ -42,17 +42,44 @@
                     </div>
                 </td>
                 <td class="text-right">
-                    <a href="{% url 'offers_edit' offer.title|slugify offer.id  %}" class="btn btn-info">
-                        <span aria-hidden="true" class="glyphicon glyphicon-edit"></span> Edycja
+                    <a class="btn btn-success accept-offer"  data-toggle="modal" href="{% url 'offers_accept' offer.id  %}">
+                        <span aria-hidden="true" class="glyphicon glyphicon-edit"></span> Aktywuj
                     </a>
-                    <a href="{% url 'offers_view' offer.title|slugify offer.id  %}" class="btn btn-default">
-                        <span aria-hidden="true" class="glyphicon glyphicon-eye-open"></span> Podgląd
+                    <a class="btn btn-danger delete-offer" href="#" data-target="#confirm-delete" data-toggle="modal" data-href="{% url 'offers_delete' offer.id  %}">
+                        <span aria-hidden="true" class="glyphicon glyphicon-edit"></span> Odrzuć
                     </a>
+
                 </td>
             </tr>
         {% endfor %}
         </table>
+
+        <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="confirmDelete" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Jesteś pewien?</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Anuluj</button>
+                        <a class="btn btn-danger btn-ok">Usuń</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     {% else %}
         <p>Brak ofert spełniających jakiekolwiek kryteria.</p>
     {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+
+        $('#confirm-delete').on('show.bs.modal', function(e) {
+            $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+        });
+
+    </script>
 {% endblock %}
