@@ -14,16 +14,6 @@
             </select>
         </div>
     </div>
-    <div class="form-group form-group-sm">
-        <label class="col-xs-3 control-label" for="{{ contact_form.administrator.id_for_label }}">z administratorem:</label>
-        <div class="col-xs-9">
-            <select name="administrator" id="{{ contact_form.administrator.id_for_label }}" class="form-control" >
-                {% for option in contact_form.administrator.choices %}
-                <option value="{{ option.0 }}">{{ option.1 }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
     {% endif %}
 
     <div class="form-group form-group-sm">
