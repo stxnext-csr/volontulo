@@ -5,21 +5,6 @@
 
 {% block name %}user-profile{% endblock %}
 
-{% block content-heading %}
-    <div class="media">
-        <div class="media-left">
-            <div class="cover-image" style="background-image:url({{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}"></div>
-        </div>
-        <div class="media-body media-top">
-            <h2 class="lead">Użytkownik: {{ user.username }}</h2>
-            <ul class="list-unstyled">
-                <li><b>Real User ID:</b> <span class="badge">{{ user.id }}</span></li>
-                <li><b>UserProfile ID:</b> <span class="badge">{{ user.userprofile.id }}</span></li>
-            </ul>
-        </div>
-    </div>
-{% endblock %}
-
 {% block content %}
 
     <div class="row">
@@ -30,7 +15,12 @@
                     Zdjęcie profilowe
                 </h3>
                 <div class="panel-body">
+                  <div class="col-xs-8">
                     {% include 'users/gallery.html' with image=image %}
+                  </div>
+                  <div class="col-xs-4 user-photo">
+                      <img src="{{ MEDIA_URL }}{{ userprofile.get_avatar.0.image }}">
+                  </div>
                 </div>
             </div>
         </div>
@@ -82,5 +72,4 @@
         </div>
     </div>
 
-    <p class="pull-right"><a href="{% url 'logout' %}" class="btn btn-default">Wyloguj</a></p>
 {% endblock %}

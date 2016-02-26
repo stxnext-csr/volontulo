@@ -44,10 +44,6 @@ class EditProfileForm(forms.Form):
         max_length=128,
         required=False
     )
-    email = forms.EmailField(
-        label="Email",
-        required=True
-    )
     phone_no = forms.CharField(
         label=u"Numer telefonu",
         required=False
@@ -132,10 +128,6 @@ class UserGalleryForm(forms.ModelForm):
 
     u"""Form used for changing user profile of user."""
     image = forms.ImageField(label=u"Wybierz grafikę")
-    is_avatar = forms.BooleanField(
-        label=u"Użyć jako avatar?",
-        required=False,
-    )
 
     class Meta(object):
         model = UserGallery
