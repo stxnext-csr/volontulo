@@ -291,27 +291,39 @@ class OffersEdit(View):
 
 
 class OffersDelete(View):
+    """ Class view responsible for deletion of offers """
+
     @staticmethod
     def get(request, pk):
+        """Method which allows to delete selected offer
 
+        :param request: WSGIRequest instance
+        :param pk: Offer id
+        """
         offer = get_object_or_404(Offer, pk=pk)
         if request.user.is_authenticated() and request.user.userprofile.is_administrator:
             offer.reject()
             messages.info(request, 'Oferta została odrzucona.')
-            return redirect('offers_list')
+            return redirect('homepage')
         else:
             return HttpResponseForbidden()
 
 
 class OffersAccept(View):
+    """ Class view responsible for acceptance of offers """
+
     @staticmethod
     def get(request, pk):
+        """Method which allows to delete selected offer
 
+        :param request: WSGIRequest instance
+        :param pk: Offer id
+        """
         offer = get_object_or_404(Offer, pk=pk)
         if request.user.is_authenticated() and request.user.userprofile.is_administrator:
             offer.publish()
-            messages.info(request, 'Oferta została zaakcepetowana.')
-            return redirect('offers_list')
+            messages.info(request, 'Oferta została zaakceptowana.')
+            return redirect('homepage')
         else:
             return HttpResponseForbidden()
 
