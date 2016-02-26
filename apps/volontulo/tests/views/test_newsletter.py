@@ -3,13 +3,10 @@
 u"""
 .. module:: test_newsletter
 """
-from django.test import Client
 from django.test import TestCase
 
-from apps.volontulo.tests import common
 
-
-class TestNewsletter(TestCase):
+class TestNews(TestCase):
     u"""Class responsible for testing newsletter specific views."""
 
     # pylint: disable=invalid-name
