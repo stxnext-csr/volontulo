@@ -44,9 +44,6 @@ def homepage(request):  # pylint: disable=unused-argument
     """
     if logged_as_admin(request):
         offers = Offer.objects.get_for_administrator()
-        return render(request, "admin/list_offers.html", context={
-            'offers': offers,
-        })
     else:
         offers = Offer.objects.get_weightened()
 
@@ -85,7 +82,6 @@ def logged_user_profile(request):
         u"""Initialize EditProfileForm - helper method."""
         return EditProfileForm(
             initial={
-                'email': request.user.email,
                 'phone_no': request.user.userprofile.phone_no,
                 'first_name': request.user.first_name,
                 'last_name': request.user.last_name,

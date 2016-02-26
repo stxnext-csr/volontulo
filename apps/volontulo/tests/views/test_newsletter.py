@@ -6,7 +6,7 @@ u"""
 from django.test import TestCase
 
 
-class TestAboutus(TestCase):
+class TestNews(TestCase):
     u"""Class responsible for testing newsletter specific views."""
 
     # pylint: disable=invalid-name
