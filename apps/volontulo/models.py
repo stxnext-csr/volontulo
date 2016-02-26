@@ -165,7 +165,10 @@ class Offer(models.Model):
         u"""Set status while creating new offer."""
         self.offer_status = 'unpublished'
         self.recruitment_status = 'open'
-        self.action_status = self.determine_action_status()
+
+        if self.started_at or self.finished_at:
+            self.action_status = self.determine_action_status()
+
 
     def determine_action_status(self):
         u"""Determine action status by offer dates."""

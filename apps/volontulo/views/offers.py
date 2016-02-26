@@ -100,7 +100,7 @@ class OffersCreate(View):
         """
         form = CreateOfferForm(request.POST)
         if form.is_valid():
-            offer = form.save()
+            offer = form.save()            
             offer.create_new()
             offer.save()
             save_history(request, offer, action=ADDITION)
