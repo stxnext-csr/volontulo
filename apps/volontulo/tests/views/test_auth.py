@@ -22,14 +22,22 @@ class TestRegister(TransactionTestCase):
         u"""Test for get method for view."""
         response = self.client.get('/register')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'auth/register.html')
+        self.assertTemplateUsed(response, 'auth/login.html')
+        self.assertContains(
+            response,
+            'Rejestracja w Volontulo'
+        )
+        self.assertContains(
+            response,
+            'Logowanie'
+        )
         self.assertNotIn('_auth_user_id', self.client.session)
 
     def test_invalid_form(self):
         u"""Test for post method with invalid form."""
         response = self.client.post('/register', {})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'auth/register.html')
+        self.assertTemplateUsed(response, 'auth/login.html')
         self.assertContains(
             response,
             u'Wprowadzono nieprawidłowy email, hasło lub nie wyrażono '
@@ -50,7 +58,7 @@ class TestRegister(TransactionTestCase):
             'terms_acceptance': True,
         })
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'auth/register.html')
+        self.assertTemplateUsed(response, 'auth/login.html')
         self.assertContains(
             response,
             u'Użytkownik o podanym emailu już istnieje',
@@ -67,7 +75,7 @@ class TestRegister(TransactionTestCase):
             'terms_acceptance': False,
         })
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'auth/register.html')
+        self.assertTemplateUsed(response, 'auth/login.html')
         self.assertContains(
             response,
             u'Wprowadzono nieprawidłowy email, hasło lub nie wyrażono '
