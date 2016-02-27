@@ -108,7 +108,7 @@ class Register(View):
 
         return render(
             request,
-            'auth/register.html',
+            'auth/login.html',
             {
                 'user_form': UserForm() if user_form is None else user_form,
             }

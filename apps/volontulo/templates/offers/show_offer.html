@@ -91,7 +91,7 @@
                     <a href="{% url "offers_join" offer.title|slugify offer.id %}" class="btn btn-default btn-lg">Zgłoś się na ten wolontariat</a>
                 </div>
                 <div class="panel-footer">
-                    Rekrutacja trwa do <b>{{offer.recruitment_end_date}}</b>
+                    Rekrutacja trwa {{offer.recruitment_end_date|date:'\d\o'|default:''}} <b>{{offer.recruitment_end_date|date:'j E Y, G:m'|default:''}}</b>
                 </div>
             </div>
             <div class="panel panel-default">
