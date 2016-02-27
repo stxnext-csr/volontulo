@@ -23,25 +23,31 @@
 
         <div class="form-group form-group-sm {% if form.title.errors %}has-error{% endif %}">
             <label class="col-xs-3 control-label" for="{{ form.title.id_for_label }}">Tytuł oferty</label>
-            <div class="col-xs-9">
+            <div class="col-xs-9 col-sm-6">
                 <input type="text" value="{{ request.POST.title|default:offer.title }}" name="title" class="form-control" id="{{ form.title.id_for_label }}" />
                 {% if form.title.errors %}
                     <div class="error-text">{{ form.title.errors }}</div>
                 {% endif %}
             </div>
+            <div class="col-xs-offset-3 col-xs-9 col-sm-offset-0 col-sm-3">
+                <p>Określ, jak oferta będzie nazywać się w systemie, staraj się być dokładnym.</p>
+            </div>
         </div>
         <div class="form-group form-group-sm {% if form.location.errors %}has-error{% endif %}">
             <label class="col-xs-3 control-label" for="{{ form.location.id_for_label }}">Miejsce odbywania wolontariatu</label>
-            <div class="col-xs-9">
+            <div class="col-xs-9 col-sm-6">
                 <input type="text" value="{{ request.POST.location|default:offer.location }}" name="location" class="form-control" id="{{ form.location.id_for_label }}" />
                 {% if form.location.errors %}
                     <div class="error-text">{{ form.location.errors }}</div>
                 {% endif %}
             </div>
+            <div class="col-xs-offset-3 col-xs-9 col-sm-offset-0 col-sm-3">
+                <p>Określ, w jakim miejscu odbywać się będzie wolontariat.</p>
+            </div>
         </div>
         <div class="form-group form-group-sm {% if form.organizations.errors %}has-error{% endif %}">
             <label class="control-label col-xs-3" for="{{ form.organization.id_for_label }}">Z ramienia organizacji</label>
-            <div class="col-xs-9">
+            <div class="col-xs-9 col-sm-6">
                 <select value="{{ user.userprofile.organizations.all.0.id }}" name="organization" class="form-control" id="{{ form.organization.id_for_label }}">
                     {% for o in organizations %}
                         <option value="{{ o.id }}">{{ o.name }}</option>
@@ -51,56 +57,61 @@
                     <div class="error-text">{{ form.organizations.errors }}</div>
                 {% endif %}
             </div>
+            <div class="col-xs-offset-3 col-xs-9 col-sm-offset-0 col-sm-3">
+                <p>Określ organizację odpowiedzialną za wolontariat.</p>
+            </div>
         </div>
 
         <div class="form-group form-group-sm {% if form.started_at.errors %}has-error{% endif %}">
             <h3 class="lead col-xs-offset-3 col-xs-9">Realizacja akcji</h3>
             <label class="col-xs-3 control-label" for="{{ form.started_at.id_for_label }}">Dzień rozpoczęcia</label>
-            <div class="col-xs-4">
-
+            <div class="col-xs-5 col-sm-3">
                 <div class="input-group">
                     <span class="input-group-addon">
                         <input type="radio" value="date" name="action_start" checked="checked" />
                     </span>
                     <input type="text" value="{{ request.POST.started_at|date:"Y-m-d H:i:s"|default:offer.started_at|date:"Y-m-d H:i:s" }}" name="started_at" class="form-control" id="{{ form.started_at.id_for_label }}" />
                 </div>
-
             </div>
-            <div class="col-xs-5">
+            <div class="col-xs-4 col-sm-3">
                 <label for="action_ongoing_id">
                     <input type="radio" value="action_ongoing" name="action_start" id="action_ongoing_id" />
                     akcja już trwa
                 </label>
+                {% if form.started_at.errors %}
+                    <div class="error-text">{{ form.started_at.errors }}</div>
+                {% endif %}
             </div>
-            {% if form.started_at.errors %}
-                <div class="col-xs-offset-3 col-xs-9">{{ form.started_at.errors }}</div>
-            {% endif %}
+            <div class="col-xs-offset-3 col-xs-9 col-sm-offset-0 col-sm-3">
+                <p>Określ datę rozpoczęcia akcji.</p>
+            </div>
         </div>
         <div class="form-group form-group-sm {% if form.finished_at.errors %}has-error{% endif %}">
             <label class="col-xs-3 control-label" for="{{ form.finished_at.id_for_label }}">Dzień zakończenia</label>
-            <div class="col-xs-4">
-
+            <div class="col-xs-5 col-sm-3">
                 <div class="input-group">
                     <span class="input-group-addon">
                         <input type="radio" value="date" name="action_finished" checked="checked" />
                     </span>
                     <input type="text" value="{{ request.POST.finished_at|date:"Y-m-d H:i:s"|default:offer.finished_at|date:"Y-m-d H:i:s" }}" name="finished_at" class="form-control" id="{{ form.finished_at.id_for_label }}" />
                 </div>
-
             </div>
-            <div class="col-xs-5">
+            <div class="col-xs-4 col-sm-3">
                 <label for="constant_coop_id">
                     <input type="radio" value="constant_coop" name="action_finished" id="constant_coop_id" />
                     akcja nie kończy się (ciągła współpraca)
                 </label>
+                {% if form.finished_at.errors %}
+                    <div class="error-text">{{ form.finished_at.errors }}</div>
+                {% endif %}
             </div>
-            {% if form.finished_at.errors %}
-                <div class="col-xs-offset-3 col-xs-9">{{ form.finished_at.errors }}</div>
-            {% endif %}
+            <div class="col-xs-offset-3 col-xs-9 col-sm-offset-0 col-sm-3">
+                <p>Określ datę zakończenia akcji.</p>
+            </div>
         </div>
 
         <div class="row">
-            <div class="col-sm-offset-3 col-sm-5 col-xs-6">
+            <div class="col-md-offset-3 col-md-3 col-xs-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
@@ -128,7 +139,7 @@
                         </div>
                         <div class="form-group form-group-sm {% if form.volunteers_limit.errors %}has-error{% endif %}">
                             <label class="control-label col-xs-5" for="{{ form.organization.id_for_label }}">Limit wolontariuszy</label>
-                            <div class="col-xs-7">
+                            <div class="col-xs-6 col-xs-offset-1">
                                 <input type="text" value="{% if request.POST.volunteers_limit or offer.volunteers_limit %}{{ request.POST.volunteers_limit|default:offer.volunteers_limit }}{% else %}0{% endif %}" name="volunteers_limit" class="form-control" id="{{ form.volunteers_limit.id_for_label }}" />
                                 {% if form.volunteers_limit.errors %}
                                     <div class="error-text">{{ form.volunteers_limit.errors }}</div>
@@ -138,7 +149,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4 col-xs-6">
+            <div class="col-md-3 col-xs-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
@@ -170,45 +181,60 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xs-12 col-md-3">
+                <p>Określ ramy czasowe oraz liczbę wolontariuszy, odpowiednio dla rezerwacji podstawowej i rozszerzonej.</p>
+            </div>
         </div>
 
         <div class="form-group form-group-sm {% if form.description.errors %}has-error{% endif %}">
             <label class="col-xs-3 control-label" for="{{ form.description.id_for_label }}">Opis oferty</label>
-            <div class="col-xs-9">
+            <div class="col-xs-9 col-sm-6">
                 <textarea class="form-control" rows="3" name="description" id="{{ form.description.id_for_label }}">{{ request.POST.description|default:offer.description }}</textarea>
                 {% if form.description.errors %}
                     <div class="error-text">{{ form.description.errors }}</div>
                 {% endif %}
             </div>
+            <div class="col-xs-offset-3 col-xs-9 col-sm-offset-0 col-sm-3">
+                <p>Postaraj się dokładnie opisać akcję.</p>
+            </div>
         </div>
 
         <div class="form-group form-group-sm {% if form.time_commitment.errors %}has-error{% endif %}">
             <label class="control-label col-xs-3" for="{{ form.organization.id_for_label }}">Wymagania czasowe</label>
-            <div class="col-xs-9">
+            <div class="col-xs-9 col-sm-6">
                 <input type="text" value="{{ request.POST.time_commitment|default:offer.time_commitment }}" name="time_commitment" class="form-control" id="{{ form.time_commitment.id_for_label }}" />
                 {% if form.time_commitment.errors %}
                     <div class="error-text">{{ form.time_commitment.errors }}</div>
                 {% endif %}
             </div>
+            <div class="col-xs-offset-3 col-xs-9 col-sm-offset-0 col-sm-3">
+                <p>Określ wymagania czasowe - ile godzin pracy w ciągu dnia wymaga dana akcja.</p>
+            </div>
         </div>
 
         <div class="form-group form-group-sm {% if form.benefits.errors %}has-error{% endif %}">
             <label class="col-xs-3 control-label" for="{{ form.benefits.id_for_label }}">Korzyści</label>
-            <div class="col-xs-9">
+            <div class="col-xs-9 col-sm-6">
                 <textarea class="form-control" rows="3" name="benefits" id="{{ form.benefits.id_for_label }}">{{ request.POST.benefits|default:offer.benefits }}</textarea>
                 {% if form.benefits.errors %}
                     <div class="error-text">{{ form.benefits.errors }}</div>
                 {% endif %}
             </div>
+            <div class="col-xs-offset-3 col-xs-9 col-sm-offset-0 col-sm-3">
+                <p>Określ korzyści płynące z udziału w akcji.</p>
+            </div>
         </div>
 
         <div class="form-group form-group-sm {% if form.requirements.errors %}has-error{% endif %}">
             <label class="col-xs-3 control-label" for="{{ form.requirements.id_for_label }}">Wymagania wobec wolontariusza</label>
-            <div class="col-xs-9">
+            <div class="col-xs-9 col-sm-6">
                 <textarea class="form-control" rows="3" name="requirements" id="{{ form.requirements.id_for_label }}">{{ request.POST.requirements|default:offer.requirements }}</textarea>
                 {% if form.requirements.errors %}
                     <div class="error-text">{{ form.requirements.errors }}</div>
                 {% endif %}
+            </div>
+            <div class="col-xs-offset-3 col-xs-9 col-sm-offset-0 col-sm-3">
+                <p>Określ warunki, jakie musi spełnić kandydat, aby wziąć udział w akcji.</p>
             </div>
         </div>
 
