@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 u"""
-.. module:: test_offers
+.. module:: test_offers_2
 """
 
 from django.contrib.auth.models import User
