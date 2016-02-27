@@ -1,0 +1,29 @@
+{% extends "common/col1.html" %}
+{% load bootstrap3 %}
+
+{% block title %}Strony{% endblock %}
+{% block content %}
+    <h2>Lista stron</h2>
+    <a class="btn btn-success" href="{% url 'pages_create' %}"><b>Stwórz stronę</b></a>
+    <table class="table table-striped offer-table">
+        <tr>
+            <th>Tytuł</th>
+            <th>Dodał</th>
+            <th>Data modyfikacji</th>
+            <th>Data dodania</th>
+            <th>Akcje</th>
+        </tr>
+    {% for page in object_list %}
+        <tr>
+            <td><a href="{% url 'pages_detail' page.title|slugify page.id %}">{{ page.title }}</a></td>
+            <td>{{ page.author }}</td>
+            <td>{{ page.modified_at }}</td>
+            <td>{{ page.created_at }}</td>
+            <td>
+                <a class="btn btn-info" href="{% url 'pages_edit' page.id %}"><b>Edytuj</b></a>
+                <a class="btn btn-danger" href="{% url 'pages_delete' page.id %}"><b>Usuń</b></a>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
