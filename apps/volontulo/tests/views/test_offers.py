@@ -20,15 +20,9 @@ class TestOffersList(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         cls.organization = Organization.objects.create(
-<<<<<<< HEAD
-            name=u'Organization Name',
-            address=u'',
-            description=u'',
-=======
             name='Organization Name',
             address='',
             description='',
->>>>>>> upstream/master
         )
         cls.organization.save()
 
@@ -531,15 +525,9 @@ class TestOffersEdit(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         cls.organization = Organization.objects.create(
-<<<<<<< HEAD
-            name=u'Organization Name',
-            address=u'',
-            description=u'',
-=======
-            name='',
+            name='Organization Name',
             address='',
             description='',
->>>>>>> upstream/master
         )
         cls.organization.save()
         cls.organization_user_email = 'organization@example.com'
@@ -711,15 +699,9 @@ class TestOffersView(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         organization = Organization.objects.create(
-<<<<<<< HEAD
-            name=u'Organization Name',
-            address=u'',
-            description=u'',
-=======
-            name='',
+            name='Organization Name',
             address='',
             description='',
->>>>>>> upstream/master
         )
         organization.save()
         administrator = User.objects.create_user(
@@ -805,15 +787,9 @@ class TestOffersJoin(TestCase):
     def setUpTestData(cls):
         u"""Set up data for all tests."""
         organization = Organization.objects.create(
-<<<<<<< HEAD
-            name=u'Organization Name',
-            address=u'',
-            description=u'',
-=======
-            name='',
+            name='Organization Name',
             address='',
             description='',
->>>>>>> upstream/master
         )
         organization.save()
 
