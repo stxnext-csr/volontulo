@@ -75,13 +75,26 @@ class OffersCreate(View):
             )
             return redirect('offers_list')
 
+        organizations = request.user.userprofile.organizations.all()
+
+        if not organizations.exists():
+            messages.info(
+                request,
+                u"Nie masz jeszcze żadnej założonej organizacji"
+                u" na volontuloapp.org. Aby założyć organizację,"
+                u" <a href='{}'>kliknij tu.</a>".format(
+                    reverse('organizations_create')
+                )
+            )
+            return redirect('offers_list')
+
         return render(
             request,
             'offers/offer_form.html',
             {
                 'offer': Offer(),
                 'form': CreateOfferForm(),
-                'organizations': request.user.userprofile.organizations.all(),
+                'organizations': organizations,
             }
         )
 
