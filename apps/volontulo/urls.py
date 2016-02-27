@@ -11,6 +11,7 @@ from apps.volontulo.views import auth as auth_views
 from apps.volontulo.views import admin_panel as admin_views
 from apps.volontulo.views import offers as offers_views
 from apps.volontulo.views import organizations as orgs_views
+from apps.volontulo.views import pages as pages_views
 
 # pylint: disable=invalid-name
 handler404 = 'apps.volontulo.views.page_not_found'
@@ -113,6 +114,34 @@ urlpatterns = [  # pylint: disable=invalid-name
     ),
     # organizations/filter
     # organizations/<slug>/<id>/contact
+
+
+    # pages:
+    url(
+        r'^pages$',
+        pages_views.PageList.as_view(),
+        name='pages_list'
+    ),
+    url(
+        r'^pages/create$',
+        pages_views.PageCreate.as_view(),
+        name='pages_create'
+    ),
+    url(
+        r'^pages/(?P<pk>[0-9]+)/edit',
+        pages_views.PageEdit.as_view(),
+        name='pages_edit'
+    ),
+    url(
+        r'^pages/(?P<pk>[0-9]+)/delete',
+        pages_views.PageDelete.as_view(),
+        name='pages_delete'
+    ),
+    url(
+        r'^(?P<slug>[-\w]+),(?P<pk>[0-9]+).html$',
+        pages_views.PageDetails.as_view(),
+        name='pages_detail'
+    ),
 
     # others:
     url(
