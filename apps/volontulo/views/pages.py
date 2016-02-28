@@ -9,9 +9,9 @@ from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import (
-    CreateView, DeleteView, UpdateView
-)
+from django.views.generic.edit import CreateView
+from django.views.generic.edit import DeleteView
+from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 
 from apps.volontulo.models import Page
