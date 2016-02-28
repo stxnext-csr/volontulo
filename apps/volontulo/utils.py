@@ -16,16 +16,16 @@ from apps.volontulo.models import UserProfile
 # Offers statuses dictionary with meaningful names.
 # todo: remove dependency
 OFFERS_STATUSES = {
-    'NEW': u"Nowa",
-    'ACTIVE': u"Aktywna",
-    'FINISHED': u"Zakończona",
-    'SUSPENDED': u"Zawieszona",
-    'CLOSED': u"Zamknięta",
+    'NEW': 'Nowa',
+    'ACTIVE': 'Aktywna',
+    'FINISHED': 'Zakończona',
+    'SUSPENDED': 'Zawieszona',
+    'CLOSED': 'Zamknięta',
 }
 
 
 def get_administrators_emails():
-    u"""Get all administrators emails or superuser email
+    """Get all administrators emails or superuser email
 
     Format returned:
     emails = {
@@ -39,7 +39,7 @@ def get_administrators_emails():
         emails[str(admin.user.id)] = admin.user.email
 
     if not emails:
-        administrators = User.objects.filter(is_superuser=True)
+        administrators = User.objects.filter(is_superuser=True)  # pylint: disable=no-member
         for admin in administrators:
             emails[str(admin.id)] = admin.email
 
@@ -47,7 +47,7 @@ def get_administrators_emails():
 
 
 def save_history(req, obj, action):
-    u"""Save model changes history."""
+    """Save model changes history."""
     LogEntry.objects.log_action(
         user_id=req.user.pk,
         content_type_id=ContentType.objects.get_for_model(obj).pk,
@@ -58,15 +58,15 @@ def save_history(req, obj, action):
 
 
 def correct_slug(model_class, view_name, slug_field):
-    u"""Decorator that is reposponsible for redirect to url with correct slug.
+    """Decorator that is reposponsible for redirect to url with correct slug.
 
     It is used by url for offers, organizations and users.
     """
     def decorator(wrapped_func):
-        u"""Decorator function for correcting slugs."""
+        """Decorator function for correcting slugs."""
 
         def wrapping_func(request, slug, id_):
-            u"""Wrapping function for correcting slugs."""
+            """Wrapping function for correcting slugs."""
             obj = get_object_or_404(model_class, id=id_)
             if slug != slugify(getattr(obj, slug_field)):
                 return redirect(
@@ -79,3 +79,12 @@ def correct_slug(model_class, view_name, slug_field):
         return wrapping_func
 
     return decorator
+
+
+def is_admin_test(user):
+    """Check if passed user is administrator
+
+    :param user: An instance of AUTH_USER_MODEL representing
+    the currently logged-in user.
+    """
+    return user.is_authenticated() and user.userprofile.is_administrator
