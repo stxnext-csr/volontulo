@@ -29,7 +29,8 @@ class PageList(ListView):  # pylint: disable=too-many-ancestors
         Method is overriden to check that current user instance
         is administrator.
         """
-        return super(PageList, self).dispatch(*args, **kwargs)  # pylint: disable=no-member
+        # pylint: disable=no-member
+        return super(PageList, self).dispatch(*args, **kwargs)
 
 
 class PageDetails(DetailView):  # pylint: disable=too-many-ancestors
@@ -62,7 +63,8 @@ class PageCreate(CreateView):  # pylint: disable=too-many-ancestors
         Method is overriden to check that current user instance
         is administrator.
         """
-        return super(PageCreate, self).dispatch(*args, **kwargs)  # pylint: disable=no-member
+        # pylint: disable=no-member
+        return super(PageCreate, self).dispatch(*args, **kwargs)
 
 
 class PageEdit(UpdateView):  # pylint: disable=too-many-ancestors
@@ -82,7 +84,8 @@ class PageEdit(UpdateView):  # pylint: disable=too-many-ancestors
         Method is overriden to check that current user instance
         is administrator.
         """
-        return super(PageEdit, self).dispatch(*args, **kwargs)  # pylint: disable=no-member
+        # pylint: disable=no-member
+        return super(PageEdit, self).dispatch(*args, **kwargs)
 
 
 class PageDelete(DeleteView):  # pylint: disable=too-many-ancestors
@@ -103,4 +106,5 @@ class PageDelete(DeleteView):  # pylint: disable=too-many-ancestors
         Method is overriden to check that current user instance
         is administrator.
         """
-        return super(PageDelete, self).dispatch(*args, **kwargs)  # pylint: disable=no-member
+        # pylint: disable=no-member
+        return super(PageDelete, self).dispatch(*args, **kwargs)

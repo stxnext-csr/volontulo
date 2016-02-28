@@ -39,7 +39,8 @@ def get_administrators_emails():
         emails[str(admin.user.id)] = admin.user.email
 
     if not emails:
-        administrators = User.objects.filter(is_superuser=True)  # pylint: disable=no-member
+        # pylint: disable=no-member
+        administrators = User.objects.filter(is_superuser=True)
         for admin in administrators:
             emails[str(admin.id)] = admin.email
 
