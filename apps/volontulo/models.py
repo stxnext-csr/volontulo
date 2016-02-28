@@ -3,9 +3,10 @@
 u"""
 .. module:: models
 """
-# pylint: disable=unused-import
+
 import logging
 import os
+# pylint: disable=unused-import
 import uuid
 
 from django.conf import settings
@@ -343,6 +344,8 @@ class OrganizationGallery(models.Model):
 
 
 class Page(models.Model):
+    """Static page model."""
+
     title = models.CharField(max_length=255)
     content = models.TextField()
     author = models.ForeignKey(UserProfile)
