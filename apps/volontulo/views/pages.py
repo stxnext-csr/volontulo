@@ -1,31 +1,34 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=missing-docstring
+
+"""
+.. module:: pages
+"""
+
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import (
-    CreateView, UpdateView, DeleteView
-)
+from django.views.generic.edit import CreateView
+from django.views.generic.edit import DeleteView
+from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
-
 
 from apps.volontulo.models import Page
 
 
-# pylint: disable=too-many-ancestors;missing-docstring
-class PageList(ListView):
+class PageList(ListView):  # pylint: disable=too-many-ancestors
+    """View listing static pages."""
     model = Page
     template_name = 'pages/page_list.html'
 
 
-# pylint: disable=too-many-ancestors;missing-docstring
-class PageDetails(DetailView):
+class PageDetails(DetailView):  # pylint: disable=too-many-ancestors
+    """View with details of static page."""
     model = Page
     template_name = 'pages/page_detail.html'
 
 
-# pylint: disable=too-many-ancestors;missing-docstring
-class PageCreate(CreateView):
+class PageCreate(CreateView):  # pylint: disable=too-many-ancestors
+    """View responsible for creation of new static page."""
     model = Page
     fields = (
         'title',
@@ -43,8 +46,8 @@ class PageCreate(CreateView):
         return redirect(self.get_success_url())
 
 
-# pylint: disable=too-many-ancestors;missing-docstring
-class PageEdit(UpdateView):
+class PageEdit(UpdateView):  # pylint: disable=too-many-ancestors
+    """View responsible for editing static page."""
     model = Page
     fields = (
         'title',
@@ -55,8 +58,8 @@ class PageEdit(UpdateView):
     success_url = reverse_lazy('pages_list')
 
 
-# pylint: disable=too-many-ancestors;missing-docstring
-class PageDelete(DeleteView):
+class PageDelete(DeleteView):  # pylint: disable=too-many-ancestors
+    """Page responsible for deletion of static page."""
     model = Page
     success_url = reverse_lazy('pages_list')
 
