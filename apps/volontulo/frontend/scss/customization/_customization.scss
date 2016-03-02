@@ -176,6 +176,9 @@ input.form-control[required] {
         &:last-child {
             margin-right: -8px;
         }
+        &.btn-link {
+            white-space: normal;
+        }
     }
 }
 
