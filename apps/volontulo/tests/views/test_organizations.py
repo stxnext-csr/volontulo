@@ -38,3 +38,32 @@ class TestOrganizations(TestCase):
         # pylint: disable=no-member
         self.assertIn('organizations', response.context)
         self.assertEqual(Organization.objects.all().count(), 2)
+
+    # pylint: disable=invalid-name
+    def test__ensure_status_is_displayed_in_profile_view(self):
+        """Test if offer status is displayed in a profile view."""
+        self.client.login(
+            username=u'volunteer2@example.com',
+            password=u'volunteer2'
+        )
+        response = self.client.get('/me', follow=True)
+        self.assertTemplateUsed(response, 'users/my_offers.html')
+        # pylint: disable=no-member
+        self.assertIn('offers', response.context)
+        # pylint: disable=no-member
+        self.assertEquals(
+            'published', response.context['offers'][0].offer_status)
+
+    # pylint: disable=invalid-name
+    def test__ensure_status_is_displayed_in_organisations_view(self):
+        """Test if offer status is displayed in an organisation view."""
+        self.client.login(
+            username=u'volunteer2@example.com',
+            password=u'volunteer2'
+        )
+        response = self.client.get('/me', follow=True)
+        # pylint: disable=no-member
+        self.assertIn('offers', response.context)
+        # pylint: disable=no-member
+        self.assertEquals(
+            'published', response.context['offers'][0].offer_status)
