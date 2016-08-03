@@ -13,7 +13,7 @@ echo "Requirements installed."
 cp $BASEDIR/etc/local_config.yaml.sample $BASEDIR/local_config.yaml
 
 sed '/^secret_key/ d' $BASEDIR/local_config.yaml > $BASEDIR/tmp.yaml && mv tmp.yaml local_config.yaml
-UUID=$(cat /proc/sys/kernel/random/uuid)
+UUID=a63eb5ef-3b25-4595-846a-5d97d99486f0
 echo "secret_key: $UUID" >> $BASEDIR/local_config.yaml
 
 $BASEDIR/env/bin/python manage.py migrate --settings=volontulo_org.settings.dev
