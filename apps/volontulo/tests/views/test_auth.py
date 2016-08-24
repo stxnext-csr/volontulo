@@ -66,7 +66,6 @@ class TestRegister(TransactionTestCase):
         self.assertNotIn('_auth_user_id', self.client.session)
         self.assertEqual(User.objects.all().count(), 1)
 
-    # pylint: disable=invalid-name
     def test_register_without_term_acceptance(self):
         u"""Test for registration without accepted terms."""
         response = self.client.post('/register', {
@@ -83,7 +82,6 @@ class TestRegister(TransactionTestCase):
         )
         self.assertNotIn('_auth_user_id', self.client.session)
 
-    # pylint: disable=invalid-name
     def test_register_with_term_acceptance(self):
         u"""Test for registration with accepted terms."""
         response = self.client.post('/register', {
@@ -128,7 +126,6 @@ class TestRegister(TransactionTestCase):
         self.assertIn('_auth_user_id', self.client.session)
         self.assertEqual(User.objects.all().count(), 1)
 
-    # pylint: disable=invalid-name
     def test__register_authenticated_user(self):
         u"""Check if authenticated user can access register page."""
         # volunteer user
@@ -213,7 +210,6 @@ class TestLogin(TestCase):
         )
         self.assertIn('_auth_user_id', self.client.session)
 
-    # pylint: disable=invalid-name
     def test__post_login_by_anonymous_user(self):
         u"""Post to login form by anonymous"""
         # incorrect email or password
@@ -284,7 +280,6 @@ class TestLogin(TestCase):
             ('http://testserver/', 302),
         )
 
-    # pylint: disable=invalid-name
     def test__post_login_by_authorized_user(self):
         u"""Post to login form by authorized"""
         self.client.post('/login', {
@@ -319,7 +314,6 @@ class TestLogout(TestCase):
         u"""Set up each test."""
         self.client = Client()
 
-    # pylint: disable=invalid-name
     def test__logged_out_anonymous_user(self):
         u"""Testing logout view for anonymous user"""
         response = self.client.get('/logout', follow=True)

@@ -34,7 +34,6 @@ class TestPages(TestCase):
         u"""Set up each test."""
         self.client = Client()
 
-    # pylint: disable=invalid-name
     def test__get_contact_with_administrator_form_by_anonymous(self):
         u"""Request contact with administrator form by anonymous user."""
         response = self.client.get('/contact', follow=True)
@@ -51,7 +50,6 @@ class TestPages(TestCase):
             ('http://testserver/login?next=/contact', 302),
         )
 
-    # pylint: disable=invalid-name
     def test__get_contact_with_administrator_form_by_volunteer(self):
         u"""Request contact with administrator form by volunteer user."""
         self.client.post('/login', {
@@ -64,10 +62,8 @@ class TestPages(TestCase):
         self.assertTemplateUsed(response, 'contact.html')
         self.assertTemplateUsed(response, 'contact_form.html')
         self.assertContains(response, u'Formularz kontaktowy')
-        # pylint: disable=no-member
         self.assertIn('contact_form', response.context)
 
-    # pylint: disable=invalid-name
     def test__get_contact_with_administrator_form_by_organization(self):
         u"""Request contact with administrator form by organization user."""
         self.client.post('/login', {
@@ -80,10 +76,8 @@ class TestPages(TestCase):
         self.assertTemplateUsed(response, 'contact.html')
         self.assertTemplateUsed(response, 'contact_form.html')
         self.assertContains(response, u'Formularz kontaktowy')
-        # pylint: disable=no-member
         self.assertIn('contact_form', response.context)
 
-    # pylint: disable=invalid-name
     def test__post_contact_with_administrator_form_by_anonymous(self):
         u"""Post to contact with administrator form by anonymous user."""
         response = self.client.get('/contact', follow=True)
@@ -100,7 +94,6 @@ class TestPages(TestCase):
             ('http://testserver/login?next=/contact', 302),
         )
 
-    # pylint: disable=invalid-name
     def test__contact_with_admin_form_by_volunteer_val_error(self):
         u"""Post to contact with administrator form by volunteer user
         assuming validation error."""
@@ -127,7 +120,6 @@ class TestPages(TestCase):
         self.assertTemplateUsed(response, 'contact.html')
         self.assertTemplateUsed(response, 'contact_form.html')
         self.assertContains(response, u'Formularz kontaktowy')
-        # pylint: disable=no-member
         self.assertIn('contact_form', response.context)
         self.assertContains(response, u'Proszę poprawić błędy w formularzu:')
         self.assertEqual(len(mail.outbox), 0)
@@ -156,13 +148,11 @@ class TestPages(TestCase):
         self.assertTemplateUsed(response, 'contact.html')
         self.assertTemplateUsed(response, 'contact_form.html')
         self.assertContains(response, u'Formularz kontaktowy')
-        # pylint: disable=no-member
         self.assertIn('contact_form', response.context)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, u'Kontakt z administratorem')
         self.assertContains(response, u'Email został wysłany.')
 
-    # pylint: disable=invalid-name
     def test__contact_with_admin_form_by_organization_val_error(self):
         u"""
         Post to contact with administrator form by organization user
@@ -191,7 +181,6 @@ class TestPages(TestCase):
         self.assertTemplateUsed(response, 'contact.html')
         self.assertTemplateUsed(response, 'contact_form.html')
         self.assertContains(response, u'Formularz kontaktowy')
-        # pylint: disable=no-member
         self.assertIn('contact_form', response.context)
         self.assertEqual(len(mail.outbox), 0)
         self.assertContains(response, u'Proszę poprawić błędy w formularzu:')
@@ -226,7 +215,6 @@ class TestPages(TestCase):
         self.assertTemplateUsed(response, 'contact.html')
         self.assertTemplateUsed(response, 'contact_form.html')
         self.assertContains(response, u'Formularz kontaktowy')
-        # pylint: disable=no-member
         self.assertIn('contact_form', response.context)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, u'Kontakt z administratorem')

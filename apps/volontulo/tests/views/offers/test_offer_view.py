@@ -96,6 +96,5 @@ class TestOffersView(TestCase):
         ))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/show_offer.html')
-        # pylint: disable=no-member
         self.assertIn('offer', response.context)
         self.assertIn('volunteers', response.context)

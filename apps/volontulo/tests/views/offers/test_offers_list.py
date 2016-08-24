@@ -17,7 +17,6 @@ class TestOffersList(TestOffersCommons, TestCase):
         """Set up each test."""
         self.client = Client()
 
-    # pylint: disable=invalid-name
     def _test_offers_list_for_standard_user(self):
         """Test offers' list for standard user.
 
@@ -28,9 +27,7 @@ class TestOffersList(TestOffersCommons, TestCase):
         response = self.client.get('/offers')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offers_list.html')
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
-        # pylint: disable=no-member
         self.assertEqual(len(response.context['offers']), 0)
 
     def test_offer_list_for_anonymous_user(self):
@@ -62,7 +59,5 @@ class TestOffersList(TestOffersCommons, TestCase):
         response = self.client.get('/offers')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offers_list.html')
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
-        # pylint: disable=no-member
         self.assertEqual(len(response.context['offers']), 2)

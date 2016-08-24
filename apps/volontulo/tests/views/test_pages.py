@@ -27,12 +27,9 @@ class TestPages(TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'homepage.html')
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
-        # pylint: disable=no-member
         self.assertEqual(len(response.context['offers']), 4)
 
-    # pylint: disable=invalid-name
     def test__homepage_for_volunteer_and_organization(self):
         u"""Home page for volunteers and organizations.
 
@@ -42,12 +39,9 @@ class TestPages(TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'homepage.html')
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
-        # pylint: disable=no-member
         self.assertEqual(len(response.context['offers']), 4)
 
-    # pylint: disable=invalid-name
     def test__homepage_for_administrator(self):
         u"""Home page for administrators."""
         self.client.post('/login', {
@@ -57,9 +51,7 @@ class TestPages(TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'homepage.html')
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
-        # pylint: disable=no-member
         self.assertEqual(len(response.context['offers']), 10)
 
         offers = {u'NEW': 0, u'ACTIVE': 0, u'SUSPENDED': 0}
@@ -70,7 +62,6 @@ class TestPages(TestCase):
         self.assertEqual(offers[u'NEW'], 5)
         self.assertEqual(offers[u'SUSPENDED'], 5)
 
-    # pylint: disable=invalid-name
     def test__get_organization_faq_staticpage(self):
         u"""Organization FAQ static page"""
         response = self.client.get('/pages/faq-organizations')
@@ -78,7 +69,6 @@ class TestPages(TestCase):
         self.assertTemplateUsed(response, 'pages/faq-organizations.html')
         self.assertContains(response, u'Często zadawane pytania')
 
-    # pylint: disable=invalid-name
     def test__get_volunteer_faq_staticpage(self):
         u"""Volunteer FAQ static page"""
         response = self.client.get('/pages/faq-volunteers')
@@ -86,7 +76,6 @@ class TestPages(TestCase):
         self.assertTemplateUsed(response, 'pages/faq-volunteers.html')
         self.assertContains(response, u'Często zadawane pytania')
 
-    # pylint: disable=invalid-name
     def test__get_regulations_staticpage(self):
         u"""Regulations FAQ static page"""
         response = self.client.get('/pages/regulations')

@@ -35,7 +35,6 @@ class TestOffersCreate(TestCase):
             user=organization_user,
         )
         cls.organization_profile.save()
-        # pylint: disable=no-member
         cls.organization_profile.organizations.add(cls.organization)
 
         no_org_user = User.objects.create_user(
@@ -61,7 +60,6 @@ class TestOffersCreate(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offer_form.html')
 
-    # pylint: disable=invalid-name
     def test_offers_create_no_org_get_method(self):
         """Test page for offer creation - tendering template with form."""
         self.client.post('/login', {

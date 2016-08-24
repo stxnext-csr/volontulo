@@ -26,7 +26,6 @@ class TestUsersProfile(TestCase):
         u"""Set up each test."""
         self.client = Client()
 
-    # pylint: disable=invalid-name
     def test__logged_user_profile_anonymous(self):
         u"""Testing user profile page for anonymous."""
         response = self.client.get('/me', follow=True)
@@ -43,7 +42,6 @@ class TestUsersProfile(TestCase):
             ('http://testserver/login?next=/me', 302),
         )
 
-    # pylint: disable=invalid-name
     def test__logged_user_profile(self):
         u"""Testing default views on user profile form."""
         self.client.post('/login', {
@@ -55,11 +53,9 @@ class TestUsersProfile(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/user_profile.html')
         # check if contain image upload form (all users)
-        # pylint: disable=no-member
         self.assertIn('image', response.context)
         self.assertContains(response, u'Wybierz grafikę')
 
-    # pylint: disable=invalid-name
     def test__logged_user_profile_empty_volunteer(self):
         u"""Testing user profile page for volunteers."""
         self.client.post('/login', {
@@ -68,7 +64,6 @@ class TestUsersProfile(TestCase):
         })
         response = self.client.get('/me')
 
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertContains(
             response,
@@ -76,7 +71,6 @@ class TestUsersProfile(TestCase):
             u"ofert wolontariuatu i zapełnij to miejsce."
         )
 
-    # pylint: disable=invalid-name
     def test__logged_user_profile_filled_volunteer(self):
         u"""Testing user profile page for volunteers."""
         self.client.post('/login', {
@@ -85,7 +79,6 @@ class TestUsersProfile(TestCase):
         })
         response = self.client.get('/me')
 
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertContains(
             response,
@@ -93,7 +86,6 @@ class TestUsersProfile(TestCase):
             u"ofert wolontariuatu i zapełnij to miejsce."
         )
 
-    # pylint: disable=invalid-name
     def test__logged_user_profile_empty_organization(self):
         u"""Testing user profile page for empty organization."""
         self.client.post('/login', {
@@ -102,14 +94,12 @@ class TestUsersProfile(TestCase):
         })
         response = self.client.get('/me')
 
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertContains(
             response,
             u'Ta organizacja nie utworzyła jeszcze żadnych ofert.'
         )
 
-    # pylint: disable=invalid-name
     def test__logged_user_profile_filled_organization(self):
         u"""Testing user profile page for filled organization."""
         self.client.post('/login', {
@@ -118,7 +108,6 @@ class TestUsersProfile(TestCase):
         })
         response = self.client.get('/me')
 
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertEqual(
             4,
@@ -139,7 +128,6 @@ class TestUsersProfile(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/user_profile.html')
-        # pylint: disable=no-member
         self.assertIn('profile_form', response.context)
         self.assertContains(response, u'333666999')
 
@@ -153,7 +141,6 @@ class TestUsersProfile(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/user_profile.html')
-        # pylint: disable=no-member
         self.assertIn('profile_form', response.context)
         self.assertContains(response, 'Grzegorz')
         self.assertContains(response, 'Brzęczyszczykiewicz')
@@ -169,6 +156,5 @@ class TestUsersProfile(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/user_profile.html')
-        # pylint: disable=no-member
         self.assertIn('profile_form', response.context)
         self.assertNotContains(response, 'Email')

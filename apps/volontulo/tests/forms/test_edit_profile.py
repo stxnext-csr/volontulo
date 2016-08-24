@@ -18,8 +18,7 @@ class TestEditProfileForm(TransactionTestCase):
         u"""UnitTest setup data."""
         common.initialize_empty_volunteer()
 
-    # pylint: disable=invalid-name
-    def test__is_validate__passed_passwords__form_is_valid(self):
+    def test_is_validate_passed_passwords_form_is_valid(self):
         u"""Test is_validate() method.
 
             Testing EditProfileForm.is_valid() method
@@ -36,7 +35,6 @@ class TestEditProfileForm(TransactionTestCase):
         form = EditProfileForm(data=form_data)
         self.assertTrue(form.is_valid())
 
-    # pylint: disable=invalid-name
     def test__is_validate__empty_passwords__form_is_not_valid(self):
         u"""Test is_validate() method.
 
@@ -48,7 +46,6 @@ class TestEditProfileForm(TransactionTestCase):
         form = EditProfileForm(data=form_data)
         self.assertFalse(form.is_valid())
 
-    # pylint: disable=line-too-long,invalid-name
     def test__is_validate__wrong_current_password__raise_exception(self):
         u"""Test is_validate() method.
 
@@ -66,7 +63,6 @@ class TestEditProfileForm(TransactionTestCase):
         form = EditProfileForm(data=form_data)
         self.assertRaises(ValidationError, form.is_valid)
 
-    # pylint: disable=line-too-long,invalid-name
     def test__is_validate__distinct_new_passwords__raise_exception(self):
         u"""Test is_validate() method.
 
@@ -92,5 +88,4 @@ class TestEditProfileForm(TransactionTestCase):
             'password': 'volunteer1',
         })
         response = self.client.get('/me')
-        # pylint: disable=no-member
         self.assertNotContains(response, u'is_avatar')

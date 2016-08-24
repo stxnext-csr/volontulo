@@ -181,7 +181,6 @@ class OffersReorder(View):
 class OffersEdit(View):
     u"""Class view supporting change of a offer."""
 
-    # pylint: disable=R0201
     def dispatch(self, request, *args, **kwargs):
         u"""Dispatch method overriden to check offer edit permission"""
         try:
@@ -203,7 +202,6 @@ class OffersEdit(View):
         :param id_: int Offer database unique identifier (primary key)
         """
         offer = Offer.objects.get(id=id_)
-
         if offer.id or request.user.userprofile.is_administrator:
             organizations = [offer.organization]
         else:
@@ -272,7 +270,10 @@ class OffersEdit(View):
                 offer.reject()
             return redirect('offers_list')
 
-        form = CreateOfferForm(request.POST, instance=offer)
+        form = CreateOfferForm(  # pylint: disable=redefined-variable-type
+            request.POST, instance=offer
+        )
+
         if form.is_valid():
             offer = form.save()
             offer.unpublish()
@@ -353,7 +354,7 @@ class OffersView(View):
 
     @staticmethod
     @correct_slug(Offer, 'offers_view', 'title')
-    def get(request, slug, id_):  # pylint: disable=unused-argument
+    def get(request, slug, id_):
         u"""View responsible for showing details of particular offer."""
         offer = get_object_or_404(Offer, id=id_)
         try:
@@ -380,7 +381,7 @@ class OffersView(View):
         return render(request, "offers/show_offer.html", context=context)
 
     @staticmethod
-    def post(request, slug, id_):  # pylint: disable=unused-argument
+    def post(request, slug, id_):
         u"""View responsible for submitting volunteers awarding."""
         offer = get_object_or_404(Offer, id=id_)
         post_data = request.POST

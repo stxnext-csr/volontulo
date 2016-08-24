@@ -15,7 +15,6 @@ from django.db import models
 from django.db.models import F
 from django.utils import timezone
 
-# pylint: disable=invalid-name
 logger = logging.getLogger('volontulo.models')
 
 

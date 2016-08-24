@@ -9,7 +9,6 @@ from apps.volontulo.tests.views.test_organizations import TestOrganizations
 class TestEditOrganization(TestOrganizations):
     u"""Class responsible for testing editing organization specific views."""
 
-    # pylint: disable=invalid-name
     def test__edit_organization_get_form_anonymous(self):
         u"""Get organization edit form as anonymous."""
         response = self.client.get(
@@ -38,7 +37,6 @@ class TestEditOrganization(TestOrganizations):
             ),
         )
 
-    # pylint: disable=invalid-name
     def test__edit_organization_post_form_anonymous(self):
         u"""Post organization edit form as anonymous."""
         response = self.client.get(
@@ -67,7 +65,6 @@ class TestEditOrganization(TestOrganizations):
             ),
         )
 
-    # pylint: disable=invalid-name
     def test__edit_organization_get_form_volunteer(self):
         u"""Get organization edit form as volunteer."""
         self.client.post('/login', {
@@ -102,7 +99,6 @@ class TestEditOrganization(TestOrganizations):
             u'Nie masz uprawnień do edycji tej organizacji.'
         )
 
-    # pylint: disable=invalid-name
     def test__edit_organization_post_form_volunteer(self):
         u"""Post organization edit form as volunteer."""
         self.client.post('/login', {
@@ -137,7 +133,6 @@ class TestEditOrganization(TestOrganizations):
             u'Nie masz uprawnień do edycji tej organizacji.'
         )
 
-    # pylint: disable=invalid-name
     def test__edit_organization_get_form_other_organization(self):
         u"""Get organization edit form as other organization."""
         self.client.post('/login', {
@@ -172,7 +167,6 @@ class TestEditOrganization(TestOrganizations):
             u'Nie masz uprawnień do edycji tej organizacji.'
         )
 
-    # pylint: disable=invalid-name
     def test__edit_organization_post_form_other_organization(self):
         u"""Post organization edit form as other organization."""
         self.client.post('/login', {
@@ -206,7 +200,6 @@ class TestEditOrganization(TestOrganizations):
             u'Nie masz uprawnień do edycji tej organizacji.'
         )
 
-    # pylint: disable=invalid-name
     def test__edit_organization_get_form_right_organization(self):
         u"""Get organization edit form as right organization."""
         self.client.post('/login', {
@@ -220,7 +213,6 @@ class TestEditOrganization(TestOrganizations):
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
-        # pylint: disable=no-member
         self.assertIn('organization', response.context)
         self.assertContains(response, u'Nazwa')
         self.assertContains(response, u'Adres')
@@ -239,7 +231,6 @@ class TestEditOrganization(TestOrganizations):
             u'Organization 1 description'
         )
 
-    # pylint: disable=invalid-name
     def test__edit_organization_post_form_right_organization(self):
         u"""Post organization edit form as right organization."""
         self.client.post('/login', {

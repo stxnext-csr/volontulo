@@ -35,7 +35,7 @@ def logged_as_admin(request):
     )
 
 
-def homepage(request):  # pylint: disable=unused-argument
+def homepage(request):
     u"""Main view of app.
 
     We will display page with few step CTA links?
@@ -158,7 +158,6 @@ def logged_user_profile(request):
                 u"Problem w trakcie dodawania grafiki: {}".format(errors)
             )
 
-    # pylint: disable=invalid-name
     def _handle_organization_image_upload():
         u"""Handle image upload for user profile page."""
 

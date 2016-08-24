@@ -13,12 +13,11 @@ from apps.volontulo.views import offers as offers_views
 from apps.volontulo.views import organizations as orgs_views
 from apps.volontulo.views import pages as pages_views
 
-# pylint: disable=invalid-name
+
 handler404 = 'apps.volontulo.views.page_not_found'
 handler500 = 'apps.volontulo.views.server_error'
 
-
-urlpatterns = [  # pylint: disable=invalid-name
+urlpatterns = [
     # homepage:
     url(r'^$', views.homepage, name='homepage'),
 

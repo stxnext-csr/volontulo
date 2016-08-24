@@ -11,7 +11,6 @@ from apps.volontulo.models import Organization
 class TestCreateOrganization(TestOrganizations):
     u"""Class responsible for testing editing organization specific views."""
 
-    # pylint: disable=invalid-name
     def test__create_organization_get_form_anonymous(self):
         u"""Test getting form for creating organization as anonymous."""
         # Disable for anonymous user
@@ -25,7 +24,6 @@ class TestCreateOrganization(TestOrganizations):
             200,
         )
 
-    # pylint: disable=invalid-name
     def test__create_organization_get_form_authorized(self):
         u"""Test getting form for creating organization as authorized."""
         self.client.post('/login', {
@@ -38,12 +36,10 @@ class TestCreateOrganization(TestOrganizations):
             response,
             'organizations/organization_form.html'
         )
-        # pylint: disable=no-member
         self.assertIn('organization', response.context)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, u'Tworzenie organizacji')
 
-    # pylint: disable=invalid-name
     def test__create_organization_post_form_anonymous(self):
         u"""Test posting form for creating organization as anonymous."""
         # Disable for anonymous user
@@ -57,7 +53,6 @@ class TestCreateOrganization(TestOrganizations):
             200,
         )
 
-    # pylint: disable=invalid-name
     def test__create_empty_organization_post_form(self):
         u"""Test posting form for creating empty (not filled) organization."""
         self.client.post('/login', {
@@ -71,7 +66,6 @@ class TestCreateOrganization(TestOrganizations):
         }
         response = self.client.post('/organizations/create', form_params)
 
-        # pylint: disable=no-member
         self.assertIn('organization', response.context)
         self.assertEqual(response.status_code, 200)
         self.assertContains(
@@ -79,7 +73,6 @@ class TestCreateOrganization(TestOrganizations):
             u"Należy wypełnić wszystkie pola formularza."
         )
 
-    # pylint: disable=invalid-name
     def test__create_organization_post_form_fill_fields(self):
         u"""Test posting form and check fields population."""
         self.client.post('/login', {
@@ -92,7 +85,6 @@ class TestCreateOrganization(TestOrganizations):
         }
         response = self.client.post('/organizations/create', form_params)
 
-        # pylint: disable=no-member
         self.assertIn('organization', response.context)
         self.assertEqual(response.status_code, 200)
         self.assertContains(
@@ -147,7 +139,6 @@ class TestCreateOrganization(TestOrganizations):
         self.assertEqual(record.address, u'East Street 123')
         self.assertEqual(record.description, u'User unfriendly organization')
 
-    # pylint: disable=invalid-name
     def test__create_organization_one_column_template(self):
         """Test validate one column template on create page."""
         # Disable for anonymous user

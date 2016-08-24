@@ -37,7 +37,6 @@ class TestOffersEdit(TestCase):
             user=organization_user
         )
         cls.organization_profile.save()
-        # pylint: disable=no-member
         cls.organization_profile.organizations.add(cls.organization)
         cls.offer = Offer.objects.create(
             organization=cls.organization,
@@ -80,9 +79,7 @@ class TestOffersEdit(TestCase):
             '/offers/different-slug/{}/edit'.format(self.offer.id))
         self.assertRedirects(
             response,
-            '/offers/volontulo-offer/{}/edit'.format(self.offer.id),
-            302,
-            200,
+            '/offers/volontulo-offer/{}/edit'.format(self.offer.id)
         )
 
     def test_for_correct_slug(self):

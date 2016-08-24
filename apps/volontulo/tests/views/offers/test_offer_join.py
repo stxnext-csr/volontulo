@@ -71,7 +71,6 @@ class TestOffersJoin(TestCase):
             200,
         )
 
-    # pylint: disable=invalid-name
     def test_correct_slug_for_anonymous_user(self):
         """Test get method of offer join for anonymous user."""
         response = self.client.get('/offers/volontulo-offer/{}/join'.format(
@@ -79,12 +78,10 @@ class TestOffersJoin(TestCase):
         ))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offer_apply.html')
-        # pylint: disable=no-member
         self.assertIn('offer', response.context)
         self.assertIn('volunteer_user', response.context)
         self.assertEqual(response.context['volunteer_user'].pk, None)
 
-    # pylint: disable=invalid-name
     def test_correct_slug_for_logged_in_user(self):
         """Test get method of offer join for logged in user."""
         self.client.post('/login', {
@@ -96,7 +93,6 @@ class TestOffersJoin(TestCase):
         ))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/offer_apply.html')
-        # pylint: disable=no-member
         self.assertIn('offer', response.context)
         self.assertIn('volunteer_user', response.context)
         self.assertEqual(response.context['volunteer_user'].pk,

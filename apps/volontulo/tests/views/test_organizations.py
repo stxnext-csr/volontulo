@@ -28,18 +28,15 @@ class TestOrganizations(TestCase):
         u"""Set up each test."""
         self.client = Client()
 
-    # pylint: disable=invalid-name
     def test__organization_list(self):
         u"""Test getting organization list as anonymous."""
         response = self.client.get('/organizations', follow=True)
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'organizations/list.html')
-        # pylint: disable=no-member
         self.assertIn('organizations', response.context)
         self.assertEqual(Organization.objects.all().count(), 2)
 
-    # pylint: disable=invalid-name
     def test__ensure_status_is_displayed_in_profile_view(self):
         """Test if offer status is displayed in a profile view."""
         self.client.login(
@@ -48,13 +45,10 @@ class TestOrganizations(TestCase):
         )
         response = self.client.get('/me', follow=True)
         self.assertTemplateUsed(response, 'users/my_offers.html')
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
-        # pylint: disable=no-member
-        self.assertEquals(
+        self.assertEqual(
             'published', response.context['offers'][0].offer_status)
 
-    # pylint: disable=invalid-name
     def test__ensure_status_is_displayed_in_organisations_view(self):
         """Test if offer status is displayed in an organisation view."""
         self.client.login(
@@ -62,8 +56,6 @@ class TestOrganizations(TestCase):
             password=u'volunteer2'
         )
         response = self.client.get('/me', follow=True)
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
-        # pylint: disable=no-member
-        self.assertEquals(
+        self.assertEqual(
             'published', response.context['offers'][0].offer_status)

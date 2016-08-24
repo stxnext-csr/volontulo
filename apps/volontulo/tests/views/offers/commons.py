@@ -11,11 +11,9 @@ from apps.volontulo.models import Organization
 from apps.volontulo.models import UserProfile
 
 
-# pylint: disable=too-few-public-methods
 class TestOffersCommons(object):
     """Commons setups for offers' testcases."""
 
-    # pylint: disable=invalid-name
     @classmethod
     def setUpTestData(cls):
         """Set up data for all tests."""
@@ -72,7 +70,6 @@ class TestOffersCommons(object):
             user=organization_user,
         )
         cls.organization_profile.save()
-        # pylint: disable=no-member
         cls.organization_profile.organizations.add(cls.organization)
 
         admin_user = User.objects.create_user(

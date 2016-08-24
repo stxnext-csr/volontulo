@@ -67,7 +67,6 @@ class TestOffersArchived(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'offers/archived.html')
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertEqual(len(response.context['offers']), 15)
         self.assertNotContains(

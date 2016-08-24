@@ -11,7 +11,6 @@ from apps.volontulo.tests.views.test_organizations import TestOrganizations
 class TestCreateOrganization(TestOrganizations):
     u"""Class responsible for testing editing organization specific views."""
 
-    # pylint: disable=invalid-name
     def test__get_empty_organization_view_by_anonymous(self):
         u"""Request for empty organization view by anonymous user."""
         response = self.client.get('/organizations/organization-1/{}'.format(
@@ -19,11 +18,8 @@ class TestCreateOrganization(TestOrganizations):
         ))
 
         self.assertEqual(response.status_code, 200)
-        # pylint: disable=no-member
         self.assertIn('contact_form', response.context)
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
-        # pylint: disable=no-member
         self.assertIn('organization', response.context)
         self.assertContains(response, u'Nazwa')
         self.assertContains(response, u'Opis')
@@ -40,7 +36,6 @@ class TestCreateOrganization(TestOrganizations):
         self.assertTemplateUsed(response, 'contact_form.html')
         self.assertContains(response, u'Wyślij')
 
-    # pylint: disable=invalid-name
     def test__get_filled_organization_view_by_anonymous(self):
         u"""Request for filled organization view by anonymous user."""
         response = self.client.get('/organizations/organization-2/{}'.format(
@@ -51,11 +46,9 @@ class TestCreateOrganization(TestOrganizations):
             response,
             u'Ta organizacja nie utworzyła jeszcze żadnych ofert.'
         )
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertEqual(len(response.context['offers']), 14)
 
-    # pylint: disable=invalid-name
     def test__get_empty_organization_view_by_volunteer(self):
         u"""Requesting for empty organization view by volunteer user."""
         self.client.post('/login', {
@@ -67,16 +60,13 @@ class TestCreateOrganization(TestOrganizations):
         ))
 
         self.assertContains(response, u'Organization 1')
-        # pylint: disable=no-member
         self.assertIn('allow_edit', response.context)
         self.assertFalse(response.context['allow_edit'])
         self.assertNotContains(response, u'Edytuj organizację')
-        # pylint: disable=no-member
         self.assertIn('allow_offer_create', response.context)
         self.assertFalse(response.context['allow_offer_create'])
         self.assertNotContains(response, u'Dodaj ofertę')
 
-    # pylint: disable=invalid-name
     def test__get_empty_organization_view_by_organization(self):
         u"""Request for empty organization view by organization user."""
         self.client.post('/login', {
@@ -87,7 +77,6 @@ class TestCreateOrganization(TestOrganizations):
             '/organizations/organization-1/{}'.format(self.organization.id),
             follow=True
         )
-        # pylint: disable=no-member
         self.assertIn('allow_contact', response.context)
         self.assertIn('allow_edit', response.context)
         self.assertIn('allow_offer_create', response.context)
@@ -113,7 +102,6 @@ class TestCreateOrganization(TestOrganizations):
         self.assertFalse(response.context['allow_edit'])
         self.assertFalse(response.context['allow_offer_create'])
 
-    # pylint: disable=invalid-name
     def test__get_filled_organization_view_by_organization(self):
         u"""Request for filled organization view by organization user."""
         self.client.post('/login', {
@@ -124,11 +112,9 @@ class TestCreateOrganization(TestOrganizations):
             '/organizations/organization-2/{}'.format(self.organization2.id),
             follow=True
         )
-        # pylint: disable=no-member
         self.assertIn('offers', response.context)
         self.assertEqual(len(response.context['offers']), 14)
 
-    # pylint: disable=invalid-name
     def test__post_contact_form_on_organization_view_by_anonymous(self):
         u"""Post contact form to organization view by anonymous user."""
         form_params = {
@@ -178,7 +164,6 @@ class TestCreateOrganization(TestOrganizations):
         self.assertContains(response, u'Wiadomość dla organizacji')
         self.assertEqual(len(mail.outbox), 0)
 
-    # pylint: disable=invalid-name
     def test__post_contact_form_on_organization_view_by_volunteer(self):
         u"""Post contact form to organization view by volunteer user."""
         self.client.post('/login', {
@@ -217,7 +202,6 @@ class TestCreateOrganization(TestOrganizations):
             u'Email został wysłany.'
         )
 
-    # pylint: disable=invalid-name
     def test__post_contact_form_on_organization_view_by_organization(self):
         u"""Post contact form to organization view by organization user."""
         self.client.post('/login', {

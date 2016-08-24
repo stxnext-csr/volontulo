@@ -86,8 +86,7 @@ class OrganizationsCreate(View):
 
 @correct_slug(Organization, 'organization_form', 'name')
 @login_required
-# pylint: disable=unused-argument
-def organization_form(request, slug, id_):
+def organization_form(request, slug, id_):  # pylint: disable=unused-argument
     u"""View responsible for editing organization.
 
     Edition will only work, if logged user has been registered as organization.
@@ -149,8 +148,7 @@ def organization_form(request, slug, id_):
 
 
 @correct_slug(Organization, 'organization_view', 'name')
-# pylint: disable=unused-argument
-def organization_view(request, slug, id_):
+def organization_view(request, slug, id_):  # pylint: disable=unused-argument
     u"""View responsible for viewing organization."""
     org = get_object_or_404(Organization, id=id_)
     offers = Offer.objects.filter(organization_id=id_)

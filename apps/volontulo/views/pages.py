@@ -18,7 +18,7 @@ from apps.volontulo.models import Page
 from apps.volontulo.utils import is_admin_test
 
 
-class PageList(ListView):  # pylint: disable=too-many-ancestors
+class PageList(ListView):
     """View listing static pages."""
     model = Page
     template_name = 'pages/page_list.html'
@@ -29,17 +29,16 @@ class PageList(ListView):  # pylint: disable=too-many-ancestors
         Method is overriden to check that current user instance
         is administrator.
         """
-        # pylint: disable=no-member
         return super(PageList, self).dispatch(*args, **kwargs)
 
 
-class PageDetails(DetailView):  # pylint: disable=too-many-ancestors
+class PageDetails(DetailView):
     """View with details of static page."""
     model = Page
     template_name = 'pages/page_detail.html'
 
 
-class PageCreate(CreateView):  # pylint: disable=too-many-ancestors
+class PageCreate(CreateView):
     """View responsible for creation of new static page."""
     model = Page
     fields = (
@@ -51,7 +50,6 @@ class PageCreate(CreateView):  # pylint: disable=too-many-ancestors
     success_url = reverse_lazy('pages_list')
 
     def form_valid(self, form):
-        # pylint: disable=attribute-defined-outside-init
         self.object = form.save(commit=False)
         self.object.author = self.request.user.userprofile
         self.object.save()
@@ -63,11 +61,10 @@ class PageCreate(CreateView):  # pylint: disable=too-many-ancestors
         Method is overriden to check that current user instance
         is administrator.
         """
-        # pylint: disable=no-member
         return super(PageCreate, self).dispatch(*args, **kwargs)
 
 
-class PageEdit(UpdateView):  # pylint: disable=too-many-ancestors
+class PageEdit(UpdateView):
     """View responsible for editing static page."""
     model = Page
     fields = (
@@ -84,11 +81,10 @@ class PageEdit(UpdateView):  # pylint: disable=too-many-ancestors
         Method is overriden to check that current user instance
         is administrator.
         """
-        # pylint: disable=no-member
         return super(PageEdit, self).dispatch(*args, **kwargs)
 
 
-class PageDelete(DeleteView):  # pylint: disable=too-many-ancestors
+class PageDelete(DeleteView):
     """Page responsible for deletion of static page."""
     model = Page
     success_url = reverse_lazy('pages_list')
@@ -106,5 +102,4 @@ class PageDelete(DeleteView):  # pylint: disable=too-many-ancestors
         Method is overriden to check that current user instance
         is administrator.
         """
-        # pylint: disable=no-member
         return super(PageDelete, self).dispatch(*args, **kwargs)

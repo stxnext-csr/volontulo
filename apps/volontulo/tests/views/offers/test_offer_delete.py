@@ -17,14 +17,12 @@ class TestOfferDelete(TestOffersCommons, TestCase):
         """Set up each test."""
         self.client = Client()
 
-    # pylint: disable=invalid-name
     def test_offer_deletion_for_anonymous_user(self):
         """Test deletion for anonymous users."""
         response = self.client.get('/offers/delete/{}'
                                    .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
-    # pylint: disable=invalid-name
     def test_offer_deletion_for_volunteer(self):
         """Test deletion for account of volunteer."""
         self.client.post('/login', {
@@ -35,7 +33,6 @@ class TestOfferDelete(TestOffersCommons, TestCase):
                                    .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
-    # pylint: disable=invalid-name
     def test_offer_deletion_for_organization(self):
         """Test deletion for account of organization."""
         self.client.post('/login', {
@@ -46,7 +43,6 @@ class TestOfferDelete(TestOffersCommons, TestCase):
                                    .format(self.inactive_offer.id))
         self.assertEqual(response.status_code, 403)
 
-    # pylint: disable=invalid-name
     def test_offer_deletion_for_admin(self):
         """Test deletion for account of admin."""
         self.client.post('/login', {

@@ -9,7 +9,7 @@ from django import template
 from apps.volontulo.utils import OFFERS_STATUSES
 
 
-register = template.Library()  # pylint: disable=invalid-name
+register = template.Library()
 
 
 @register.filter(name='human')
